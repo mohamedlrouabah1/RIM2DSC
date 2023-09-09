@@ -7,5 +7,9 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         ".mule": true
-    }
+    },
+    "python.analysis.extraPaths": [
+        "./practice1/code",
+        "./practice1"
+    ]
 }

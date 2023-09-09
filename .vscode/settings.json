@@ -9,6 +9,7 @@
         ".mule": true
     },
     "python.analysis.extraPaths": [
-        "./practice1/code"
+        "./practice1/code",
+        "./practice1"
     ]
 }

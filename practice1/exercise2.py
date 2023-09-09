@@ -1,33 +1,35 @@
 import re
 from collections import defaultdict, Counter
+import pandas as pd
 
-# Function to build inverted index
-def build_inverted_index(document_collection_str):
-    # Initialize inverted index and term frequency dictionaries
-    inverted_index = defaultdict(list)
-    term_frequency = defaultdict(lambda: defaultdict(int))
+# functiond to generate the inverted index
+def generate_index(doc):
+    # init the inverted index and doc frequency dictionaries
+    index = defaultdict(list)
+    tf = defaultdict(lambda: defaultdict(int))
 
-    # Parse the document_collection_str to get individual documents
-    document_list = re.findall(r'<doc><docno>(.*?)</docno>(.*?)</doc>', document_collection_str)
+    # parse the document to get individual documents
+    parse_doc = re.findall(r'<doc><docno>(.*?)</docno>(.*?)</doc>', doc)
     
-    # Loop through each document to update inverted index and term frequency
-    for doc_id, content in document_list:
+    # loop each document to update the inverted index and doc frequency
+    for doc_id, content in parse_doc:
         # Convert to lowercase and remove special characters
         content = content.lower()
         content = re.sub(r"[^a-zA-Z0-9\s]", "", content)
-        
         # Tokenize the document
         tokens = content.split()
+        # Count doc frequency in this document
+        cf = Counter(tokens)
+
+        # Update doc frequency dictionary
+        for term, freq in cf.items():
+            tf[term][doc_id] = freq    
         
-        # Count term frequency in this document
-        tf = Counter(tokens)
-        
-        # Update term frequency dictionary
-        for term, freq in tf.items():
-            term_frequency[term][doc_id] = freq
-            
         # Update inverted index
         for term in set(tokens):
-            inverted_index[term].append(doc_id)
-            
-    return inverted_index, term_frequency, [doc_id for doc_id, _ in document_list]
+            index[term].append(doc_id)
+        # store the doc_ids for query usecase
+        doc_ids = doc_id
+
+    res = index, tf, doc_ids
+    return res

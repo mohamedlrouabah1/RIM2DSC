@@ -1,22 +1,22 @@
 Term,DF,Postings List
-kane,1,1 D0
 citizen,1,1 D0
+kane,1,1 D0
 casablanca,1,1 D1
-the,6,"2 D2, 1 D3, 2 D5, 1 D6, 1 D7, 1 D9"
 godfather,1,2 D2
+the,6,"2 D2, 1 D3, 2 D5, 1 D6, 1 D7, 1 D9"
 with,1,1 D3
-gone,1,1 D3
 wind,1,1 D3
+gone,1,1 D3
 arabia,1,1 D4
 of,2,"1 D4, 2 D5"
 lawrence,1,1 D4
 wizard,1,2 D5
 oz,1,2 D5
 graduate,1,1 D6
-waterfront,1,1 D7
 on,1,1 D7
-list,1,1 D8
+waterfront,1,1 D7
 schindlers,1,1 D8
+list,1,1 D8
 in,1,1 D9
 rain,1,1 D9
 singin,1,1 D9

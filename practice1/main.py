@@ -1,39 +1,33 @@
+from exercise2 import generate_index  
+from exercise3 import generate_query
+from utils import read_doc,generate_grid
 import pandas as pd
-from exercise2 import build_inverted_index  
-from exercise3 import boolean_query_parser  
 
-# Read the document collection from a file
-with open('data/documentxml.xml', 'r') as f:
-    document_collection_str = f.read()
+###### Exercise 2 ###### 
+n = 'exo2'
+doc = read_doc('data/documentxml.xml')
 
-# Build the inverted index, term frequencies, and document IDs
-inverted_index, term_frequency, doc_ids = build_inverted_index(document_collection_str)
+# generate the inverted index, doc freq, and doc_ids
+res = generate_index(doc)
+print(res)
+# Transform list into dataframe 
+df = generate_grid(res,n)
+print(df)
 
-# Create DataFrame to hold the inverted index
-df = pd.DataFrame(columns=['Term', 'DF', 'Postings List'])
 
-# Create an empty list to hold rows
-rows = []
-
-# Populate the rows list
-for term, postings_list in inverted_index.items():
-    rows.append({
-        'Term': term,
-        'DF': len(postings_list),
-        'Postings List': ", ".join([f"{term_frequency[term][doc_id]} {doc_id}" for doc_id in postings_list])
-    })
-
-# Create a DataFrame from the rows list
-df = pd.DataFrame(rows)
-
-# Export DataFrame to CSV
-df.to_csv('data/resultInvertedIndex.csv', index=False)
-
+###### Exercise 3 ###### 
+n = 'exo3'
 # Read queries from query.txt file
-with open('data/query_sample.txt', 'r') as f:
-    sample_queries = f.read().strip().split('\n')
+sample_queries = read_doc('data/query_sample.txt').strip().split('\n')
+print(sample_queries)
 
-# Loop through the sample queries and print the results
-for query in sample_queries:
-    result = boolean_query_parser(query, inverted_index, doc_ids)
-    print(f"For the query '{query}', the results are: {result}")
+res2 = generate_query(sample_queries,res)
+print(res2)
+dq = generate_grid(res2, n)
+print(dq)
+
+##### Export files ##### 
+# Export DataFrame to CSV
+df.to_csv('data/exo2InvertedIndex.csv', index=False)
+# Export DataFrame to CSV
+dq.to_csv('data/exo3Query.csv', index=False)

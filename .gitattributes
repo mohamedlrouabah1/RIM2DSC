@@ -1,0 +1,2 @@
+# for large file storage with git if needed
+./big_data/* filter=lfs diff=lfs merge=lfs -text

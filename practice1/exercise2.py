@@ -33,3 +33,6 @@ def generate_index(doc):
 
     res = index, tf, doc_ids
     return res
+
+if __name__ == "__main__":
+    print("module exercice2.py not executable.")

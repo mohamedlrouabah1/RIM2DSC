@@ -1,13 +1,13 @@
 import pandas as pd
 
 
-def read_doc(str):
-    # Read the document collection from a file
-    with open(str, 'r') as f:
+def read_doc(path) -> str:
+    """Read the document collection from a file"""
+    with open(path, 'r') as f:
         document_collection_str = f.read()
     return document_collection_str
 
-def generate_grid(param,n):
+def generate_grid(param,n) -> pd.DataFrame:
     if (n == 'exo2'):
         # Create DataFrame to hold the inverted index
         df = pd.DataFrame(columns=['Term', 'DF', 'Postings List'])

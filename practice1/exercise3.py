@@ -1,19 +1,19 @@
 from collections import deque
 
-# Function for AND operation
-def boolean_and(list1, list2):
+def boolean_and(list1, list2) -> list:
+    """Function for AND operation"""
     return [item for item in list1 if item in list2]
 
-# Function for OR operation
-def boolean_or(list1, list2):
+def boolean_or(list1, list2) -> list:
+    """Function for OR operation"""
     return list(set(list1) | set(list2))
 
-# Function for NOT operation
-def boolean_not(list1, universe):
+def boolean_not(list1, universe) -> list:
+    """Function for NOT operation"""
     return [item for item in universe if item not in list1]
 
-# Function to parse and execute Boolean query
-def generate_query(sample_queries,list):
+def generate_query(sample_queries,list) -> dict:
+    """Function to parse and execute Boolean query"""
     query_dictonary = {}
     # enumarate allow me to add ID to a query 
     for query_id, query in enumerate(sample_queries) :
@@ -61,7 +61,7 @@ def generate_query(sample_queries,list):
             else:  # else occurance to the next
                 pile.append(list[0].get(token, []))
 
-        # then apply the restante operator into the pile since op_pile not empty
+        # then apply the remaining operator on the pile since op_pile not empty
         while op_pile:
             operator()
 
@@ -71,4 +71,6 @@ def generate_query(sample_queries,list):
     # return a dictornary query id + resultat 
     return query_dictonary
 
-        
+
+if __name__ == "__main__":
+    print("module exercice3.py not executable.")

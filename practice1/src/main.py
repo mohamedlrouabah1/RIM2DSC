@@ -1,6 +1,6 @@
 from exercise2 import generate_index  
 from exercise3 import generate_query
-from utils import read_doc,generate_grid
+from src.utils import read_doc,generate_grid
 import pandas as pd
 
 def main() -> None:
@@ -29,9 +29,9 @@ def main() -> None:
 
     ##### Export files ##### 
     # Export DataFrame to CSV
-    df.to_csv('data/exo2InvertedIndex.csv', index=False)
+    df.to_csv('data/output_ex2.csv', index=False)
     # Export DataFrame to CSV
-    dq.to_csv('data/exo3Query.csv', index=False)
+    dq.to_csv('data/output_ex3.csv', index=False)
 
 if __name__ == "__main__":
     main()

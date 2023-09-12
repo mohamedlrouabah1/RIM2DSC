@@ -1,5 +1,6 @@
 kane AND godfather
 arabia OR graduate
 wizard NOT wind
-(godfather OR kane) AND NOT wind
-(graduate OR waterfront) AND (arabia OR oz)
+wind NOT kane
+graduate OR waterfront 
+arabia OR oz

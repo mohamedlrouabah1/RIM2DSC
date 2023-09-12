@@ -24,6 +24,7 @@ def generate_query(sample_queries,list) -> dict:
 
         # function operator for AND : OR : NOT
         def operator():
+            
             # check if the pile is not empty at start
             if op_pile and pile:
                 # get and pop the last element on the pile

@@ -1,5 +1,6 @@
 # Compte rendu du TP1 de RI 
 
+
 ## Exercice 1
 
 Incidence matrix : 	
@@ -14,7 +15,7 @@ gone	    0	0	0	1	0	0	0	0	0	0
 with	    0	0	0	1	0	0	0	0	0	0
 wind	    0	0	0	1	0	0	0	0	0	0
 lawrence	0	0	0	0	1	0	0	0	0	0
-of	        0	0	0	0	1	0	0	0	0	0
+of	        0	0	0	0	1	1	0	0	0	0
 arabia	    0	0	0	0	1	0	0	0	0	0
 wizard	    0	0	0	0	0	1	0	0	0	0
 oz	        0	0	0	0	0	1	0	0	0	0
@@ -23,10 +24,21 @@ on	        0	0	0	0	0	0	0	1	0	0
 waterfront	0	0	0	0	0	0	0	1	0	0
 schindlers	0	0	0	0	0	0	0	0	1	0
 list	    0	0	0	0	0	0	0	0	1	0
+singin      0   0   0   0   0   0   0   0   0   1
+in          0   0   0   0   0   0   0   0   0   1
+rain        0   0   0   0   0   0   0   0   0   1
 
 Explanations : 
-1. 
-2. special characters removed and lowercase letter)
+1. We build the dictionnay of our text by selecting each
+    unique word of it.
+2. We standardize the dictionnary words by putting all
+    of them in lowercase and removing special characters 
+    (more specifically accents).
+3. Finaly we make a matrix with the words of the dictionnary
+    indexing the lines and the documents id indexing the columns.
+4. for each cell in our matrix we have the value
+    - 1 if the word indexing the row of the cell is int the 
+        document which document if indexing the column of the cell.
 
 
 Inverted Index : 
@@ -51,6 +63,17 @@ waterfront	1	    D7
 schindlers	1	    D8
 list	    1	    D8
 singin	    1	    D9
+in  	    1	    D9
+rain	    1	    D9
+
+Explanations :
+1. We browse each document and each time we encounter a word 
+    of our dictionnary for the first time, we add the document
+    id to the posting list of the word.
+2. Then for each word we count the number of document id present
+    in their posting list in order to get the frequency.
+
+
 
 
 ## Exercice 2
@@ -86,6 +109,17 @@ the inverted dataframe was sucessfuly created !
 
 Explanations:
 ------------
+1. We parse the xml document using a python regex in order to
+    get our sentences.
+2. We normalize our data by using a buildin python function to 
+    lower case each word in sentences and an over regex to 
+    delete special characters.
+3. We then iterate over each sentences to build the inverted 
+    indexing and compute the frequency of each word.
+4. For the representation of the inverted index we have chosen
+    a python dictionnay with the word as key and a list of 
+    document id as value.
+
 
 
 ## Exercice 3

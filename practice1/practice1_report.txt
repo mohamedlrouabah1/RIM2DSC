@@ -125,5 +125,41 @@ Explanations:
 ## Exercice 3
 program path: practice1/exercice2.py
 ------------
+
+input: practice1/data/query_sample.txt
+------
+kane AND godfather
+arabia OR graduate
+wizard NOT wind
+wind NOT kane
+graduate OR waterfront 
+arabia OR oz
+
 output:
 ------
+['kane AND godfather', 'arabia OR graduate', 'wizard NOT wind', 'wind NOT kane', 'graduate OR waterfront ', 'arabia OR oz']
+{0: [], 1: ['D6', 'D4'], 2: ['D5'], 3: ['D3'], 4: ['D6', 'D7'], 5: ['D4', 'D5']}
+the query dataframe was sucessfuly created !
+   Query  Result
+0      0  
+1      1  D6, D4
+2      2  D5
+3      3  D3
+4      4  D6, D7
+5      5  D4, D5
+
+Explanations:
+------------
+1. Queries are loaded from the file practice1/data/query_sample.txt
+    and displayed on the first line of the output.
+2. The program parse the query to distinguish wich type it is:
+    AND, OR and NOT (or AND NOT).
+3. Then depending on the type of query a function using double
+    pointers iteration (as seen in the lecture of the course) is
+    called in order to execute the query.
+    (for that we take the posting list of the words that has been
+    made in the previous exercice).
+4. The raw results are then display on the form of a dictionnary
+5. An array that summarize the results of all queries is displayed at
+    the end. The column 'Query' refers to the index of the query in
+    the array displayed on the first line.

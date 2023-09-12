@@ -72,5 +72,21 @@ def generate_query(sample_queries,list) -> dict:
     return query_dictonary
 
 
+def intersect(p1:list, p2:list) -> list:
+    """Function to intersect 2 lists"""
+    answer = []
+    ptr1, ptr2 = 0, 0
+    n1, n2 = len(p1), len(p2)
+    while p1 != n1 and p2 != n2:
+        if p1[ptr1] == p2[ptr2]:
+                answer.append(p1[ptr1])
+                ptr1 += 1
+                ptr2 += 1
+        elif p1[ptr1] < p2[ptr2]:
+            ptr1 += 1
+        else:
+            ptr2 += 1
+    return answer
+
 if __name__ == "__main__":
     print("module exercice3.py not executable.")

@@ -1,36 +1,33 @@
-from exercise1 import generate_index  
-from src.utils import read_doc,generate_grid
-import pandas as pd
+from utils import read_doc, generate_grid, index_files_and_measure_time
+import matplotlib.pyplot as plt
 
 def main() -> None:
-    ###### Exercise 2 ###### 
-    n = 'exo2'
-    doc = read_doc('data/documentxml.xml')
+    filenames = [
+        '01-Text_Only-Ascii-Coll-1-10-NoSem.gz',
+        '02-Text_Only-Ascii-Coll-11-20-NoSem.gz',
+        '03-Text_Only-Ascii-Coll-21-50-NoSem.gz',
+        '04-Text_Only-Ascii-Coll-51-100-NoSem.gz',
+        '05-Text_Only-Ascii-Coll-101-200-NoSem.gz',
+        '06-Text_Only-Ascii-Coll-201-500-NoSem.gz',
+        '07-Text_Only-Ascii-Coll-501-1000-NoSem.gz',
+        '08-Text_Only-Ascii-Coll-1001-2000-NoSem.gz',
+        '09-Text_Only-Ascii-Coll-2001-5000-NoSem.gz'
+    ]
+    file_sizes = [55, 52, 103, 96, 357, 559, 747, 1200, 4200]  # in KB
+     # Provide an option to print the index or not
+    print_option = input("Do you want to print the index? (yes/no): ").lower()
+    should_print = print_option == "yes"
+    
+    times = index_files_and_measure_time(filenames, print_index=should_print)
 
-    # generate the inverted index, doc freq, and doc_ids
-    res = generate_index(doc)
-    print(res)
-    # Transform list into dataframe 
-    df = generate_grid(res,n)
-    print(df)
-
-
-    ###### Exercise 3 ###### 
-    n = 'exo3'
-    # Read queries from query.txt file
-    sample_queries = read_doc('data/query_sample.txt').strip().split('\n')
-    print(sample_queries)
-
-    res2 = generate_query(sample_queries,res)
-    print(res2)
-    dq = generate_grid(res2, n)
-    print(dq)
-
-    ##### Export files ##### 
-    # Export DataFrame to CSV
-    df.to_csv('data/output_ex2.csv', index=False)
-    # Export DataFrame to CSV
-    dq.to_csv('data/output_ex3.csv', index=False)
+    # Plot the efficiency graph
+    plt.plot(file_sizes, times, marker='o', linestyle='-')
+    plt.xlabel('Size of Collection (KB)')
+    plt.ylabel('Time (seconds)')
+    plt.title('Time Efficiency of Indexing Program')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     main()

@@ -75,19 +75,19 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
         doc = load_text_collection(f"D:/M2/RIM2DSC/TP/practice2/data/{file}")
         
         # Record the start time just before indexing starts.
-        start_time = time.time()
+        start_time = time.perf_counter_ns()
 
         # Generate the index for the current document.
         index = generate_index.generate_index(doc)  
         
         # Record the end time just after indexing completes.
-        end_time = time.time()
+        end_time = time.perf_counter_ns()
 
         # Calculate the total time taken to index the file.
         indexing_time = end_time - start_time
 
         # Print out a message indicating how long it took to index the current file.
-        print(f"Indexed {file} in {indexing_time:.2f} seconds.")
+        print(f"Indexed {file} in {indexing_time:.4f} nano seconds.")
         
         # If the print_index flag is True and the size of the document is less than 
         # 1 MB, then print the index.

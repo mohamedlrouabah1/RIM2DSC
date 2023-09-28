@@ -1,6 +1,7 @@
 import re
 from collections import defaultdict, Counter
 
+
 def generate_index(doc):
     # Initialize the inverted index and doc frequency dictionaries
     index = defaultdict(set)  # Using set to avoid duplicate doc_ids

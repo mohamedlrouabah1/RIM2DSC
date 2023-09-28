@@ -1,5 +1,20 @@
 from datetime import timedelta
 
+def convert_time_from_ns_to_s(t: float) -> float:
+    """
+    Convert time from nanoseconds to seconds
+
+    Parameters:
+    -----------
+    t: float
+        time in nanoseconds
+
+    Returns:
+    --------
+    t: float
+        time in seconds
+    """
+    return t / 1_000_000_000  
 
 def convert_time_from_ns_to_ms(t: float) -> float:
     """

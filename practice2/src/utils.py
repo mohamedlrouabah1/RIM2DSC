@@ -2,6 +2,9 @@ import pandas as pd
 import gzip
 import time
 import generate_index
+from utilities.time_utility import convert_time_from_ns_to_s
+
+DATA_FOLDER="../data"
 
 def load_text_collection(path) -> str:
     """
@@ -72,7 +75,7 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
     # Loop over each file in the filenames list.
     for file in filenames:
         # Read the content of the file using the `load_text_collection` function.
-        doc = load_text_collection(f"D:/M2/RIM2DSC/TP/practice2/data/{file}")
+        doc = load_text_collection(f"{DATA_FOLDER}/{file}")
         
         # Record the start time just before indexing starts.
         start_time = time.perf_counter_ns()
@@ -84,10 +87,11 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
         end_time = time.perf_counter_ns()
 
         # Calculate the total time taken to index the file.
-        indexing_time = end_time - start_time
+        indexing_time_in_ns = end_time - start_time
+        indexing_time_in_s = convert_time_from_ns_to_s(indexing_time_in_ns)
 
         # Print out a message indicating how long it took to index the current file.
-        print(f"Indexed {file} in {indexing_time:.4f} nano seconds.")
+        print(f"Indexed {file} in {indexing_time_in_s:.2f} seconds.")
         
         # If the print_index flag is True and the size of the document is less than 
         # 1 MB, then print the index.
@@ -95,7 +99,7 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
             print(index)
         
         # Append the time taken to index the current file to the `times` list.
-        times.append(indexing_time)
+        times.append(indexing_time_in_s)
     
     # Return the list of indexing times.
     return times

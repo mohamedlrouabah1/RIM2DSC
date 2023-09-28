@@ -29,3 +29,17 @@ class PostingList:
         self.postings.append(posting)
         self.document_frequency += 1
         self.total_frequency += posting.frequency
+
+class Index:
+    def __init__(self):
+        self.posting_lists = {}
+        self.collection = Collection()
+
+    def get_vocabulary_size(self):
+        return len(self.posting_lists)
+    
+    def get_vocabulary(self):
+        return self.posting_lists.keys()
+    
+    def get_term_frequency(self, term:str):
+        return self.posting_lists[term].total_frequency

@@ -2,8 +2,12 @@ import pandas as pd
 import gzip
 import time
 import generate_index
-def read_doc(path) -> str:
-    """Read the document collection from a file. Handles both regular and gzipped files."""
+
+def load_text_collection(path) -> str:
+    """
+    Read the document collection from a file.
+    Handles both regular and gzipped files.
+    """
     if path.endswith('.gz'):
         with gzip.open(path, 'rt', encoding='utf-8') as f:
             document_collection_str = f.read()
@@ -12,6 +16,7 @@ def read_doc(path) -> str:
             document_collection_str = f.read()
     return document_collection_str
 
+@DeprecationWarning
 def generate_grid(param,n) -> pd.DataFrame:
     if (n == 'exo2'):
         # Create DataFrame to hold the inverted index
@@ -66,8 +71,8 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
 
     # Loop over each file in the filenames list.
     for file in filenames:
-        # Read the content of the file using the `read_doc` function.
-        doc = read_doc(f"D:/M2/RIM2DSC/TP/practice2/data/{file}")
+        # Read the content of the file using the `load_text_collection` function.
+        doc = load_text_collection(f"D:/M2/RIM2DSC/TP/practice2/data/{file}")
         
         # Record the start time just before indexing starts.
         start_time = time.time()

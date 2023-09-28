@@ -1,4 +1,4 @@
-from utils import read_doc, generate_grid, index_files_and_measure_time
+from utils import load_text_collection, generate_grid, index_files_and_measure_time
 import matplotlib.pyplot as plt
 
 def main() -> None:

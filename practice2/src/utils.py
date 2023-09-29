@@ -81,13 +81,14 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
         start_time = time.perf_counter_ns()
 
         # Generate the index for the current document.
-        index = generate_index.generate_index(doc)  
+        index = generate_index.generate_index_oop(doc)  
         
         # Record the end time just after indexing completes.
         end_time = time.perf_counter_ns()
 
         # Calculate the total time taken to index the file.
         indexing_time_in_ns = end_time - start_time
+        index.indexing_time_in_ns = indexing_time_in_ns
         indexing_time_in_s = convert_time_from_ns_to_s(indexing_time_in_ns)
 
         # Print out a message indicating how long it took to index the current file.

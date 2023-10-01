@@ -4,8 +4,8 @@ import time
 import generate_index
 from utilities.time_utility import convert_time_from_ns_to_s
 
-DATA_FOLDER="../data"
-
+DATA_FOLDER="../../data"
+RENDU_FOLDER="../../rendus"
 def load_text_collection(path) -> str:
     """
     Read the document collection from a file.
@@ -19,39 +19,61 @@ def load_text_collection(path) -> str:
             document_collection_str = f.read()
     return document_collection_str
 
-@DeprecationWarning
-def generate_grid(param,n) -> pd.DataFrame:
-    if (n == 'exo2'):
+def generate_grid(index, mode: str) -> pd.DataFrame:
+    """
+    This function takes in an index object and generates a grid based on the mode.
+    The mode can be either IDF or Query.
+    If the mode is IDF, then the grid should contain the following columns:
+    - Term
+    - DF
+    - Postings List
+    If the mode is Query, then the grid should contain the following columns:
+    - Query
+    - Result
+    The function should return a pandas DataFrame containing the grid.
+
+    Parameters:
+    - index: Index object
+    - mode: String indicating the mode. Can be either IDF or Query.
+    
+    Returns:
+    - Pandas DataFrame containing the grid.
+    
+    """
+    if mode == 'IDF':
         # Create DataFrame to hold the inverted index
         df = pd.DataFrame(columns=['Term', 'DF', 'Postings List'])
         # Create an empty list to hold rows
         rows = []
+        
+        # Retrieve inverted index, term frequencies, and doc IDs from the provided index
+        inverted_index = index.posting_lists
+        term_frequencies = {term: posting_list.total_frequency for term, posting_list in inverted_index.items()}
+        doc_ids = {term: list(posting_list.postings.keys()) for term, posting_list in inverted_index.items()}
+        
         # Populate the rows list
-        # param[0] = indexInverted
-        # param[1] = tf
-        # param[2] = doc_ids
-        for term, postings_list in param[0].items():
+        for term, postings_list in inverted_index.items():
             rows.append({
                 'Term': term,
-                'DF': len(postings_list),
-                'Postings List': ", ".join([f"{param[1][term][doc_id]} {doc_id}" for doc_id in postings_list])
+                'DF': len(postings_list.postings),
+                'Postings List': ", ".join([f"{term_frequencies[term]} {doc_id}" for doc_id in doc_ids[term]])
             })
         # Create a DataFrame from the rows list
         df = pd.DataFrame(rows)
-        print("the inverted dataframe was sucessfuly created !")
-    elif (n == 'exo3'): 
+        print("The inverted dataframe was successfully created!")
+    elif mode == 'Query':
         # convert the chains to be added to dataframe
-        for key in param:
-            param[key] = ', '.join(param[key])
+        # for key in param:
+        #     param[key] = ', '.join(param[key])
         
-        # # Convert dictionary to list of tuples
-        # param_list = [(k, v) for k, v in param.items()]
-        # Create a DataFrame
-        df = pd.DataFrame(list(param.items()), columns=['Query', 'Result'])
+        # # # Convert dictionary to list of tuples
+        # # param_list = [(k, v) for k, v in param.items()]
+        # # Create a DataFrame
+        # df = pd.DataFrame(list(param.items()), columns=['Query', 'Result'])
 
-        df.sort_values('Query', inplace=True)
-        print("the query dataframe was sucessfuly created !")
-    
+        # df.sort_values('Query', inplace=True)
+        # print("the query dataframe was sucessfuly created !")
+        pass
     
     return df
 
@@ -92,7 +114,7 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
         indexing_time_in_s = convert_time_from_ns_to_s(indexing_time_in_ns)
 
         # Print out a message indicating how long it took to index the current file.
-        print(f"Indexed {file} in {indexing_time_in_s:.2f} seconds.")
+        # print(f"Indexed {file} in {indexing_time_in_s:.2f} seconds.")
         
         # If the print_index flag is True and the size of the document is less than 
         # 1 MB, then print the index.
@@ -104,3 +126,4 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
     
     # Return the list of indexing times.
     return times
+

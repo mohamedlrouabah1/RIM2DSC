@@ -5,7 +5,7 @@ class Document:
     def __init__(self, id:int, content:str):
         self.id = id
         self.content = content
-        self.lenth = len(content)
+        self.length = len(content)
 
 class Collection:
     def __init__(self):

@@ -12,7 +12,7 @@ stop_words = set(stopwords.words('english'))
 
 from nltk import PorterStemmer
 stemmer = PorterStemmer()
-
+# with stemming and stopword from nltk
 def generate_index(doc):
     # Initialize the inverted index and doc frequency dictionaries
     index = defaultdict(set)  # Using set to avoid duplicate doc_ids
@@ -29,12 +29,12 @@ def generate_index(doc):
         # tokens = word_tokenize(text)
         #tokens = [token for token in tokens if token not in stop_words]
         tokens = [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words  and word not in string.punctuation]
-        
-        # Calculate term frequency for this document
-        cf = Counter(tokens)
-
         # Apply Porter Stemming to each token
         stemmed_tokens = [stemmer.stem(token) for token in tokens]
+        # Calculate term frequency for this document
+        cf = Counter(stemmed_tokens)
+
+        
 
         # Update the inverted index and term frequency dictionary
         for term, freq in cf.items():
@@ -65,6 +65,7 @@ def generate_index_oop(doc) -> Index:
         # Calculate term frequency for this document
         cf = Counter(tokens)
 
+        
         # Update the inverted index and term frequency dictionary
         for term, freq in cf.items():
             unit = PostingListUnit(doc_id, freq)

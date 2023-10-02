@@ -84,7 +84,8 @@ def main() -> None:
         plot_efficiency_graph(file_sizes, times_oop)
         plot_statistics_evolution(file_sizes, average_document_lengths_oop, average_term_lengths_oop, vocabulary_sizes_oop, total_collection_frequencies_oop)
         finalize_combined_plot(f"{RENDU_FOLDER}/efficiency_and_statistics_graph_oop.png")
-    # Print results directly to terminal and write to the file
+        
+        # Print results directly to terminal and write to the file
         with open(f"{RENDU_FOLDER}/time_comparison.txt", 'w') as file:
             header = "\nSize of Collection (KB) | Time (seconds) | Time OOP (seconds)"
             separator = "\n" + "-" * len(header)
@@ -129,10 +130,12 @@ def main() -> None:
                     f.write("\n---------------------------------------\n")
                     f.write("Term | DF | Postings List\n")
             print("*******completed for basic version!*********")
+
         # version without stemming using orient object programming 
         if not steeming_print :
             print("Creating... Inverted Index Time for Each File For OOP version (in seconds)\nLoading...")
-            with open(f"{RENDU_FOLDER}/IDF_Time_File_OOP.txt", 'w') as f:  # Open the file for writing
+            with open(f"{RENDU_FOLDER}/IDF_Time_File_OOP.txt", 'w') as f:  # Open the file for writingù
+                
                 for file, time_duration in zip(filenames, times):
                     # doc = load_text_collection(f"{DATA_FOLDER}/{file}")
                     # index = generate_index_oop(doc)
@@ -153,6 +156,7 @@ def main() -> None:
                         f.write(f"{td['Term']} | {td['DF']} | {td['Postings List']}\n")
                     f.write("\n---------------------------------------\n")
                     f.write("Term | DF | Postings List\n")
+
             print("*******completed !*********")
 
    

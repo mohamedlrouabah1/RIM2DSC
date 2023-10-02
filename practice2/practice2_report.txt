@@ -2,7 +2,16 @@
 
 ## Summary
 
+Launch program : python3 ./src/main.py
+
 ## Exercice 1
+
+output:
+------
+
+
+Explanations:
+------------
 
 ## Exercice 2
 

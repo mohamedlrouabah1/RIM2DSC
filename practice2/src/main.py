@@ -1,6 +1,6 @@
-from utils import load_text_collection, index_files_and_measure_time, DATA_FOLDER, RENDU_FOLDER
-from generate_index import generate_index, generate_index_oop
-from plotting import plot_efficiency_graph, plot_statistics_evolution, initialize_combined_plot, finalize_combined_plot
+from utils import *
+from generate_index import *
+from plotting import *
 from time import time_ns
 from utilities.time_utility import convert_time_from_ns_to_s, print_time
 import nltk

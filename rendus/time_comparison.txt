@@ -1,13 +1,13 @@
 
-Size of Collection (KB) | Time (seconds) | Time OOP (seconds)
---------------------------------------------------------------
-                       55 KB |         0.54 sec |         0.07 sec
-                       52 KB |         0.45 sec |         0.02 sec
-                      103 KB |         0.87 sec |         0.05 sec
-                       96 KB |         1.07 sec |         0.09 sec
-                      357 KB |         3.81 sec |         0.18 sec
-                      559 KB |         5.04 sec |         0.36 sec
-                      747 KB |         7.27 sec |         0.60 sec
-                     1200 KB |        15.42 sec |         1.41 sec
-                     4200 KB |        43.62 sec |         3.35 sec
---------------------------------------------------------------
+Size of Collection (KB) | Time Stemmer Stop word | Time Stop word only | Time Basic
+------------------------------------------------------------------------------------
+                       55 KB |         0.48 sec |         0.18 sec |      0.03 sec
+                       52 KB |         0.41 sec |         0.22 sec |      0.02 sec
+                      103 KB |         0.86 sec |         0.32 sec |      0.10 sec
+                       96 KB |         0.92 sec |         0.45 sec |      0.05 sec
+                      357 KB |         3.05 sec |         1.18 sec |      0.26 sec
+                      559 KB |         4.50 sec |         1.81 sec |      0.40 sec
+                      747 KB |         6.39 sec |         2.42 sec |      0.60 sec
+                     1200 KB |        11.78 sec |         3.85 sec |      1.19 sec
+                     4200 KB |        34.13 sec |        13.99 sec |      3.71 sec
+------------------------------------------------------------------------------------

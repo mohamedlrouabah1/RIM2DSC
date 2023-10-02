@@ -1,7 +1,7 @@
 import pandas as pd
 import gzip
 import time
-import generate_index
+from generate_index import generate_index_oop
 from utilities.time_utility import convert_time_from_ns_to_s
 
 DATA_FOLDER="../../data"
@@ -102,8 +102,8 @@ def index_files_and_measure_time(filenames: list, print_index: bool = False) -> 
         # Record the start time just before indexing starts.
         start_time = time.perf_counter_ns()
 
-        # Generate the index for the current document.
-        index = generate_index.generate_index_oop(doc)  
+        # Generate the index for the current document without stemmer or stopword.
+        index = generate_index_oop(doc, 3)  
         
         # Record the end time just after indexing completes.
         end_time = time.perf_counter_ns()

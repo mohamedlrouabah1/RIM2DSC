@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def read_doc(path) -> str:
+def load_text_collection(path) -> str:
     """Read the document collection from a file"""
     with open(path, 'r') as f:
         document_collection_str = f.read()

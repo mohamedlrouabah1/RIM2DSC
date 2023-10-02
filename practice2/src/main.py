@@ -4,7 +4,6 @@ from plotting import *
 from time import time_ns
 from utilities.time_utility import convert_time_from_ns_to_s, print_time
 import nltk
-from nltk.tokenize import word_tokenize
 
 nltk.download('punkt')
 def main() -> None:
@@ -30,10 +29,11 @@ def main() -> None:
     # Prompt the user for whether they want to print the index or not
     print_option = input("Do you want to print the index? (y/n): ").lower()
     should_print = print_option == "y"
-
+    #Exercice 1
     # Index the files and measure the time taken
     # times = index_files_and_measure_time(filenames, print_index=should_print)
-
+    # print(times)
+    #Exercice 2 3 4 
     # Lists to store statistics for both methods
     stats_stemming_stopword = []
     stats_stopword_only = []
@@ -42,7 +42,6 @@ def main() -> None:
     times_stemming_stopword = []
     times_stopword_only = []
     times_basic = []
-    times_oop = []
 
     for file in filenames:
         doc = load_text_collection(f"{DATA_FOLDER}/{file}")
@@ -67,12 +66,6 @@ def main() -> None:
         end_time = time_ns()
         times_basic.append(convert_time_from_ns_to_s(end_time - start_time))
         stats_basic.append(get_index_statistics(basic_index))
-
-        # Gather statistics for OOP method
-        average_document_lengths_oop.append(sum(d.length for d in oop_index.collection.documents) / len(oop_index.collection.documents))
-        average_term_lengths_oop.append(sum(len(term) for term in oop_index.get_vocabulary()) / oop_index.get_vocabulary_size())
-        vocabulary_sizes_oop.append(oop_index.get_vocabulary_size())
-        total_collection_frequencies_oop.append(sum(oop_index.get_term_frequency(term) for term in oop_index.get_vocabulary()))
     
     if not should_print:
         # Plotting

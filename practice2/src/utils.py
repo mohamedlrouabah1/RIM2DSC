@@ -4,8 +4,8 @@ import time
 from generate_index import generate_index_oop
 from utilities.time_utility import convert_time_from_ns_to_s
 
-DATA_FOLDER="../data"
-RENDU_FOLDER="../rendus"
+DATA_FOLDER="../../data"
+RENDU_FOLDER="../../rendus"
 def load_text_collection(path) -> str:
     """
     Read the document collection from a file.

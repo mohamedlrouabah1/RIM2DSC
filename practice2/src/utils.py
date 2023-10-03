@@ -6,6 +6,18 @@ from utilities.time_utility import convert_time_from_ns_to_s
 
 DATA_FOLDER="../../data"
 RENDU_FOLDER="../../rendus"
+COLLECTION_FILES = [
+    '01-Text_Only-Ascii-Coll-1-10-NoSem.gz',
+    '02-Text_Only-Ascii-Coll-11-20-NoSem.gz',
+    '03-Text_Only-Ascii-Coll-21-50-NoSem.gz',
+    '04-Text_Only-Ascii-Coll-51-100-NoSem.gz',
+    '05-Text_Only-Ascii-Coll-101-200-NoSem.gz',
+    '06-Text_Only-Ascii-Coll-201-500-NoSem.gz',
+    '07-Text_Only-Ascii-Coll-501-1000-NoSem.gz',
+    '08-Text_Only-Ascii-Coll-1001-2000-NoSem.gz',
+    '09-Text_Only-Ascii-Coll-2001-5000-NoSem.gz'
+]
+    
 def load_text_collection(path) -> str:
     """
     Read the document collection from a file.
@@ -76,54 +88,3 @@ def generate_grid(index, mode: str) -> pd.DataFrame:
         pass
     
     return df
-
-def index_files_and_measure_time(filenames: list, print_index: bool = False) -> list:
-    """
-    This function takes in a list of filenames and indexes each file. It then measures 
-    the time it takes to index each file and returns a list of these times.
-    
-    Parameters:
-    - filenames: List of file names to be indexed.
-    - print_index: Boolean flag indicating whether the index should be printed or not. 
-      By default, it is set to False.
-    
-    Returns:
-    - List of time durations (in seconds) for indexing each file.
-    """
-    
-    # Initialize an empty list to store the time taken for indexing each file.
-    times = []
-
-    # Loop over each file in the filenames list.
-    for file in filenames:
-        # Read the content of the file using the `load_text_collection` function.
-        doc = load_text_collection(f"{DATA_FOLDER}/{file}")
-        
-        # Record the start time just before indexing starts.
-        start_time = time.perf_counter_ns()
-
-        # Generate the index for the current document without stemmer or stopword.
-        index = generate_index_oop(doc, 3)  
-        
-        # Record the end time just after indexing completes.
-        end_time = time.perf_counter_ns()
-
-        # Calculate the total time taken to index the file.
-        indexing_time_in_ns = end_time - start_time
-        index.indexing_time_in_ns = indexing_time_in_ns
-        indexing_time_in_s = convert_time_from_ns_to_s(indexing_time_in_ns)
-
-        # Print out a message indicating how long it took to index the current file.
-        # print(f"Indexed {file} in {indexing_time_in_s:.2f} seconds.")
-        
-        # If the print_index flag is True and the size of the document is less than 
-        # 1 MB, then print the index.
-        if print_index and len(doc) < 1e6:
-            print(index)
-        
-        # Append the time taken to index the current file to the `times` list.
-        times.append(indexing_time_in_s)
-    
-    # Return the list of indexing times.
-    return times
-

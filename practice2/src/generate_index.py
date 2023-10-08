@@ -1,5 +1,5 @@
 import re
-from collections import defaultdict, Counter
+from collections import  Counter
 from models import *
 import string
 
@@ -12,8 +12,24 @@ stop_words = set(stopwords.words('english'))
 
 from nltk import PorterStemmer
 stemmer = PorterStemmer()
+
+def option_execution(content):
+    # stopwords from nltk and stemmer
+    tokens = [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words  and word not in string.punctuation]
+    # Apply Porter Stemming to each token
+    output = [stemmer.stem(token) for token in tokens]
+
+    # # stopwords from nltk 
+    # tokens = [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words  and word not in string.punctuation]
+    # output = tokens 
+
+    # # basic corpus no algorithm
+    # tokens = re.findall(r'\b[a-z0-9]+\b', content.lower())
+    # output = tokens 
+    return  output
+
 # with stemming and stopword from nltk
-def generate_index_oop(doc,value) -> Index:
+def generate_index_oop(doc) -> Index:
     # Initialize the inverted index and doc frequency dictionaries
     index = Index()
     
@@ -24,32 +40,12 @@ def generate_index_oop(doc,value) -> Index:
     for doc_id, content in doc_pattern.findall(doc):
         document = Document(doc_id, content)
         index.collection.add_document(document)
-        # steeming + stop work test
-        if value == 1:
-            # stopwords from nltk
-            tokens = [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words  and word not in string.punctuation]
-            # Apply Porter Stemming to each token
-            choosed_tokens = [stemmer.stem(token) for token in tokens]   
-        # # stemming + none stop word
-        # if value == 4:
-        #     # Convert to lowercase, tokenize, and remove non-alphanumeric characters all at once
-        #     tokens = re.findall(r'\b[a-z0-9]+\b', content.lower())
-        #     # Apply Porter Stemming to each token
-        #     choosed_tokens = [stemmer.stem(token) for token in tokens]
-        # none stemming + stop word only
-        if value == 2:
-            # stopwords from nltk
-            tokens = [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words  and word not in string.punctuation]
-            choosed_tokens = tokens
-        # none stemming + none stop word
-        if value == 3:
-            # Convert to lowercase, tokenize, and remove non-alphanumeric characters all at once
-            tokens = re.findall(r'\b[a-z0-9]+\b', content.lower())
-            choosed_tokens = tokens
+
+        # Apply tokenization to the document content
+        token = option_execution(content)
 
         # Calculate term frequency for this document
-        cf = Counter(choosed_tokens)
-
+        cf = Counter(token)
         
         # Update the inverted index and term frequency dictionary
         for term, freq in cf.items():

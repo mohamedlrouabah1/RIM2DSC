@@ -14,7 +14,7 @@ def convert_time_from_ns_to_s(t: float) -> float:
     t: float
         time in seconds
     """
-    return t / 1_000_000_000  
+    return t / 1_000_000_000
 
 def convert_time_from_ns_to_ms(t: float) -> float:
     """
@@ -33,16 +33,20 @@ def convert_time_from_ns_to_ms(t: float) -> float:
     return t * 10**-3
 
 
-def print_time(t: float) -> None:
-    """
-        Print the time in the following format:
-        HH:MM:SS
+# def print_time(t: float) -> None:
+#     """
+#         Print the time in the following format:
+#         HH:MM:SS
 
-        Parameters:
-        -----------
-            t: float
-                time in nanaseconds
-    """
-    t_in_ms = convert_time_from_ns_to_ms(t)
-    print("time (HH:MM:SS) ", end="")
-    print(timedelta(microseconds=t_in_ms, ))
+#         Parameters:
+#         -----------
+#             t: float
+#                 time in nanaseconds
+#     """
+#     t_in_ms = convert_time_from_ns_to_ms(t)
+#     print("time (HH:MM:SS) ", end="")
+#     print(timedelta(microseconds=t_in_ms, ))
+
+def print_time(t: float) -> None:
+    t_in_s = convert_time_from_ns_to_s(t)
+    print(f"Time taken: {t_in_s:.2f} seconds")

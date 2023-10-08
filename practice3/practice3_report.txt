@@ -1,0 +1,63 @@
+# Compte rendu du TP3 de RI
+
+
+# Summary
+
+
+
+## results :
+------------------nltk_stopwords_stemmer----------------------
+Indexing file: Text_Only_Ascii_Coll_NoSem
+Average Document Length: 8138.59700122399 (words)  
+Average Term Length: 9.266840412354142 (characters)
+Vocabulary Size: 388307 (unique terms)
+Total Collection Frequency: 7699851 (terms)
+Time taken Indexing collection: 278.31 seconds
+--------------------basic--------------------
+Indexing file: Text_Only_Ascii_Coll_NoSem
+Average Document Length: 8138.59700122399 (words)  
+Average Term Length: 7.540367914769234 (characters)
+Vocabulary Size: 271639 (unique terms)
+Total Collection Frequency: 11674409 (terms)       
+Time taken: 20.88 seconds
+------------------stemmer----------------------
+Indexing file: Text_Only_Ascii_Coll_NoSem
+Average Document Length: 8138.59700122399 (words)
+Average Term Length: 9.265322200681243 (characters)        
+Vocabulary Size: 388407 (unique terms)
+Total Collection Frequency: 13119008 (terms)
+Time taken with stemmer Indexing collection: 366.57 seconds
+----------------------------------------
+##### SMART LTN AND BM25 results 
+Top 10 documents using SMART ltn weighting:
+Document ID: 18336216, Relevance Score: 68.73675449433486 % correspondancy to the query executed
+Document ID: 8967626, Relevance Score: 60.535267787308086 % correspondancy to the query executed
+Document ID: 23724, Relevance Score: 60.24045204692686 % correspondancy to the query executed
+Document ID: 448834, Relevance Score: 59.74489846805299 % correspondancy to the query executed
+Document ID: 1803281, Relevance Score: 59.5920192796959 % correspondancy to the query executed
+Document ID: 207747, Relevance Score: 59.457820417764644 % correspondancy to the query executed
+Document ID: 2086074, Relevance Score: 57.85867204704381 % correspondancy to the query executed
+Document ID: 9567871, Relevance Score: 57.65866295936529 % correspondancy to the query executed
+Document ID: 719095, Relevance Score: 57.499589051471624 % correspondancy to the query executed
+Document ID: 6082436, Relevance Score: 56.89693162380052 % correspondancy to the query executed
+Top 10 documents using BM25 weighting:
+Document ID: 23724, Relevance Score: 60.184592003278354 % correspondance to the query executed   
+Document ID: 207747, Relevance Score: 56.075415224821555 % correspondance to the query executed  
+Document ID: 2606518, Relevance Score: 54.27455612878974 % correspondance to the query executed  
+Document ID: 6861556, Relevance Score: 53.68397186478026 % correspondance to the query executed  
+Document ID: 18336216, Relevance Score: 53.346998267048264 % correspondance to the query executed
+Document ID: 2292623, Relevance Score: 52.106977013076325 % correspondance to the query executed 
+Document ID: 6082436, Relevance Score: 51.94257011579035 % correspondance to the query executed  
+Document ID: 2086074, Relevance Score: 51.73739303283615 % correspondance to the query executed  
+Document ID: 15116785, Relevance Score: 51.731835727091756 % correspondance to the query executed
+Document ID: 1803281, Relevance Score: 51.71394050954665 % correspondance to the query executed 
+
+And for the plot :
+ - ./graph/
+
+## Launch program  
+
+>python3 ./src/main.py
+
+
+

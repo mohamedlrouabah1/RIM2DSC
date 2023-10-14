@@ -20,7 +20,7 @@ def compute_weights(index, weighting_function):
             elif weighting_function == smart_ltc_weight:
                 idf = math.log(N / df) if df > 0 and N > df else 0
                 all_tf = [p.frequency for p in posting_list.postings.values()]
-                posting.weight = smart_ltc_weight(tf, idf, all_tf, N)
+                posting.weight = smart_ltc_weight(tf, all_tf)
             elif weighting_function == bm25_weight:
                 doc_len = 1
                 posting.weight = bm25_weight(tf, df, N, doc_len, avg_doc_len)
@@ -41,7 +41,7 @@ def compute_query_weights(query, index, weighting_function):
             elif weighting_function == smart_ltc_weight:
                 idf = math.log(N / df) if df > 0 and N > df else 0
                 all_tf = [p.frequency for p in index.posting_lists[term].postings.values()]
-                query_weights[term] = smart_ltc_weight(tf, idf, all_tf, N)
+                query_weights[term] = smart_ltc_weight(tf, all_tf)
             elif weighting_function == bm25_weight:
                 doc_len = 1
                 avg_doc_len = sum(d.length for d in index.collection.documents) / N
@@ -98,7 +98,6 @@ def smart_ltc():
     for doc_id, score in ranked_docs_ltc[:top_k]:
         print(f"Document ID: {doc_id}, Relevance Score: {score} % correspondancy to the query executed")
 
-
 def smart_bm25():
     # Compute weights for the index using BM25 weighting
     compute_weights(index, bm25_weight)
@@ -110,25 +109,3 @@ def smart_bm25():
     for doc_id, score in ranked_docs_bm25[:top_k]:
         print(f"Document ID: {doc_id}, Relevance Score: {score} % correspondance to the query executed")
 
-# # Relevance scores for SMART ltn weighting
-# scores_smart_ltn = [68.73675449433486, 60.535267787308086, 60.24045204692686, 59.74489846805299, 59.5920192796959, 59.457820417764644, 57.85867204704381, 57.65866295936529, 57.499589051471624, 56.89693162380052]
-
-# # Relevance scores for BM25 weighting
-# scores_bm25 = [60.184592003278354, 56.075415224821555, 54.27455612878974, 53.68397186478026, 53.346998267048264, 52.106977013076325, 51.94257011579035, 51.73739303283615, 51.731835727091756, 51.71394050954665]
-
-# # Document IDs for the top 10 documents (you can replace these with the actual document IDs)
-# document_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-# # Create a bar plot to compare the relevance scores
-# plt.figure(figsize=(10, 6))
-# plt.bar(document_ids, scores_smart_ltn, width=0.4, label='SMART ltn', align='center', alpha=0.7, color='b')
-# plt.bar([d + 0.4 for d in document_ids], scores_bm25, width=0.4, label='BM25', align='center', alpha=0.7, color='g')
-# plt.xlabel('Document IDs')
-# plt.ylabel('Relevance Score (%)')
-# plt.title('Comparison of Relevance Scores (Top 10 Documents)')
-# plt.xticks([d + 0.2 for d in document_ids], document_ids)
-# plt.legend(loc='upper right')
-# plt.tight_layout()
-
-# # Show the plot
-# plt.show()

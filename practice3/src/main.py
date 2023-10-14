@@ -13,8 +13,8 @@ def main() -> None:
     # exercise 3
     # collection_statistics(mode="stemmer", chartname="stemmer")
     # exercise 4
-    smart_ltn()
-    # smart_ltc()
-    smart_bm25()
+    # smart_ltn()
+    smart_ltc()
+    # smart_bm25()
 if __name__ == "__main__":
     main()

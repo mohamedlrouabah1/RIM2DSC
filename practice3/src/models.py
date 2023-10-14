@@ -58,14 +58,13 @@ def smart_ltn_weight(tf, df, N):
     return (1 + math.log(tf)) * math.log(N / df) if df > 0 and N > df else 0
 
 # Define the SMART ltc weighting function
-def smart_ltc_weight(tf, idf, all_tf, N):
+def smart_ltc_weight(tf, all_tf):
     tf_prime = 1 + math.log(tf) if tf > 0 else 0
-    weight = tf_prime * idf
-    normalization = math.sqrt(sum((1 + math.log(k) * idf) ** 2 for k in all_tf))
-    return weight / normalization if normalization != 0 else 0
+    normalization = math.sqrt(sum((1 + math.log(k)) ** 2 for k in all_tf))
+    return tf_prime / normalization if normalization != 0 else 0
 
-# Define the BM25 weighting function
-def bm25_weight(tf, df, N, doc_len, avg_doc_len=8138.5, k1=1.2, b=0.5):
-    tf_prime = ((k1 + 1) * tf) / (k1 * ((1 - b) + b * (doc_len / avg_doc_len)) + tf)
-    idf = math.log(N / df) if df > 0 and N > df else 0
-    return tf_prime * idf
+
+def bm25_weight(tf, df, N, doc_len, avg_doc_len=8138.5, k1=1.2, b=0.75):
+    idf = math.log((N - df + 0.5) / (df + 0.5)) if df > 0 else 0
+    tf_weight = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (doc_len / avg_doc_len)))
+    return tf_weight * idf

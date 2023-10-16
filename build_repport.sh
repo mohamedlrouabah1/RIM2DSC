@@ -14,6 +14,6 @@ do
     echo -e "excluded file: $file\n"
 done
 
-zip "$ZIP_NAME" -r "practice$NUM_TP" $EXCLUDED_FILES
+zip -9 "$ZIP_NAME" -r "practice$NUM_TP" $EXCLUDED_FILES
 
 zipinfo "$ZIP_NAME"

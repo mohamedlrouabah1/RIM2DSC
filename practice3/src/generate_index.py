@@ -3,6 +3,7 @@ from collections import  Counter
 from models import *
 import string
 # from ply.lex_yacc_parser import *
+from tqdm import tqdm
 
 import nltk
 from nltk import word_tokenize
@@ -40,7 +41,7 @@ def generate_index_oop(doc, mode) -> Index:
     # doc_pattern = parser.parse(doc)
 
     # Loop through each document to update the inverted index and doc frequency
-    for doc_id, content in doc_pattern.findall(doc):
+    for doc_id, content in tqdm(doc_pattern.findall(doc), desc="indexing files...", colour="green"):
         document = Document(doc_id, content)
         index.collection.add_document(document)
 

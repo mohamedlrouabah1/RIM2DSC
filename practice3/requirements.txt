@@ -1,3 +1,4 @@
 pandas
 nltk
 matplotlib
+tqdm

@@ -13,7 +13,7 @@ def retrieve_top_documents(query, mode_func, index, k1, b):
     document_scores = {}
 
     # Loop through each term in the query
-    for term in query_tokens:
+    for term in tqdm(query_tokens, desc="ranking documents...", colour="green", leave=False):
         if term in index.posting_lists:
             df = index.posting_lists[term].document_frequency
             posting_list = index.posting_lists[term]

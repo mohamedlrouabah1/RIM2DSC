@@ -2,11 +2,8 @@ from collection_statistics import collection_statistics
 from compute_weights import *
 from models import *
 from ranking_retrieval import *
-def main() -> None:
-    """
-    Main function of the program.
 
-    """
+def main() -> None:
     # Load the document collection and create the index
     content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
     index = generate_index_oop(content, mode="basic")

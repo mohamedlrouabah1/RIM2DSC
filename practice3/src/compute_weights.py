@@ -4,8 +4,12 @@ from models import *
 import matplotlib.pyplot as plt
 import math
 import os
-# Function to compute weights for the terms in the document collection
-def compute_weights(index, weighting_function):
+
+
+def compute_weights(index, weighting_function) -> None:
+    """
+    Function to compute weights for the terms in the document collection
+    """
     N = len(index.collection.documents)
     avg_doc_len = sum(d.length for d in index.collection.documents) / N
     
@@ -24,9 +28,12 @@ def compute_weights(index, weighting_function):
                 doc_len = 1
                 posting.weight = bm25_weight(tf, df, N, doc_len, avg_doc_len)
 
-# Function to compute query weights using a weighting function
-def compute_query_weights(query, index, weighting_function):
-    tokenized_query = option_execution(query)  # Use your preprocessing function
+
+def compute_query_weights(query, index, weighting_function) -> dict:
+    """
+    Function to compute query weights using a weighting function
+    """
+    tokenized_query = option_execution(query)  # Use the preprocessing function
     N = len(index.collection.documents)
     query_weights = {}
     
@@ -48,8 +55,10 @@ def compute_query_weights(query, index, weighting_function):
     
     return query_weights
 
-# Function to compute the score of each document using a weighting function
-def compute_rank_documents(query_weights, index):
+def compute_rank_documents(query_weights, index) -> list:
+    """
+    Function to compute the score of each document using a weighting function
+    """
     scores = {}
     
     for term, weight in query_weights.items():
@@ -66,9 +75,8 @@ def compute_rank_documents(query_weights, index):
     return ranked_docs
 
 
-
-def smart_ltn(query, index, top_k):
-    # Compute weights for the index using SMART ltn weighting
+def smart_ltn(query, index, top_k) -> list:
+    """Compute weights for the index using SMART ltn weighting"""
     compute_weights(index, smart_ltn_weight)
 
     
@@ -80,6 +88,7 @@ def smart_ltn(query, index, top_k):
         print(f"Document ID: {doc_id}, Relevance Score: {score} correspondancy to the query executed")
     
     return ranked_docs_ltn
+
 
 def smart_ltc(query, index, top_k):
     # Compute weights for the index using SMART ltc weighting
@@ -94,8 +103,9 @@ def smart_ltc(query, index, top_k):
     
     return ranked_docs_ltc
 
+
 def smart_bm25(query, index, top_k):
-    # Compute weights for the index using BM25 weighting
+    """Compute weights for the index using BM25 weighting"""
     compute_weights(index, bm25_weight)
     
     query_weights_bm25 = compute_query_weights(query, index, bm25_weight)
@@ -134,7 +144,3 @@ def plot_relevance_score(ranked_docs_ltn,ranked_docs_bm25, top_k):
     plt.grid(True)
     plt.savefig(os.path.join(GRAPH_FOLDER, f"Relevance_Score_Comparison_for_Different_Query_Methods.png"))
     plt.show()
-
-
-
-

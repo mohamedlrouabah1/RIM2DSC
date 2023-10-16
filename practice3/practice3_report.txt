@@ -28,29 +28,39 @@ Vocabulary Size: 388407 (unique terms)
 Total Collection Frequency: 13119008 (terms)
 Time taken with stemmer Indexing collection: 366.57 seconds
 ----------------------------------------
-##### SMART LTN AND BM25 results 
-Top 10 documents using SMART ltn weighting:
-Document ID: 18336216, Relevance Score: 68.73675449433486 % correspondancy to the query executed
-Document ID: 8967626, Relevance Score: 60.535267787308086 % correspondancy to the query executed
-Document ID: 23724, Relevance Score: 60.24045204692686 % correspondancy to the query executed
-Document ID: 448834, Relevance Score: 59.74489846805299 % correspondancy to the query executed
-Document ID: 1803281, Relevance Score: 59.5920192796959 % correspondancy to the query executed
-Document ID: 207747, Relevance Score: 59.457820417764644 % correspondancy to the query executed
-Document ID: 2086074, Relevance Score: 57.85867204704381 % correspondancy to the query executed
-Document ID: 9567871, Relevance Score: 57.65866295936529 % correspondancy to the query executed
-Document ID: 719095, Relevance Score: 57.499589051471624 % correspondancy to the query executed
-Document ID: 6082436, Relevance Score: 56.89693162380052 % correspondancy to the query executed
-Top 10 documents using BM25 weighting:
-Document ID: 23724, Relevance Score: 60.184592003278354 % correspondance to the query executed   
-Document ID: 207747, Relevance Score: 56.075415224821555 % correspondance to the query executed  
-Document ID: 2606518, Relevance Score: 54.27455612878974 % correspondance to the query executed  
-Document ID: 6861556, Relevance Score: 53.68397186478026 % correspondance to the query executed  
-Document ID: 18336216, Relevance Score: 53.346998267048264 % correspondance to the query executed
-Document ID: 2292623, Relevance Score: 52.106977013076325 % correspondance to the query executed 
-Document ID: 6082436, Relevance Score: 51.94257011579035 % correspondance to the query executed  
-Document ID: 2086074, Relevance Score: 51.73739303283615 % correspondance to the query executed  
-Document ID: 15116785, Relevance Score: 51.731835727091756 % correspondance to the query executed
-Document ID: 1803281, Relevance Score: 51.71394050954665 % correspondance to the query executed 
+##### SMART LTN #######
+Document ID: 23724, Score: 26.001476852197754
+Document ID: 448834, Score: 22.7365003314182
+Document ID: 18336216, Score: 22.334895865350816
+Document ID: 207747, Score: 20.92168395272993
+Document ID: 363695, Score: 19.48392007576976
+Document ID: 719095, Score: 19.40426509850978
+Document ID: 1803281, Score: 19.313249540824312
+Document ID: 8967626, Score: 19.192534968374076
+Document ID: 2086074, Score: 19.187373723195375
+Document ID: 149289, Score: 18.80401220207394
+##### SMART LTC ######
+Document ID: 23724, Score: 0.19110491831233037
+Document ID: 448834, Score: 0.18113201952061955
+Document ID: 18336216, Score: 0.18110429695666547
+Document ID: 207747, Score: 0.1663910689316672
+Document ID: 719095, Score: 0.1587521600393294
+Document ID: 1803281, Score: 0.1565047201894842
+Document ID: 2086074, Score: 0.15634035934684254
+Document ID: 8967626, Score: 0.15468943570549626
+Document ID: 6082436, Score: 0.15097417616215025
+Document ID: 15116785, Score: 0.1499149660358603
+###### BM25 ########
+Document ID: 23724, Score: 50.08305045208795
+Document ID: 18336216, Score: 47.54121391600216
+Document ID: 207747, Score: 42.81491241218825  
+Document ID: 448834, Score: 42.43818986174094  
+Document ID: 1803281, Score: 40.956414000400116
+Document ID: 2086074, Score: 40.943049356043836
+Document ID: 6082436, Score: 40.04725418996074 
+Document ID: 15116785, Score: 39.57938854203819
+Document ID: 363695, Score: 39.27606933849006  
+Document ID: 9567871, Score: 38.00006952395094 
 
 And for the plot :
  - ./graph/

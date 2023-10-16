@@ -30,7 +30,6 @@ def option_execution(content, mode="basic"):
     else:
         raise ValueError("Invalid mode provided!")
 
-# with stemming and stopword from nltk
 def generate_index_oop(doc, mode) -> Index:
     # Initialize the inverted index and doc frequency dictionaries
     index = Index()

@@ -1,9 +1,9 @@
 from generate_index import *
 from utils import *
 from models import *
-import math
 import matplotlib.pyplot as plt
-
+import math
+import os
 # Function to compute weights for the terms in the document collection
 def compute_weights(index, weighting_function):
     N = len(index.collection.documents)
@@ -18,7 +18,6 @@ def compute_weights(index, weighting_function):
             if weighting_function == smart_ltn_weight:
                 posting.weight = smart_ltn_weight(tf, df, N)
             elif weighting_function == smart_ltc_weight:
-                idf = math.log(N / df) if df > 0 and N > df else 0
                 all_tf = [p.frequency for p in posting_list.postings.values()]
                 posting.weight = smart_ltc_weight(tf, all_tf)
             elif weighting_function == bm25_weight:
@@ -39,7 +38,6 @@ def compute_query_weights(query, index, weighting_function):
             if weighting_function == smart_ltn_weight:
                 query_weights[term] = smart_ltn_weight(tf, df, N)
             elif weighting_function == smart_ltc_weight:
-                idf = math.log(N / df) if df > 0 and N > df else 0
                 all_tf = [p.frequency for p in index.posting_lists[term].postings.values()]
                 query_weights[term] = smart_ltc_weight(tf, all_tf)
             elif weighting_function == bm25_weight:
@@ -63,19 +61,13 @@ def compute_rank_documents(query_weights, index):
                     scores[doc_id] = 0
                 scores[doc_id] += weight * doc_weight
 
-    # Sort documents by their scores in descending order
-    ranked_docs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    # Sort documents by their IDs in ascending order
+    ranked_docs = sorted(scores.items(), key=lambda x: x[0])
     return ranked_docs
 
-# Load the document collection and create the index
-content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
-index = generate_index_oop(content, mode="basic")
-query = "web ranking scoring algorithm"
 
-# Retrieve and print the top 10 most relevant documents using SMART ltn weighting
-top_k = 10
 
-def smart_ltn():
+def smart_ltn(query, index, top_k):
     # Compute weights for the index using SMART ltn weighting
     compute_weights(index, smart_ltn_weight)
 
@@ -85,20 +77,24 @@ def smart_ltn():
 
     print("Top 10 documents using SMART ltn weighting:")
     for doc_id, score in ranked_docs_ltn[:top_k]:
-        print(f"Document ID: {doc_id}, Relevance Score: {score} % correspondancy to the query executed")
+        print(f"Document ID: {doc_id}, Relevance Score: {score} correspondancy to the query executed")
+    
+    return ranked_docs_ltn
 
-def smart_ltc():
+def smart_ltc(query, index, top_k):
     # Compute weights for the index using SMART ltc weighting
-    compute_weights(index, smart_ltc_weight)
+    # compute_weights(index, smart_ltc_weight)
     # Retrieve and print the top 10 most relevant documents using SMART ltc weighting
     query_weights_ltc = compute_query_weights(query, index, smart_ltc_weight)
     ranked_docs_ltc = compute_rank_documents(query_weights_ltc, index)
 
     print("Top 10 documents using SMART ltc weighting:")
     for doc_id, score in ranked_docs_ltc[:top_k]:
-        print(f"Document ID: {doc_id}, Relevance Score: {score} % correspondancy to the query executed")
+        print(f"Document ID: {doc_id}, Relevance Score: {score} correspondancy to the query executed")
+    
+    return ranked_docs_ltc
 
-def smart_bm25():
+def smart_bm25(query, index, top_k):
     # Compute weights for the index using BM25 weighting
     compute_weights(index, bm25_weight)
     
@@ -107,5 +103,38 @@ def smart_bm25():
 
     print("Top 10 documents using BM25 weighting:")
     for doc_id, score in ranked_docs_bm25[:top_k]:
-        print(f"Document ID: {doc_id}, Relevance Score: {score} % correspondance to the query executed")
+        print(f"Document ID: {doc_id}, Relevance Score: {score} correspondance to the query executed")
+    
+    return ranked_docs_bm25
+
+def plot_relevance_score(ranked_docs_ltn,ranked_docs_bm25, top_k):  
+    # Extract the document IDs and relevance scores from ranked_docs
+    document_ids_ltn = [doc_id for doc_id, _ in ranked_docs_ltn[:top_k]]
+    relevance_scores_ltn = [score for _, score in ranked_docs_ltn[:top_k]]
+
+    document_ids_bm25 = [doc_id for doc_id, _ in ranked_docs_bm25[:top_k]]
+    relevance_scores_bm25 = [score for _, score in ranked_docs_bm25[:top_k]]
+
+    # Create a line plot for SMART LTN
+    plt.plot(document_ids_ltn, relevance_scores_ltn, marker='o', label='SMART LTN', color='b')
+
+    # Create a line plot for BM25
+    plt.plot(document_ids_bm25, relevance_scores_bm25, marker='o', label='BM25', color='r')
+
+    # Add labels and a legend
+    plt.xlabel("Document ID")
+    plt.ylabel("Relevance Score")
+    plt.title("Relevance Score Comparison for Different Query Methods")
+    plt.legend()
+
+    # Rotate x-axis labels for better readability
+    plt.xticks(rotation=45)
+
+    # Show the plot
+    plt.grid(True)
+    plt.savefig(os.path.join(GRAPH_FOLDER, f"Relevance_Score_Comparison_for_Different_Query_Methods.png"))
+    plt.show()
+
+
+
 

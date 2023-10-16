@@ -63,8 +63,8 @@ def smart_ltc_weight(tf, all_tf):
     normalization = math.sqrt(sum((1 + math.log(k)) ** 2 for k in all_tf))
     return tf_prime / normalization if normalization != 0 else 0
 
-
-def bm25_weight(tf, df, N, doc_len, avg_doc_len=8138.5, k1=1.2, b=0.75):
+# Define the BM25 weighting function
+def bm25_weight(tf, df, N, doc_len, avg_doc_len, k1, b):
     idf = math.log((N - df + 0.5) / (df + 0.5)) if df > 0 else 0
     tf_weight = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (doc_len / avg_doc_len)))
     return tf_weight * idf

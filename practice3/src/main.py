@@ -1,7 +1,7 @@
 from collection_statistics import collection_statistics
 from compute_weights import *
 from models import *
-from document_retrieval import *
+from ranking_retrieval import *
 def main() -> None:
     """
     Main function of the program.

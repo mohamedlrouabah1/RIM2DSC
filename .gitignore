@@ -4,3 +4,4 @@ rendus/*.zip
 rendus/*
 data/*
 uml_diagrams/*.bkp
+**/*.orig

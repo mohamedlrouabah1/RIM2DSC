@@ -3,6 +3,30 @@
 
 # Summary
 
+The scores provided here represent various relevance measures 
+for documents related to the search terms "SMART LTN," 
+"SMART LTC," and "BM25." 
+
+Each of these measures evaluates the match between the documents
+and the search query in its own distinct way. 
+  - SMART LTN assigns relatively high scores to documents like 
+     23724, 448834, and 18336216, indicating strong relevance 
+     to the "SMART LTN" search. 
+- In contrast, SMART LTC assigns significantly lower scores to 
+  the same documents, suggesting that they may not be as relevant 
+  to "SMART LTC." 
+
+The discrepancy in relevance between the two versions may stem from 
+variations in the terms or contexts used in these two searches. 
+  - Lastly, the BM25 model calculates scores based on document suitability
+    to the query, where documents like 23724, 18336216, and 207747 receive 
+    notably high scores, signifying high relevance according to this method.
+
+
+These score differences between the three approaches illustrate how relevance 
+measures can vary based on the chosen search algorithm or method, highlighting 
+the importance of selecting the most suitable search method to obtain the most 
+relevant results.
 
 
 ## results :
@@ -73,16 +97,9 @@ Document ID: 15116785, Score: 39.57938854203819
 Document ID: 363695, Score: 39.27606933849006  
 Document ID: 9567871, Score: 38.00006952395094 
 
+## Plot
 
-The scores provided here represent various relevance measures for documents related to the search terms "SMART LTN," "SMART LTC," and "BM25." 
-Each of these measures evaluates the match between the documents and the search query in its own distinct way. 
-    - SMART LTN assigns relatively high scores to documents like 23724, 448834, and 18336216, indicating strong relevance to the "SMART LTN" search. 
-    - In contrast, SMART LTC assigns significantly lower scores to the same documents, suggesting that they may not be as relevant to "SMART LTC." 
-    The discrepancy in relevance between the two versions may stem from variations in the terms or contexts used in these two searches. 
-    - Lastly, the BM25 model calculates scores based on document suitability to the query, where documents like 23724, 18336216, and 207747 receive notably high scores, signifying high relevance according to this method. 
-    These score differences between the three approaches illustrate how relevance measures can vary based on the chosen search algorithm or method, highlighting the importance of selecting the most suitable search method to obtain the most relevant results.
-
-And for the plot :
+path for the plot :
  - ./graph/
 
 ## Launch program  

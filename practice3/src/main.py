@@ -2,6 +2,7 @@ from collection_statistics import collection_statistics
 from compute_weights import *
 from models import *
 from ranking_retrieval import *
+
 def main() -> None:
     """
     Main function of the program.
@@ -33,7 +34,7 @@ def main() -> None:
     # print_ranking(query, scoring_mode="bm25", index, b, k1)
 
     # plot ranking
-    plot_ranking(query, index, b, k1)
+    # plot_ranking(query, index, b, k1)
    
 
 if __name__ == "__main__":

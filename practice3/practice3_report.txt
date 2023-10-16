@@ -28,6 +28,17 @@ Vocabulary Size: 388407 (unique terms)
 Total Collection Frequency: 13119008 (terms)
 Time taken with stemmer Indexing collection: 366.57 seconds
 ----------------------------------------
+
+The presented statistics reflect the outcomes of indexing a text collection using three distinct techniques: "nltk_stopwords_stemmer," "basic," and "stemmer." 
+These statistics offer valuable insights into the characteristics of the processed text data. 
+Notably, 
+    - the "nltk_stopwords_stemmer" approach resulted in a vocabulary of 388,307 unique terms and a total collection frequency of 7,699,851 terms, taking 278.31 seconds for indexing.
+    - The "basic" method, on the other hand, produced similar vocabulary and collection frequency figures but with a shorter average term length and significantly faster indexing time of 20.88 seconds. 
+    - The "stemmer" approach yielded a larger vocabulary, a higher total collection frequency, and an indexing time of 366.57 seconds. 
+
+These variations emphasize the trade-offs between vocabulary size, indexing time, and average term length, 
+highlighting the importance of choosing the most appropriate indexing method based on specific requirements and priorities.
+
 ##### SMART LTN #######
 Document ID: 23724, Score: 26.001476852197754
 Document ID: 448834, Score: 22.7365003314182
@@ -61,6 +72,15 @@ Document ID: 6082436, Score: 40.04725418996074
 Document ID: 15116785, Score: 39.57938854203819
 Document ID: 363695, Score: 39.27606933849006  
 Document ID: 9567871, Score: 38.00006952395094 
+
+
+The scores provided here represent various relevance measures for documents related to the search terms "SMART LTN," "SMART LTC," and "BM25." 
+Each of these measures evaluates the match between the documents and the search query in its own distinct way. 
+    - SMART LTN assigns relatively high scores to documents like 23724, 448834, and 18336216, indicating strong relevance to the "SMART LTN" search. 
+    - In contrast, SMART LTC assigns significantly lower scores to the same documents, suggesting that they may not be as relevant to "SMART LTC." 
+    The discrepancy in relevance between the two versions may stem from variations in the terms or contexts used in these two searches. 
+    - Lastly, the BM25 model calculates scores based on document suitability to the query, where documents like 23724, 18336216, and 207747 receive notably high scores, signifying high relevance according to this method. 
+    These score differences between the three approaches illustrate how relevance measures can vary based on the chosen search algorithm or method, highlighting the importance of selecting the most suitable search method to obtain the most relevant results.
 
 And for the plot :
  - ./graph/

@@ -1,7 +1,9 @@
 #!/usr/bin/bash
 source .env
 
-ZIP_NAME="rendus/practice""$NUM_TP""_""$GROUP_NAME"".zip"
+TAR_NAME="rendus/practice""$NUM_TP""_""$GROUP_NAME"".tar"
+ZIP_NAME="rendus/practice""$NUM_TP""_""$GROUP_NAME"".tgz"
+
 FILES_TO_EXCLUDE=(
     "**/__pycache__/*"
     "practice$NUM_TP/*.pdf"
@@ -14,6 +16,14 @@ do
     echo -e "excluded file: $file\n"
 done
 
-zip "$ZIP_NAME" -r "practice$NUM_TP" $EXCLUDED_FILES
+# Create a tar archive from the files to be included.
+tar -cf "$TAR_NAME" "practice$NUM_TP" --exclude=${FILES_TO_EXCLUDE[0]//**/} --exclude=${FILES_TO_EXCLUDE[1]//**/}
+
+# Compress the tar archive into a zip archive.
+zip -9 "$ZIP_NAME" "$TAR_NAME"
+
+# Optionally, you can remove the intermediate tar archive.
+rm "$TAR_NAME"
+
 
 zipinfo "$ZIP_NAME"

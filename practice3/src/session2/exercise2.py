@@ -5,6 +5,8 @@ from generate_index import *
 from utils import *
 from utilities.time_utility import *
 from compute_weights import *
+from tqdm import tqdm
+import sys
 
 def exercise2(COLLECTION_FILES, mode, chartname):
     collection_sizes = []
@@ -13,7 +15,8 @@ def exercise2(COLLECTION_FILES, mode, chartname):
     vocab_sizes = []
     coll_frequencies = []
     indexing_times = []
-    for file_path in COLLECTION_FILES:
+
+    for file_path in tqdm(COLLECTION_FILES, desc=f"Indexing files with mode {mode}", file=sys.stdout, colour="red"):
         
         content = load_text_collection(f"{DATA_FOLDER}/{file_path}")
  

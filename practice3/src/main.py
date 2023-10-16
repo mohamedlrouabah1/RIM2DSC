@@ -4,10 +4,6 @@ from models import *
 from ranking_retrieval import *
 
 def main() -> None:
-    """
-    Main function of the program.
-
-    """
     # Load the document collection and create the index
     content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
     index = generate_index_oop(content, mode="basic")

@@ -5,6 +5,7 @@ from generate_index import *
 from utils import *
 from utilities.time_utility import *
 from compute_weights import *
+
 def exercise2(COLLECTION_FILES, mode, chartname):
     collection_sizes = []
     doc_lengths = []

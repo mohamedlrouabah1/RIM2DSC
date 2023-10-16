@@ -30,7 +30,7 @@ def main() -> None:
     # print_ranking(query, scoring_mode="bm25", index, b, k1)
 
     # plot ranking
-    plot_ranking(query, index, b, k1)
+    # plot_ranking(query, index, b, k1)
    
 
 if __name__ == "__main__":

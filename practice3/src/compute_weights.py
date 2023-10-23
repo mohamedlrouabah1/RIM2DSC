@@ -1,9 +1,13 @@
-from generate_index import *
-from utils import *
-from models import *
-import matplotlib.pyplot as plt
 import math
+import matplotlib.pyplot as plt
 import os
+
+
+from generate_index import *
+from models import *
+from utilities.config import GRAPH_FOLDER
+from utilities.utils import *
+
 
 
 def compute_weights(index, weighting_function) -> None:

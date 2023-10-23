@@ -3,14 +3,14 @@ import math
 import os
 from tqdm import tqdm
 
-from generate_index import option_execution
+from generate_index import pre_processing
 from utilities.config import GRAPH_FOLDER 
 from weighting_functions import bm25_weight, smart_ltc_weight, smart_ltn_weight
 
 
 def retrieve_top_documents(query, mode_func, index, k1, b):
     # Tokenize the query
-    query_tokens = option_execution(query, mode="basic")
+    query_tokens = pre_processing(query, mode="basic")
     
     # Initialize a dictionary to store document scores
     document_scores = {}

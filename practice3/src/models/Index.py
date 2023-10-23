@@ -6,6 +6,7 @@ class Index:
         self.posting_lists: list(PostingList) = {}
         self.collection = Collection()
         self.indexing_time_in_ns = -1.0
+        self.preprocessing_time_in_ns = -1.0 
 
     def get_vocabulary_size(self):
         return len(self.posting_lists)

@@ -1,13 +1,13 @@
 from collections import  Counter
 import nltk
-from nltk import PorterStemmer
+from nltk import PorterStemmer, WordNetLemmatizer
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 import re
 import string
 from tqdm import tqdm
 # from ply.lex_yacc_parser import *
-
+from time import time_ns
 from models.Index import Index
 from models.Document import Document
 from models.PostingList import PostingList
@@ -17,55 +17,46 @@ from models.PostingListUnit import PostingListUnit
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
 stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
 
-
-def option_execution(content, mode="basic"):
-    if mode == "basic":
-        return re.findall(r'\b[a-z0-9]+\b', content.lower())
-
-    elif mode == "nltk_stopwords":
-        return [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words and word not in string.punctuation]
-
-    elif mode == "nltk_stopwords_stemmer":
-        tokens = [stemmer.stem(word)for word in word_tokenize(content.lower()) if word.lower() not in stop_words and word not in string.punctuation]
-        return tokens
+def pre_processing(content, mode="basic"):
+    tokens = [token for token in word_tokenize(content.lower()) if token not in string.punctuation]
     
+    if mode == "nltk_stopwords":
+        return [token for token in tokens if token not in stop_words]
+    elif mode == "nltk_stopwords_stemmer":
+        return [stemmer.stem(lemmatizer.lemmatize(token)) for token in tokens if token not in stop_words]
     elif mode == "stemmer":
-        return [stemmer.stem(token) for token in word_tokenize(content.lower())]
-
+        return [stemmer.stem(token) for token in tokens]
+    elif mode == "basic":
+        return tokens
     else:
         raise ValueError("Invalid mode provided!")
 
 def generate_index_oop(doc, mode) -> Index:
-    # Initialize the inverted index and doc frequency dictionaries
     index = Index()
     
-    # This regex pattern will capture the doc_id and the content for each document in the collection
     doc_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
-    # Use PLY to parse the document
-    # doc_pattern = parser.parse(doc)
 
-    # Loop through each document to update the inverted index and doc frequency
-    for doc_id, content in tqdm(doc_pattern.findall(doc), desc="indexing files...", colour="green"):
-        document = Document(doc_id, content)
+    # Mesurez le temps de prétraitement
+    start_preprocessing_time_ns = time_ns()
+    processed_contents = [(doc_id, pre_processing(content, mode)) 
+                      for doc_id, content in tqdm(doc_pattern.findall(doc), desc="Preprocessing contents...", colour="blue")]
+    index.preprocessing_time_in_ns = time_ns() - start_preprocessing_time_ns
+
+    # Mesurez le temps d'indexation
+    start_indexing_time_ns = time_ns()
+    for doc_id, tokens in tqdm(processed_contents, desc="indexing files...", colour="green"):
+        document = Document(doc_id, " ".join(tokens))
         index.collection.add_document(document)
-
-        # Apply tokenization to the document content
-        token = option_execution(content,mode)
-
-        # Calculate term frequency for this document
-        cf = Counter(token)
-        
-        # Update the inverted index and term frequency dictionary
+        cf = Counter(tokens)
         for term, freq in cf.items():
             unit = PostingListUnit(doc_id, freq)
             if index.posting_lists.get(term) is None:
                 index.posting_lists[term] = PostingList(term)
             index.posting_lists[term].add_posting(unit)
-            # print(f"Parsing doc: {doc_id}")
-            # print(f"First 10 terms in tokenized content: {token[:10]}")
-            # print(f"Term frequencies for first 10 terms: {[cf.get(term, 0) for term in token[:10]]}")
-
+    
+    index.indexing_time_in_ns = time_ns() - start_indexing_time_ns
     
     return index
 

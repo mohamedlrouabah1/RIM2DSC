@@ -30,76 +30,114 @@ relevant results.
 
 
 ## results :
-------------------nltk_stopwords_stemmer----------------------
-Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8 138.59700122399 (words)  
-Average Term Length: 9.266840412354142 (characters)
-Vocabulary Size: 388 307 (unique terms)
-Total Collection Frequency: 769 9851 (terms)
-Time taken Indexing collection: 278.31 seconds
+----------------------------------------
+
+Preprocessing contents...: 100%|█████████████████████████████████████████████████████| 9804/9804 [02:01<00:00, 80.85it/s]
+indexing files...: 100%|████████████████████████████████████████████████████████████| 9804/9804 [00:15<00:00, 644.97it/s]
 
 --------------------basic--------------------
 Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8 138.59700122399 (words)  
-Average Term Length: 7.540367914769234 (characters)
-Vocabulary Size: 271 639 (unique terms)
-Total Collection Frequency: 11 674 409 (terms)       
-Time taken: 20.88 seconds
-
-------------------stemmer----------------------
-Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8 138.59700122399 (words)
-Average Term Length: 9.265322200681243 (characters)        
-Vocabulary Size: 388 407 (unique terms)
-Total Collection Frequency: 13 119 008 (terms)
-Time taken with stemmer Indexing collection: 366.57 seconds
+Average Document Length: 7301.094145246838 (words)
+Average Term Length: 9.527298867341486 (characters)
+Vocabulary Size: 428461 (unique terms)
+Total Collection Frequency: 11212672 (terms)
+Indexation time:
+Time taken with basic Indexing collection: 15.20 seconds
+Preprocessing time:
+Time taken with basic Indexing collection: 123.29 seconds
 ----------------------------------------
 
-The presented statistics reflect the outcomes of indexing a text collection using three distinct techniques: "nltk_stopwords_stemmer," "basic," and "stemmer." 
+Preprocessing contents...: 100%|█████████████████████████████████████████████████████| 9804/9804 [06:19<00:00, 25.86it/s]
+indexing files...: 100%|████████████████████████████████████████████████████████████| 9804/9804 [00:16<00:00, 581.71it/s]
+
+-------------------Stemmer---------------------
+Indexing file: Text_Only_Ascii_Coll_NoSem
+Average Document Length: 6529.148204814362 (words)
+Average Term Length: 9.265936793536195 (characters)
+Vocabulary Size: 388378 (unique terms)
+Total Collection Frequency: 11212672 (terms)
+Indexation time:
+Time taken with stemmer Indexing collection: 16.85 seconds
+Preprocessing time:
+Time taken with stemmer Indexing collection: 381.24 seconds
+----------------------------------------
+
+Preprocessing contents...: 100%|█████████████████████████████████████████████████████| 9804/9804 [06:43<00:00, 24.30it/s]
+indexing files...: 100%|████████████████████████████████████████████████████████████| 9804/9804 [00:14<00:00, 669.71it/s]
+
+----------------------stopwords+Stemmer+Lemmizer------------------
+Indexing file: Text_Only_Ascii_Coll_NoSem
+Average Document Length: 5209.731844145247 (words)
+Average Term Length: 9.270188889375843 (characters)
+Vocabulary Size: 387899 (unique terms)
+Total Collection Frequency: 7699851 (terms)
+Indexation time:
+Time taken with nltk_stopwords_stemmer_Lemmizer Indexing collection: 14.64 seconds
+Preprocessing time:
+Time taken with nltk_stopwords_stemmer_Lemmizer Indexing collection: 405.27 seconds
+----------------------------------------
+
+
+The presented statistics reflect the outcomes of indexing a text collection using three distinct techniques: "nltk_stopwords_stemmer_Lemmizer," "basic," and "stemmer." 
 These statistics offer valuable insights into the characteristics of the processed text data. 
 Notably, 
-    - the "nltk_stopwords_stemmer" approach resulted in a vocabulary of 388,307 unique terms and a total collection frequency of 7,699,851 terms, taking 278.31 seconds for indexing.
-    - The "basic" method, on the other hand, produced similar vocabulary and collection frequency figures but with a shorter average term length and significantly faster indexing time of 20.88 seconds. 
-    - The "stemmer" approach yielded a larger vocabulary, a higher total collection frequency, and an indexing time of 366.57 seconds. 
+    - the "nltk_stopwords_stemmer_Lemmizer" approach resulted in a vocabulary of 387,899 unique terms and a total collection frequency of 7,699,851 terms, taking 14.64 seconds for indexing and  405.27 seconds for Preprocessing.
+    - The "basic" method, on the other hand, produced similar vocabulary and collection frequency figures but with a shorter average term length and significantly faster indexing time of 15.20 seconds. 
+    - The "stemmer" approach yielded a larger vocabulary, a higher total collection frequency, and an indexing time of 16.85 seconds. 
 
 These variations emphasize the trade-offs between vocabulary size, indexing time, and average term length, 
 highlighting the importance of choosing the most appropriate indexing method based on specific requirements and priorities.
 
-##### SMART LTN #######
-Document ID: 23724, Score: 26.001476852197754
-Document ID: 448834, Score: 22.7365003314182
-Document ID: 18336216, Score: 22.334895865350816
-Document ID: 207747, Score: 20.92168395272993
-Document ID: 363695, Score: 19.48392007576976
-Document ID: 719095, Score: 19.40426509850978
-Document ID: 1803281, Score: 19.313249540824312
-Document ID: 8967626, Score: 19.192534968374076
-Document ID: 2086074, Score: 19.187373723195375
-Document ID: 149289, Score: 18.80401220207394
+------------------- SMART LTN ------------------------------------
 
-##### SMART LTC ######
-Document ID: 23724, Score: 0.19110491831233037
-Document ID: 448834, Score: 0.18113201952061955
-Document ID: 18336216, Score: 0.18110429695666547
-Document ID: 207747, Score: 0.1663910689316672
-Document ID: 719095, Score: 0.1587521600393294
-Document ID: 1803281, Score: 0.1565047201894842
-Document ID: 2086074, Score: 0.15634035934684254
-Document ID: 8967626, Score: 0.15468943570549626
-Document ID: 6082436, Score: 0.15097417616215025
-Document ID: 15116785, Score: 0.1499149660358603
+Preprocessing contents...: 100%|█████████████████████████████████████████████████████| 9804/9804 [06:36<00:00, 24.72it/s]
+indexing files...: 100%|████████████████████████████████████████████████████████████| 9804/9804 [00:18<00:00, 516.68it/s]
 
-###### BM25 ########
-Document ID: 23724, Score: 50.08305045208795
-Document ID: 18336216, Score: 47.54121391600216
-Document ID: 207747, Score: 42.81491241218825  
-Document ID: 448834, Score: 42.43818986174094  
-Document ID: 1803281, Score: 40.956414000400116
-Document ID: 2086074, Score: 40.943049356043836
-Document ID: 6082436, Score: 40.04725418996074 
-Document ID: 15116785, Score: 39.57938854203819
-Document ID: 363695, Score: 39.27606933849006  
-Document ID: 9567871, Score: 38.00006952395094 
+------------------------------------
+
+Document ID: 33120, Score: 12.815783519765617
+Document ID: 23724, Score: 11.738831802363338
+Document ID: 15308316, Score: 11.056182605640544
+Document ID: 187946, Score: 10.954102315616797
+Document ID: 475964, Score: 10.923951920015716
+Document ID: 7602386, Score: 10.612140522126357
+Document ID: 454351, Score: 10.359067751823723
+Document ID: 45809, Score: 10.307404791505602
+Document ID: 3687926, Score: 10.233869785125622
+Document ID: 6901703, Score: 10.163819365031584
+
+-------------------- SMART LTC ------------------------------------------
+
+Document ID: 33120, Score: 0.08302599042431535
+Document ID: 23724, Score: 0.0737903271094118
+Document ID: 3687926, Score: 0.06886577841176224
+Document ID: 187946, Score: 0.06885312002889946
+Document ID: 15308316, Score: 0.06821087521267954
+Document ID: 1555022, Score: 0.06802736440357869
+Document ID: 7602386, Score: 0.06668121154915203
+Document ID: 475964, Score: 0.06500047765723194
+Document ID: 43651, Score: 0.06404009114289672
+Document ID: 4059023, Score: 0.06361985393582249
+
+------------------- BM25-------------------------------------------------
+
+Document ID: 10013985, Score: 3.956491541626959
+Document ID: 10013, Score: 3.956491541626959
+Document ID: 1026437, Score: 3.956491541626959
+Document ID: 10414589, Score: 3.956491541626959
+Document ID: 10416781, Score: 3.956491541626959
+Document ID: 10912523, Score: 3.956491541626959
+Document ID: 1093623, Score: 3.956491541626959
+Document ID: 11255865, Score: 3.956491541626959
+Document ID: 11257519, Score: 3.956491541626959
+Document ID: 11354525, Score: 3.956491541626959
+
+-----------------------------------------------------------------------
+
+### update ###
+
+avoiding using loop for un-necessary iteration, decompose pre-processing and indexation into 2 loop each independant from the other
+
 
 ## Plot
 

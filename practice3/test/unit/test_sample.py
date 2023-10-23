@@ -14,3 +14,6 @@ def f():
 def test_mytest():
     with pytest.raises(SystemExit):
         f()
+
+# try to import smth from src folder
+from models import Document

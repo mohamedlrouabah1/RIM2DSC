@@ -1,5 +1,5 @@
 from generate_index import *
-from utils import *
+from utilities.utils import *
 from models import *
 import matplotlib.pyplot as plt
 import math
@@ -55,13 +55,14 @@ def retrieve_top_documents(query, mode_func, index, k1, b):
     # Return the top 10 most relevant documents and their scores
     return sorted_documents[:10]
 
-def print_ranking(query, scoring_mode, index, b, k1):
-    
+
+def print_ranking(query, scoring_mode, index, b, k1):  
     top_documents = retrieve_top_documents(query, scoring_mode, index, b, k1)
 
     # Print the top relevant documents and their scores
     for doc_id, score in top_documents:
         print(f"Document ID: {doc_id}, Score: {score}")
+
 
 def plot_ranking(query, index, b, k1):
     scoring_modes = ["smart_ltn", "smart_ltc", "bm25"]

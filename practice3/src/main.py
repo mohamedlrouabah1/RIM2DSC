@@ -3,6 +3,7 @@ from collection_statistics import collection_statistics
 from compute_weights import *
 from models import *
 from ranking_retrieval import *
+from utilities.config import *
 
 def parse_command_line_arguments() -> argparse.Namespace:
     """

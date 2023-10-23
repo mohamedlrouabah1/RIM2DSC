@@ -32,24 +32,26 @@ relevant results.
 ## results :
 ------------------nltk_stopwords_stemmer----------------------
 Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8138.59700122399 (words)  
+Average Document Length: 8 138.59700122399 (words)  
 Average Term Length: 9.266840412354142 (characters)
-Vocabulary Size: 388307 (unique terms)
-Total Collection Frequency: 7699851 (terms)
+Vocabulary Size: 388 307 (unique terms)
+Total Collection Frequency: 769 9851 (terms)
 Time taken Indexing collection: 278.31 seconds
+
 --------------------basic--------------------
 Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8138.59700122399 (words)  
+Average Document Length: 8 138.59700122399 (words)  
 Average Term Length: 7.540367914769234 (characters)
-Vocabulary Size: 271639 (unique terms)
-Total Collection Frequency: 11674409 (terms)       
+Vocabulary Size: 271 639 (unique terms)
+Total Collection Frequency: 11 674 409 (terms)       
 Time taken: 20.88 seconds
+
 ------------------stemmer----------------------
 Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8138.59700122399 (words)
+Average Document Length: 8 138.59700122399 (words)
 Average Term Length: 9.265322200681243 (characters)        
-Vocabulary Size: 388407 (unique terms)
-Total Collection Frequency: 13119008 (terms)
+Vocabulary Size: 388 407 (unique terms)
+Total Collection Frequency: 13 119 008 (terms)
 Time taken with stemmer Indexing collection: 366.57 seconds
 ----------------------------------------
 
@@ -74,6 +76,7 @@ Document ID: 1803281, Score: 19.313249540824312
 Document ID: 8967626, Score: 19.192534968374076
 Document ID: 2086074, Score: 19.187373723195375
 Document ID: 149289, Score: 18.80401220207394
+
 ##### SMART LTC ######
 Document ID: 23724, Score: 0.19110491831233037
 Document ID: 448834, Score: 0.18113201952061955
@@ -85,6 +88,7 @@ Document ID: 2086074, Score: 0.15634035934684254
 Document ID: 8967626, Score: 0.15468943570549626
 Document ID: 6082436, Score: 0.15097417616215025
 Document ID: 15116785, Score: 0.1499149660358603
+
 ###### BM25 ########
 Document ID: 23724, Score: 50.08305045208795
 Document ID: 18336216, Score: 47.54121391600216

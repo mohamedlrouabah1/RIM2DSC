@@ -1,8 +1,8 @@
 import argparse
 from collection_statistics import collection_statistics
-from compute_weights import *
-from models import *
-from ranking_retrieval import *
+from compute_weights import compute_weights
+from ranking_retrieval import print_ranking, plot_ranking
+from utilities.utils import load_text_collection, generate_index_oop
 from utilities.config import *
 
 def parse_command_line_arguments() -> argparse.Namespace:

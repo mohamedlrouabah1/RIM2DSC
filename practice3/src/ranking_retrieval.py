@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import math
 import os
+from tqdm import tqdm
 
-from generate_index import *
-from utilities.config import GRAPH_FOLDER
-from utilities.utils import *
-from models import *
+from generate_index import option_execution
+from utilities.config import GRAPH_FOLDER 
+from weighting_functions import bm25_weight, smart_ltc_weight, smart_ltn_weight
 
 
 def retrieve_top_documents(query, mode_func, index, k1, b):

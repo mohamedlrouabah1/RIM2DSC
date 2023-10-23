@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import os
 
 
-from generate_index import *
+from generate_index import option_execution
 from utilities.config import GRAPH_FOLDER
-from utilities.utils import *
+from weighting_functions import bm25_weight, smart_ltc_weight, smart_ltn_weight
 
 
 

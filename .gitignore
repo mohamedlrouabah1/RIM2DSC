@@ -11,3 +11,5 @@ uml_diagrams/*.bkp
 # python generated files
 **/__pycache__/
 **/practice3/information_retrieval.egg-info/
+**/.pytest_cache/
+**/build/

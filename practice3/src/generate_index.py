@@ -1,18 +1,23 @@
-import re
 from collections import  Counter
-from models import *
-import string
-# from ply.lex_yacc_parser import *
-from tqdm import tqdm
-
 import nltk
-from nltk import word_tokenize
-nltk.download('stopwords')
-from nltk.corpus import stopwords
-stop_words = set(stopwords.words('english'))
-
 from nltk import PorterStemmer
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+import re
+import string
+from tqdm import tqdm
+# from ply.lex_yacc_parser import *
+
+from models.Index import Index
+from models.Document import Document
+from models.PostingList import PostingList
+from models.PostingListUnit import PostingListUnit
+
+
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
 stemmer = PorterStemmer()
+
 
 def option_execution(content, mode="basic"):
     if mode == "basic":

@@ -4,7 +4,6 @@ import os
 
 
 from generate_index import *
-from models import *
 from utilities.config import GRAPH_FOLDER
 from utilities.utils import *
 

@@ -1,6 +1,7 @@
-import pandas as pd
 import gzip
+import pandas as pd
 import time
+
 from generate_index import generate_index_oop
 from utilities.time_utility import convert_time_from_ns_to_s
    

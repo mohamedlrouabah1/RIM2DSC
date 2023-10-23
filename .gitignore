@@ -1,7 +1,13 @@
 .vscode
-**/__pycache__/
+**/*.orig
+
+# Personnal directories to be skipped
 rendus/*.zip
 rendus/*
 data/*
 uml_diagrams/*.bkp
-**/*.orig
+
+
+# python generated files
+**/__pycache__/
+**/practice3/information_retrieval.egg-info/

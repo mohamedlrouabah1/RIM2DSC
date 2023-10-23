@@ -65,6 +65,9 @@ def smart_ltc_weight(tf, all_tf):
 
 # Define the BM25 weighting function
 def bm25_weight(tf, df, N, doc_len, avg_doc_len, k1, b):
+    # TODO : remove the if  for idf
+    # TODO : compute the idf outside for not recomputing it for each document bc depend on the collection and not the document neither the term.
+    # thus it prevent to compute it for each document and save time
     idf = math.log((N - df + 0.5) / (df + 0.5)) if df > 0 else 0
     tf_weight = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * (doc_len / avg_doc_len)))
     return tf_weight * idf

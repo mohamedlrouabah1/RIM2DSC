@@ -22,8 +22,8 @@ def option_execution(content, mode="basic"):
         return [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words and word not in string.punctuation]
 
     elif mode == "nltk_stopwords_stemmer":
-        tokens = [word for word in word_tokenize(content.lower()) if word.lower() not in stop_words and word not in string.punctuation]
-        return [stemmer.stem(token) for token in tokens]
+        tokens = [stemmer.stem(word)for word in word_tokenize(content.lower()) if word.lower() not in stop_words and word not in string.punctuation]
+        return tokens
     
     elif mode == "stemmer":
         return [stemmer.stem(token) for token in word_tokenize(content.lower())]

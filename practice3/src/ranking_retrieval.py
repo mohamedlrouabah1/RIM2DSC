@@ -1,9 +1,12 @@
-from generate_index import *
-from utilities.utils import *
-from models import *
 import matplotlib.pyplot as plt
 import math
 import os
+
+from generate_index import *
+from utilities.config import GRAPH_FOLDER
+from utilities.utils import *
+from models import *
+
 
 def retrieve_top_documents(query, mode_func, index, k1, b):
     # Tokenize the query

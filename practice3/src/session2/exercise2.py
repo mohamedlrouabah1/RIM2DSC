@@ -2,6 +2,7 @@ import os
 from time import time_ns
 import matplotlib.pyplot as plt
 from generate_index import *
+from utilities.config import *
 from utilities.utils import *
 from utilities.time_utility import *
 from compute_weights import *

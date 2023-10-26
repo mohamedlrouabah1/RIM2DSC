@@ -11,3 +11,6 @@ class Collection:
 
     def add_document(self, document:Document):
         self.documents.append(document)
+
+    def __len__(self):
+        return len(self.documents)

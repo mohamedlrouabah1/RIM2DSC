@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 
-from generate_index import option_execution
+from generate_index import pre_processing
 from utilities.config import GRAPH_FOLDER
 from weighting_functions import bm25_weight, smart_ltc_weight, smart_ltn_weight
 
@@ -36,7 +36,7 @@ def compute_query_weights(query, index, weighting_function) -> dict:
     """
     Function to compute query weights using a weighting function
     """
-    tokenized_query = option_execution(query)  # Use the preprocessing function
+    tokenized_query = pre_processing(query)  # Use the preprocessing function
     N = len(index.collection.documents)
     query_weights = {}
     

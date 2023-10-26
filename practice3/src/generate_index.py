@@ -7,7 +7,7 @@ import re
 import string
 from tqdm import tqdm
 # from ply.lex_yacc_parser import *
-from time import time_ns
+from time import time_ns, perf_counter_ns
 from models.Index import Index
 from models.Document import Document
 from models.PostingList import PostingList
@@ -64,7 +64,9 @@ def get_index_statistics(index):
     """
     Computes and returns statistics for the given index.
     """
-    avg_doc_len = sum(d.length for d in index.collection.documents) / len(index.collection.documents)
+    # TODO: use the number of token instead of the number of
+    # characters to compute the average term length.
+    avg_doc_len = sum(len(d) for d in index.collection.documents) / len(index.collection.documents)
     avg_term_len = sum(len(term) for term in index.get_vocabulary()) / index.get_vocabulary_size()
     vocab_size = index.get_vocabulary_size()
     total_coll_freq = sum(index.get_term_frequency(term) for term in index.get_vocabulary())

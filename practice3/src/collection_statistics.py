@@ -5,6 +5,8 @@ from generate_index import generate_index_oop, get_index_statistics
 from utilities.config import GRAPH_FOLDER, DATA_FOLDER, COLLECTION_FILES   
 from utilities.utils import load_text_collection
 from utilities.time_utility import print_time, convert_time_from_ns_to_s
+
+
 def collection_statistics(mode, chartname) :
     collection_sizes = []
     doc_lengths = []

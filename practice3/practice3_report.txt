@@ -1,7 +1,16 @@
 # Compte rendu du TP3 de RI
 
 
-# Summary
+## TP3 Update
+
+- Created an architecture for test classes (not yet utilized).
+- Restructured the models.
+- Restructured the weighting functions into classes to optimize calculations by avoiding redundant computations (not yet had time to include this).
+- Used the same tokenizer for all execution modes (with or without stop words, stemming, etc.).
+- Optimization: avoiding using loop for un-necessary iteration, decompose pre-processing and indexation into 2 loop each independant from the other
+
+
+## Updated Summary
 
 The scores provided here represent various relevance measures 
 for documents related to the search terms "SMART LTN," 
@@ -133,10 +142,6 @@ Document ID: 11257519, Score: 3.956491541626959
 Document ID: 11354525, Score: 3.956491541626959
 
 -----------------------------------------------------------------------
-
-### update ###
-
-avoiding using loop for un-necessary iteration, decompose pre-processing and indexation into 2 loop each independant from the other
 
 
 ## Plot

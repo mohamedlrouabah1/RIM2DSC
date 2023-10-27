@@ -78,7 +78,7 @@ def main() -> None:
     # run_exercice(args.exercise, index, query)
     # run_exercice(args.exercise)
     
-    collection_statistics(mode="basic", chartname="basic")
+    collection_statistics(mode="stopwords_stemmer", chartname="stopwords_stemmer")
 
 
 

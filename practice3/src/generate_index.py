@@ -1,10 +1,6 @@
 from collections import  Counter
-import nltk
-from nltk import PorterStemmer, WordNetLemmatizer
-from nltk import word_tokenize
-from nltk.corpus import stopwords
+from nltk import PorterStemmer, word_tokenize
 import re
-import string
 from tqdm import tqdm
 # from ply.lex_yacc_parser import *
 from time import time_ns
@@ -12,30 +8,26 @@ from models.Index import Index
 from models.Document import Document
 from models.PostingList import PostingList
 from models.PostingListUnit import PostingListUnit
-
-
-nltk.download('stopwords')
-stop_words = set(stopwords.words('english'))
+from pathlib import Path
 stemmer = PorterStemmer()
-lemmatizer = WordNetLemmatizer()
 
-def pre_processing(content, mode="basic"):
-    tokens = [token for token in word_tokenize(content.lower()) if token not in string.punctuation]
-    
-    if mode == "nltk_stopwords":
-        return [token for token in tokens if token not in stop_words]
-    elif mode == "nltk_stopwords_stemmer":
-        return [stemmer.stem(lemmatizer.lemmatize(token)) for token in tokens if token not in stop_words]
+
+
+def pre_processing(content : str, mode="basic") -> list:
+    stop_words = Path("../../stopwords/stop-words-english4.txt").read_text(encoding="utf-8")
+    if mode == "stopwords_stemmer":
+        return [stemmer.stem(token)
+                for token in word_tokenize(content)
+                if token.isalpha() and token not in stop_words]   
     elif mode == "stemmer":
-        return [stemmer.stem(token) for token in tokens]
+        return [stemmer.stem(token) for token in word_tokenize(content) if token.isalpha() and token not in stop_words]
     elif mode == "basic":
-        return tokens
+        return [token for token in  word_tokenize(content) if token.isalpha() and token not in stop_words]
     else:
         raise ValueError("Invalid mode provided!")
 
 def generate_index_oop(doc, mode) -> Index:
     index = Index()
-    
     doc_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
 
     # Mesurez le temps de prétraitement

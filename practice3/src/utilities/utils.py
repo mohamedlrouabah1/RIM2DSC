@@ -10,12 +10,8 @@ def load_text_collection(path) -> str:
     Read the document collection from a file.
     Handles both regular and gzipped files.
     """
-    if path.endswith('.gz'):
-        with gzip.open(path, 'rt', encoding='utf-8') as f:
-            document_collection_str = f.read()
-    else:
-        with open(path, 'r') as f:
-            document_collection_str = f.read()
+    with open(path, 'r', encoding='utf-8') as f:
+            document_collection_str = f.read().lower()
     return document_collection_str
 
 def generate_grid(index, mode: str) -> pd.DataFrame:

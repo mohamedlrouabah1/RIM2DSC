@@ -64,19 +64,22 @@ def run_exercice(n: int, index, query, b=0.5, k1=1.2) -> None:
 
 
 def main() -> None:
-    # Process program's arguments
-    args = parse_command_line_arguments()
-    args = validate_command_line_arguments(args)
-    if args is None: return
+    # # Process program's arguments
+    # args = parse_command_line_arguments()
+    # args = validate_command_line_arguments(args)
+    # if args is None: return
 
-    # Load the document collection and create the index
-    content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
-    index = generate_index_oop(content, mode="nltk_stopwords_stemmer")
-    query = "web ranking scoring algorithm"
+    # # Load the document collection and create the index
+    # content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
+    # index = generate_index_oop(content, mode="nltk_stopwords_stemmer")
+    # query = "web ranking scoring algorithm"
 
-    # Run the exercise
-    run_exercice(args.exercise, index, query)
+    # # Run the exercise
+    # run_exercice(args.exercise, index, query)
     # run_exercice(args.exercise)
+    
+    collection_statistics(mode="basic", chartname="basic")
+
 
 
 if __name__ == "__main__":

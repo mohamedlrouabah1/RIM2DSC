@@ -1,4 +1,12 @@
+"""
+NB: this file is depracated, it is not used anymore.
+From now on see the class in models/Timer.py
+
+"""
+
 from datetime import timedelta
+
+
 
 def convert_time_from_ns_to_s(t: float) -> float:
     """

@@ -1,3 +1,4 @@
+from functools import lru_cache
 from math import log10
 from WeightingFunction import WeightingFunction
 
@@ -22,21 +23,35 @@ class SMART_ltn(WeightingFunction):
         self.k1_times_b_times_inv_avdl = self.k1 * self.b / self.avdl
         self.N_plus_0_5 = self.N + 0.5
 
-
+    @lru_cache(maxsize=None)
+    def compute_idf_part(self, df):
+        """
+        Params:
+            df: int, document frequency of the term
+        """
+        # i.e substracting logarithms instead of taking the logarithm of the division
+        # can be faster and more accurate bc of the floating point arithmetic
+        return log10((self.N_plus_0_5 - df )) - log10((df + 0.5)) # if df > 0 else 0, not needed bc df is always > 0
     
-    # TODO optimize this computation by computing the idf outside and not for each document 
+    @lru_cache(maxsize=None)
+    def compute_tf_weight_tf_part(self, tf):
+        return (tf * self.k1_plus_1, self.k1_times_1_minus_b + tf)
+    
+    @lru_cache(maxsize=None)
+    def compute_tf_weight_dl_part(self, dl):
+        return self.k1_times_b_times_inv_avdl * dl
+    
+    @lru_cache(maxsize=None)
     def compute_score(self, tf, df, dl):
         """
         tf: term frequency in the document
         df: document frequency of the term
         dl: document length
+        Return:
+            tf_weight = (tf * self.k1_plus_1) / (self.k1_times_1_minus_b + self.k1_times_b_times_inv_avdl * dl + tf)
         """
-        # TODO : remove the if  for idf
-        # TODO : compute the idf outside for not recomputing it for each document bc depend on the collection and not the document neither the term.
-        # thus it prevent to compute it for each document and save time
-        idf = log10((self.N_plus_0_5 - df ) / (df + 0.5)) if df > 0 else 0
-        tf_weight = (tf * self.k1_plus_1) / (self.k1_times_1_minus_b + self.k1_times_b_times_inv_avdl * dl + tf)
+        idf = self.compute_idf_part(df)
+        tf_num, tf_den = self.compute_tf_weight_tf_part(tf)
+        tf_den_dl = tf_den + self.compute_tf_weight_dl_part(dl)
+        tf_weight = tf_num / tf_den_dl
         return tf_weight * idf
-    
-        # TODO make an alternative function that compute log(a) -log(b) instead of log(a/b)
-        # and see which one is the fastest.

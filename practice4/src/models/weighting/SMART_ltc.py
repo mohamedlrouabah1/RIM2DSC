@@ -1,6 +1,7 @@
+from functools import lru_cache
 from math import log10, sqrt
-from WeightingFunction import WeightingFunction
 from SMART_ltn import SMART_ltn
+from WeightingFunction import WeightingFunction
 
 class SMART_ltn(WeightingFunction):
 

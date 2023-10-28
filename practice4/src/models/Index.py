@@ -1,3 +1,4 @@
+import pickle
 from models.Collection import Collection
 from models.PostingList import PostingList
 
@@ -16,6 +17,23 @@ class Index:
     
     def get_term_frequency(self, term:str):
         return self.posting_lists[term].total_frequency
+    
+    def serialize(self, path) -> bool:
+        with open(path, 'wb') as f:
+            pickle.dump(self, f)
+        return True
+
+    @classmethod
+    def deserialize(cls, path):
+        with open(path, 'rb') as f:
+            index = pickle.load(f)
+
+        if isinstance(index, cls):
+            return index
+        
+        print(f"Deserialized object from {path} is not an instance of the Index class.")
+        return None
+
 
     def __str__(self):
         s = "-"*50 + "\n"

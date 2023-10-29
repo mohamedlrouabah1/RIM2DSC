@@ -1,5 +1,6 @@
 import pickle
 from models.Collection import Collection
+from models.Index import Index
 from models.PostingList import PostingList
 
 class Index:
@@ -19,12 +20,16 @@ class Index:
         return self.posting_lists[term].total_frequency
     
     def serialize(self, path) -> bool:
-        with open(path, 'wb') as f:
-            pickle.dump(self, f)
-        return True
+        try:
+            with open(path, 'wb') as f:
+                pickle.dump(self, f)
+            return True
+        except Exception as e:
+            print(f"Error serializing index to {path}: {e}")
+            return False
 
     @classmethod
-    def deserialize(cls, path):
+    def deserialize(cls, path) -> Index:
         with open(path, 'rb') as f:
             index = pickle.load(f)
 
@@ -44,12 +49,10 @@ class Index:
 
         # print(f"Average Document Length: {avg_doc_len} (words)")
         # print(f"Average Term Length: {avg_term_len} (characters)")
-        # print(f"Vocabulary Size: {vocab_size} (unique terms)")
+        s += f"Vocabulary Size: {self.get_vocabulary_size} (unique terms)" + "\n"
         # print(f"Total Collection Frequency: {total_coll_freq} (terms)")
-        # print("Indexation time: ")
-        # print_time(chartname,index.indexing_time_in_ns)
-        # print("Preprocessing time: ")
-        # print_time(chartname,index.preprocessing_time_in_ns)
+        s =+ f"Indexation time: {self.indexing_time_in_ns} ns" + "\n"
+        s += f"Preprocessing time: {self.preprocessing_time_in_ns} ns" + "\n"
 
         s = "-"*50 + "\n"
         

@@ -14,12 +14,15 @@ class Indexer:
         return self.posting_lists.keys()
     
     def get_df(self, term:str):
-        """
-        Return the number of documents in which the term appears.
-        """
+        """ Return the number of documents in which the term appears."""
+        if self.posting_lists.get(term) is None:
+            return 0  
         return len(self.posting_lists[term])
     
-    def get_term_frequency_document(self, term:str, doc_id:int):
+    def get_tf(self, term:str, doc_id:int):
+        """ Return the term frequency of the term in the document."""
+        if self.posting_lists.get(term) is None:
+            return 0
         return self.posting_lists[term].get_tfd(doc_id)
     
 
@@ -47,7 +50,7 @@ class Indexer:
         Create the posting lists for the given document.
         """
         tokens = doc.get_tokens()
-        id = doc.get_id()
+        id = doc.id
         tf = Counter(tokens)
         
         for term, freq in tf.items():

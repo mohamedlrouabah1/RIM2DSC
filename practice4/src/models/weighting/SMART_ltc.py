@@ -5,7 +5,7 @@ from models.weighting.WeightingFunction import WeightingFunction
 
 class SMART_ltc(WeightingFunction):
 
-    def __init__(self, smart_ltn):
+    def __init__(self, smart_ltn=None):
         if smart_ltn is not None:
             self.smart_ltn = smart_ltn
         else:

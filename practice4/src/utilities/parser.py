@@ -40,7 +40,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
     
     parser.add_argument(
         "-m", "--stemmer",
-        choices=["porter", "snowball"],
+        choices=["None", "porter", "snowball"],
         default="porter",
         help="Stemmer to use for preprocessing."
         )

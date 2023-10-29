@@ -1,5 +1,6 @@
 import gzip
 import matplotlib.pyplot as plt
+import os
 import pickle
 from tqdm import tqdm
 from models.Document import Document
@@ -16,7 +17,7 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path, indexer=None, preprocessor=None, ranking_function=None):
+    def __init__(self, path="", indexer=None, preprocessor=None):
         self.documents:list(Document) = []
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
@@ -24,20 +25,20 @@ class Collection:
         self.Timer = Timer()
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
         self.indexer = Indexer() if indexer is None else indexer
-        self.information_retriever = BM25() if ranking_function is None else ranking_function
+        self.information_retriever = None
 
 
     def load_and_preprocess(self):
         print("Loading collection from file {path} ...")
         self.Timer.start("load_collection")
         collection_string = self.preprocessor.load_and_lower_text_collection(self.path)
-        self.Timer.stop("load_collection")
+        self.Timer.stop()
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
 
         print("Preprocessing collection...")
         self.Timer.start("preprocessing")
         doc_token_list = self.preprocessor.pre_process(collection_string)
-        self.Timer.stop("preprocessing")
+        self.Timer.stop()
         print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
 
         print("Instantiate Document objects...")
@@ -46,15 +47,15 @@ class Collection:
                           for doc_id, doc_tokens in 
                           tqdm(doc_token_list, desc="Instantiating documents...", colour="blue")
                           ]
-        self.Timer.stop("instantiate_documents")
+        self.Timer.stop()
         print(f"Documents instantiated in {self.Timer.get_time('instantiate_documents')} seconds.")
 
 
     def compute_index(self, save=True):
         print("Indexing collection...")
         self.Timer.start("indexing")
-        map(self.indexer.index_doc, self.documents)
-        self.Timer.stop("indexing")
+        for doc in self.documents: self.indexer.index_doc(doc)
+        self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.")
 
         # print("Save index to disk...")
@@ -68,12 +69,13 @@ class Collection:
         self.avdl = self.compute_avdl()
         self.avtl = self.compute_avtl()
         self.cf = self.compute_terms_collection_frequency()
-        self.Timer.stop("compute_statistics")
+        self.Timer.stop()
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.")
 
 
 
     def __len__(self):
+        """ Return the number of documents in the collection """
         return len(self.documents)
 
     def compute_avdl(self):
@@ -92,10 +94,8 @@ class Collection:
         return len(self.indexer)
     
     def compute_terms_collection_frequency(self):
-        return [self.indexer.get_term_frequency(term) for term in self.indexer.get_vocabulary()]
+        return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
     
-    def get_cf(self, term:str):
-        return self.indexer.get_term_frequency(term)
     
     def get_terms_collection_frequency(self):
         return self.cf
@@ -120,6 +120,7 @@ class Collection:
         s += f"Total time: {self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')} seconds\n"
         s += f"Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n"
         s += "-"*50 + "\n"
+        return s
 
     def __repr__(self) -> str:
         pass
@@ -155,15 +156,23 @@ class Collection:
         """
         scores = {}
         for doc in self.documents:
+            score = 0
             for term in query:
                 df = self.indexer.get_df(term)
-                tf = self.indexer.get_term_frequency(term, doc.get_id())
+                tf = self.indexer.get_tf(term, doc.id)
                 dl = len(doc)
                 # !!! WARNING !!! only for BM25 for now
                 score += self.information_retriever.compute_score(tf, df, dl)
-            scores[doc.get_id()] = score
+            scores[doc.id] = score
            
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    
+
+    def __reduce__(self):
+        # Exclude the 'doc_preprocessing' and 'pre_process' methods from pickling
+        state = self.__dict__.copy()
+        state.pop('preprocessor', None)
+        return (self.__class__, (), state)
     
 
     def serialize(self, path) -> bool:
@@ -185,3 +194,6 @@ class Collection:
         
         print(f"Deserialized object from {path} is not an instance of the Index class.")
         return None
+    
+    def set_ranking_function(self, ranking_function):
+        self.information_retriever = ranking_function

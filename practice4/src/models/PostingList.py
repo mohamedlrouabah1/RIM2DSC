@@ -16,6 +16,8 @@ class PostingList:
         self.total_frequency += posting.frequency
 
     def get_tfd(self, doc_id:int):
+        if self.postings.get(doc_id) is None:
+            return 0
         return self.postings[doc_id].frequency
     
     def __len__(self):

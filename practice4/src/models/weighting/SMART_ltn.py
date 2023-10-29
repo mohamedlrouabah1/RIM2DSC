@@ -4,6 +4,9 @@ from models.weighting.WeightingFunction import WeightingFunction
 
 class SMART_ltn(WeightingFunction):
 
+    def __init__(self):
+        super().__init__()
+
     @lru_cache(maxsize=None)
     def compute_idf(self, df, N):
         return log10(N / df)

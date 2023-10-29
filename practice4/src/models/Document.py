@@ -20,7 +20,7 @@ class Document:
             yield token
 
     def get_tokens(self):
-        return (self.id, self.content)
+        return self.content
     
     def compute_avtl(self):
         return sum(len(t) for t in self.content) / len(self.content)

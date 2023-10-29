@@ -14,3 +14,9 @@ class PostingList:
         self.postings[posting.document_id] =posting
         self.document_frequency += 1
         self.total_frequency += posting.frequency
+
+    def get_tfd(self, doc_id:int):
+        return self.postings[doc_id].frequency
+    
+    def __len__(self):
+        return self.document_frequency

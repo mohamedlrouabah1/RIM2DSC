@@ -1,55 +1,106 @@
-import argparse
-from collection_statistics import collection_statistics
-from ranking_retrieval import print_ranking, plot_ranking
-from utilities.config import DATA_FOLDER, COLLECTION_FILES
-from utilities.parser import parse_command_line_arguments, validate_command_line_arguments
-from utilities.utils import load_text_collection, generate_index_oop
+import nltk
+import os
+from models.Collection import Collection
+from models.Indexer import Indexer
+from models.TextPreprocessor import TextPreprocessor
+from models.weighting.BM25 import BM25
+from models.weighting.SMART_ltc import SMART_ltc
+from models.weighting.SMART_ltn import SMART_ltn
+from utilities.config import DATA_FOLDER, COLLECTION_FILES, COLLECTION_NAME
+from utilities.parser import parse_command_line_arguments
 
 
-def run_exercice(n: int, index, query, b=0.5, k1=1.2) -> None:
-    if n == 1:
-        collection_statistics(mode="nltk_stopwords_stemmer", chartname="nltk_stopwords_stemmer")
-    elif n == 2:
-        print("Exercice 2:")
-        collection_statistics(mode="basic", chartname="basic")
-    elif n == 3:
-        collection_statistics(mode="stemmer", chartname="stemmer")
-    elif n == 5:
-        scoring_mode = "smart_ltn"
-        print_ranking(query, scoring_mode, index, b, k1)
-        plot_ranking(query, index, b, k1)
-    elif n == 7:
-        scoring_mode = "smart_ltc"
-        print_ranking(query, scoring_mode, index, b, k1)
-        plot_ranking(query, index, b, k1)
-        scoring_mode = "bm25"
-        print_ranking(query, scoring_mode, index, b, k1)
-        plot_ranking(query, index, b, k1)
-    # elif n == 9:
-        # scoring_mode = "bm25"
-        # print_ranking(query, scoring_mode, index, b, k1)
-        # plot_ranking(query, index, b, k1)
+def get_index_path(args) -> str:
+    index_path = "index_"
+    index_path += "regex_" if args.tokenizer == "regex" else "nltk_"
+    index_path += "stop_" if args.stopword else "nostop_"
+    index_path += "lem_" if args.lemmer else "nolem_"
+
+    if args.stemmer is None:
+        index_path += "nostem_"
     else:
-        print("Exercise not found. Please choose from exercises 1, 2, 3, 5, 7, or 9.")
+        index_path += "snow_" if args.stemmer == "snowball" else "porter_"  
 
-
+    index_path += COLLECTION_NAME + ".pkl"
+    return index_path
 
 
 def main() -> None:
     # Process program's arguments
     args = parse_command_line_arguments()
-    args = validate_command_line_arguments(args)
-    if args is None: return
 
-    # Load the document collection and create the index
-    content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
-    index = generate_index_oop(content, mode="nltk_stopwords_stemmer")
-    query = "web ranking scoring algorithm"
+    # First create the path to the save index file
+    index_path = get_index_path(args)    
+    is_existing_index = os.path.isfile(index_path)
 
-    # Run the exercise
-    run_exercice(args.exercise, index, query)
-    # run_exercice(args.exercise)
+    # Second we create the TextPreProcessor object
+    text_preprocessor = TextPreprocessor(
+        exclude_stopwords=args.stopword,
+        exclude_digits=args.stopword,
+        tokenizer=args.tokenizer,
+        lemmer=args.lemmer,
+        stemmer=args.stemmer
+    )
+
+    # Third we create the ranking function
+    if args.ranking == "smart_ltn":
+        ranking_function = SMART_ltn()
+    elif args.ranking == "smart_ltc":
+        ranking_function = SMART_ltc()
+    else:
+        ranking_function = BM25(b=args.b, k1=args.k1)
+
+    # Finnally Do we need to compute the indexed Collection ?
+    if args.generate_index or not is_existing_index:
+        index = Indexer()
+        collection = Collection(
+            path=os.path.join(DATA_FOLDER, COLLECTION_NAME),
+            indexer=index,
+            preprocessor=text_preprocessor,
+            ranking_function=ranking_function,
+        )
+        collection.load_and_preprocess()
+        collection.compute_index()
+        index.serialize(index_path)
+        collection.compute_statistics()
+        print(collection)
+        if args.plot:
+            collection.plot_statistics()
+
+    else:
+        collection = Collection.deserialize(index_path)
+
+
+    # Now we can use the index and the preprocessor to do the queries
+    queries = args.queries
+    delimiter = "-" * 80
+    k = args.top_n
+    for id, query in enumerate(queries):
+        print(f"Query: {query}")
+        collection.Timer.start(f"query{id:02d}_preprocessing")
+        query = collection.text_preprocessor.doc_preprocessing(query)
+        collection.Timer.stop(f"query{id:02d}_preprocessing")
+        print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')} seconds.")
+        print(f"Query preprocessed: {query}")
+        print(delimiter)
+
+        print(f"Ranking documents...")
+        collection.Timer.start(f"query{id:02d}_ranking")
+        ranking = collection.information_retriever.RSV(query)
+        collection.Timer.stop(f"query{id:02d}_ranking")
+        print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')} seconds.")
+        print(delimiter)
+
+        print(f"Ranking results:")
+        for i, (doc_id, score) in enumerate(ranking):
+            print(f"#{i+1} - Document {doc_id} with score {score}")
+        print(delimiter)
+        print("\n\n")
+
 
 
 if __name__ == "__main__":
+    # Downloading nltk dependencies
+    for dep in  ['stopwords', 'wordnet', 'punkt']:
+        nltk.download(dep)
     main()

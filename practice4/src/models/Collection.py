@@ -1,5 +1,6 @@
 import gzip
 import matplotlib.pyplot as plt
+import pickle
 from tqdm import tqdm
 from models.Document import Document
 from models.Timer import Timer
@@ -146,3 +147,41 @@ class Collection:
         plt.tight_layout()
         plt.savefig(os.path.join(GRAPH_FOLDER, f"{self.path}_Metrics_Bar_Plot.png"))
         plt.show()
+
+
+    def RSV(self, query):
+        """
+        compute the Relevant Status Value of a document for a query
+        """
+        scores = {}
+        for doc in self.documents:
+            for term in query:
+                df = self.indexer.get_df(term)
+                tf = self.indexer.get_term_frequency(term, doc.get_id())
+                dl = len(doc)
+                # !!! WARNING !!! only for BM25 for now
+                score += self.information_retriever.compute_score(tf, df, dl)
+            scores[doc.get_id()] = score
+           
+        return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    
+
+    def serialize(self, path) -> bool:
+        try:
+            with open(path, 'wb') as f:
+                pickle.dump(self, f)
+            return True
+        except Exception as e:
+            print(f"Error serializing indexed collection to {path}: {e}")
+            return False
+
+    @classmethod
+    def deserialize(cls, path):
+        with open(path, 'rb') as f:
+            index = pickle.load(f)
+
+        if isinstance(index, cls):
+            return index
+        
+        print(f"Deserialized object from {path} is not an instance of the Index class.")
+        return None

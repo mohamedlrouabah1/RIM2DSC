@@ -1,4 +1,3 @@
-import pickle
 from collections import Counter
 from models.Document import Document
 from models.PostingList import PostingList
@@ -14,29 +13,15 @@ class Indexer:
     def get_vocabulary(self):
         return self.posting_lists.keys()
     
-    def get_term_frequency(self, term:str):
-        return self.posting_lists[term].total_frequency
+    def get_df(self, term:str):
+        """
+        Return the number of documents in which the term appears.
+        """
+        return len(self.posting_lists[term])
     
-    def serialize(self, path) -> bool:
-        try:
-            with open(path, 'wb') as f:
-                pickle.dump(self, f)
-            return True
-        except Exception as e:
-            print(f"Error serializing index to {path}: {e}")
-            return False
-
-    @classmethod
-    def deserialize(cls, path):
-        with open(path, 'rb') as f:
-            index = pickle.load(f)
-
-        if isinstance(index, cls):
-            return index
-        
-        print(f"Deserialized object from {path} is not an instance of the Index class.")
-        return None
-
+    def get_term_frequency_document(self, term:str, doc_id:int):
+        return self.posting_lists[term].get_tfd(doc_id)
+    
 
     def __str__(self):
         s = "-"*50 + "\n"

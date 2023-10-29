@@ -6,7 +6,7 @@ rendus/*.zip
 rendus/*
 data/*
 uml_diagrams/*.bkp
-
+saves/*
 
 # python generated files
 **/__pycache__/

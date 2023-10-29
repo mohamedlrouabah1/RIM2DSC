@@ -43,6 +43,7 @@ def collection_statistics(mode, chartname) :
     print("Preprocessing time: ")
     print_time(chartname,index.preprocessing_time_in_ns)
     print("----------------------------------------")
+    # print(index)
         
 
    # Display metrics using an improved bar plot

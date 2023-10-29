@@ -18,9 +18,10 @@ class TextPreprocessor:
             self.is_valid_token = lambda w: w not in self.stopwords
         
 
-        if tokenizer == "basic":
+        if tokenizer == "regex":
             self.tokenize = lambda text: re.findall(r"\b\w+(?:'\w+)?\b", text)
-        elif tokenizer == "nltk":
+        else: 
+            #tokenizer == "nltk"
             self.tokenize = lambda text: word_tokenize(text)
 
         if lemmer and stemmer:

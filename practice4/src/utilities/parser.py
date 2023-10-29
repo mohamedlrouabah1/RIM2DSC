@@ -20,16 +20,16 @@ def parse_command_line_arguments() -> argparse.Namespace:
     # ======= Preprocessing arguments =======
     
     parser.add_argument(
+        "-t", "--tokenizer",
+        choices=["regex", "nltk"],
+        default="nltk",
+        help="Tokenizer to use for preprocessing."
+        )
+    
+    parser.add_argument(
         "-s", "--stopword",
         action="store_true",
         help="To use stopword removal for preprocessing."
-        )
-
-    parser.add_argument(
-        "-t", "--tokenizer",
-        choices=["basic", "nltk"],
-        default="nltk",
-        help="Tokenizer to use for preprocessing."
         )
     
     parser.add_argument(
@@ -43,6 +43,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         choices=["porter", "snowball"],
         default="porter",
         help="Stemmer to use for preprocessing."
+        )
+    
+    parser.add_argument(
+        "-p", "--plot",
+        action="store_true",
+        help="Plot the collection statistics, only if the index is computed with -i."
         )
     
     # ======= Ranking arguments =======
@@ -66,6 +72,13 @@ def parse_command_line_arguments() -> argparse.Namespace:
         type=float,
         default=1.2,
         help="BM25 parameter k1. It has no effect on other ranking algorithms."
+        )
+    
+    parser.add_argument(
+        "-n", "--top-n",
+        type=int,
+        default=10,
+        help="Number of documents to retrieve."
         )
     
     parser.add_argument(

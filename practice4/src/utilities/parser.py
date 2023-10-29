@@ -20,18 +20,18 @@ def parse_command_line_arguments() -> argparse.Namespace:
     # ======= Preprocessing arguments =======
     
     parser.add_argument(
+        "-s", "--stopword",
+        action="store_true",
+        help="To use stopword removal for preprocessing."
+        )
+
+    parser.add_argument(
         "-t", "--tokenizer",
         choices=["basic", "nltk"],
         default="nltk",
         help="Tokenizer to use for preprocessing."
         )
     
-    parser.add_argument(
-        "-s", "--stopword",
-        action="store_true",
-        help="To use stopword removal for preprocessing."
-        )
-
     parser.add_argument(
         "-l", "--lemmer",
         action="store_true",
@@ -68,19 +68,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help="BM25 parameter k1. It has no effect on other ranking algorithms."
         )
     
+    parser.add_argument(
+        "queries",
+        type=str,
+        nargs="+",
+        help="Queries to run."
+        )
+
+
     return parser.parse_args()
-
-
-
-def validate_command_line_arguments(args: argparse.Namespace) -> argparse.Namespace:
-    raise NotImplementedError("TODO: update this fuction accordingly to the new arguments.")
-    if args.exercise is None:
-        print("Please specify an exercise using the --exercise flag with value 1, 2, 3, 5, 7, or 9.")
-        print("Default set to exercice 9.")
-        args.exercise = 9
-
-    if args.exercise not in [1, 2, 3, 5, 7, 9]:
-        print("Exercise not found. Please choose from exercises 1, 2, 3, 5, 7, or 9.")
-        return None
-
-    return args

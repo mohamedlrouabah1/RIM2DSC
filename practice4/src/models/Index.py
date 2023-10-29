@@ -1,6 +1,5 @@
 import pickle
 from models.Collection import Collection
-from models.Index import Index
 from models.PostingList import PostingList
 
 class Index:
@@ -29,7 +28,7 @@ class Index:
             return False
 
     @classmethod
-    def deserialize(cls, path) -> Index:
+    def deserialize(cls, path):
         with open(path, 'rb') as f:
             index = pickle.load(f)
 

@@ -58,14 +58,14 @@ def parse_command_line_arguments() -> argparse.Namespace:
         "-b", "--b",
         type=float,
         default=0.5,
-        help="BM25 parameter b. It has no effect on pther ranking algorithms."
+        help="BM25 parameter b. It has no effect on other ranking algorithms."
         )
     
     parser.add_argument(
         "-k", "--k1",
         type=float,
         default=1.2,
-        help="BM25 parameter k1. It has no effect on pther ranking algorithms."
+        help="BM25 parameter k1. It has no effect on other ranking algorithms."
         )
     
     return parser.parse_args()

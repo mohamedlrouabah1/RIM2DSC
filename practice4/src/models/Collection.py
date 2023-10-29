@@ -1,10 +1,12 @@
 import gzip
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 from models.Document import Document
 from models.Timer import Timer
 from models.TextPreprocessor import TextPreprocessor
 from models.Indexer import Indexer
 from models.weighting.BM25 import BM25
+from utilities.config import GRAPH_FOLDER
 
 # TODO make a subclass Collection Inex
 # to make specific function to extract documents
@@ -58,7 +60,7 @@ class Collection:
         # path = "index.pkl"
 
 
-    def load_collection(self, path):
+    def compute_statistics(self):
         # Compute collection statistics
         print("Computing collection statistics...")
         self.Timer.start("compute_statistics")
@@ -97,6 +99,12 @@ class Collection:
     def get_terms_collection_frequency(self):
         return self.cf
     
+    def set_ranking_function(self, ranking_function):
+        self.information_retriever = ranking_function
+
+    def search(self, query, k=10):
+        return self.information_retriever.search(query, k)
+    
     def __str__(self) -> str:
         s = "-"*50 + "\n"
         s += f"Collection: {self.path}\n"
@@ -114,3 +122,27 @@ class Collection:
 
     def __repr__(self) -> str:
         pass
+
+
+    def plot_statistics(self): 
+        labels = ["Avg Doc Length", "Avg Term Length", "Vocabulary Size", "Total Collection Frequency", "Preprocessing Time (seconds)", "Indexing Time (seconds)"]
+        values = [self.avdl, self.avtl, self.get_vocabulary_size(), sum(self.cf), self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')]
+
+        plt.figure(figsize=(12, 8))
+        bars = plt.bar(labels, values, color=['blue', 'green', 'red', 'purple', 'cyan'])
+        
+        # Use logarithmic scale for y-axis
+        plt.yscale('log')
+        plt.ylabel('Value (log scale)')
+        plt.title(f'Metrics for the Collection: {self.path}')
+        # Define units or descriptors
+        units = ["(words)", "(characters)", "(unique terms)", "(terms)", "(seconds)"]
+
+        # Annotate with exact values and units
+        for i, bar in enumerate(bars):
+            yval = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2, yval + (0.02 * yval), f"{round(yval, 2)} {units[i]}", ha='center', va='bottom', fontsize=9)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(GRAPH_FOLDER, f"{self.path}_Metrics_Bar_Plot.png"))
+        plt.show()

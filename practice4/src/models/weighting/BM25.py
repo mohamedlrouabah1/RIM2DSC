@@ -55,3 +55,4 @@ class BM25(WeightingFunction):
         tf_den_dl = tf_den + self.compute_tf_weight_dl_part(dl)
         tf_weight = tf_num / tf_den_dl
         return tf_weight * idf
+    

@@ -1,6 +1,6 @@
 from functools import lru_cache
 from math import log10
-from WeightingFunction import WeightingFunction
+from models.weighting.WeightingFunction import WeightingFunction
 
 class SMART_ltn(WeightingFunction):
 

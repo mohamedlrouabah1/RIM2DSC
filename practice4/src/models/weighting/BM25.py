@@ -1,8 +1,8 @@
 from functools import lru_cache
 from math import log10
-from WeightingFunction import WeightingFunction
+from models.weighting.WeightingFunction import WeightingFunction
 
-class SMART_ltn(WeightingFunction):
+class BM25(WeightingFunction):
 
     def __init__(self, N, avdl, k1=1.2, b=0.75):
         """

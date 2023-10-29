@@ -3,7 +3,7 @@ from math import log10, sqrt
 from SMART_ltn import SMART_ltn
 from WeightingFunction import WeightingFunction
 
-class SMART_ltn(WeightingFunction):
+class SMART_ltc(WeightingFunction):
 
     def __init__(self, smart_ltn):
         if smart_ltn is not None:

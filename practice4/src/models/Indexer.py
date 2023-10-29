@@ -1,13 +1,12 @@
 import pickle
-from models.Collection import Collection
+from collections import Counter
+from models.Document import Document
 from models.PostingList import PostingList
+from models.PostingListUnit import PostingListUnit
 
-class Index:
-    def __init__(self, collection:Collection=None):
+class Indexer:
+    def __init__(self,):
         self.posting_lists: list(PostingList) = {}
-        self.collection = Collection() if collection is None else collection
-        self.indexing_time_in_ns = -1.0
-        self.preprocessing_time_in_ns = -1.0 
 
     def get_vocabulary_size(self):
         return len(self.posting_lists)
@@ -41,7 +40,7 @@ class Index:
 
     def __str__(self):
         s = "-"*50 + "\n"
-        s += f"Indexing the collection at {self.collection.path}" + "\n"
+        #s += f"Indexing the collection at {self.collection.path}" + "\n"
         s += f"Preprocessing time: {self.preprocessing_time_in_ns} ns" + "\n"
         s += f"Indexing time: {self.indexing_time_in_ns} ns" + "\n"
         s += f"Vocabulary size: {self.get_vocabulary_size()}" + "\n"
@@ -56,3 +55,23 @@ class Index:
         s = "-"*50 + "\n"
         
         return s
+    
+
+    def index_doc(self, doc:Document) -> None:
+        """
+        Create the posting lists for the given document.
+        """
+        tokens = doc.get_tokens()
+        id = doc.get_id()
+        tf = Counter(tokens)
+        
+        for term, freq in tf.items():
+            unit = PostingListUnit(id, freq)
+
+            if self.posting_lists.get(term) is None:
+                self.posting_lists[term] = PostingList(term)
+            else:
+                self.posting_lists[term].add_posting(unit)
+
+    def __len__(self):
+        return len(self.posting_lists)

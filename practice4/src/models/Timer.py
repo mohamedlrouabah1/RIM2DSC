@@ -1,6 +1,19 @@
 from time import perf_counter_ns
 from enum import Enum
-from Timer import TimeUnit
+
+
+class TimeUnit(Enum):
+    """
+    Value to get the execution time in the desired unit
+    given the per_counter_ns() function that return the
+    time in nanoseconds.
+    """
+    NS = 1
+    MS = 1,000
+    S = 1,000,000,000
+    MIN = 60,000,000,000
+    HOUR = 3,600,000,000,000
+
 
 class Timer:
     """
@@ -54,17 +67,3 @@ class Timer:
     def display_histogram(self):
         raise NotImplementedError("Not implemented yet")
         
-    
-
-
-class TimeUnit(Enum):
-    """
-    Value to get the execution time in the desired unit
-    given the per_counter_ns() function that return the
-    time in nanoseconds.
-    """
-    NS = 1
-    MS = 1,000
-    S = 1,000,000,000
-    MIN = 60,000,000,000
-    HOUR = 3,600,000,000,000

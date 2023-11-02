@@ -25,6 +25,8 @@ def get_index_path(args) -> str:
     return index_path
 
 
+
+
 def main() -> None:
     # Process program's arguments
     args = parse_command_line_arguments()

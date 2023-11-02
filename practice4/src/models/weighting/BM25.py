@@ -2,6 +2,9 @@ from functools import lru_cache
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
 
+import numpy as np
+from scipy.optimize import minimize
+
 class BM25(WeightingFunction):
 
     def __init__(self, N, avdl, k1=1.2, b=0.75):
@@ -56,7 +59,7 @@ class BM25(WeightingFunction):
         tf_weight = tf_num / tf_den_dl
         return tf_weight * idf
     
-    def compute_score(self, documents, query, indexer):
+    def compute_scores(self, documents, query, indexer):
         """
         Return a dictionary of scores for each document for each query.
         The keys of the dictionary are the queries ids.
@@ -73,3 +76,22 @@ class BM25(WeightingFunction):
 
         return scores
            
+
+
+if __name__ == "__main__":
+    pass
+    # # Define your objective function
+    # def objective_function(params):
+    #     b, k1 = params
+    #     # Calculate the objective function (e.g., MAP) using b and k1
+    #     # Return the negative of the objective function to minimize it
+    #     return -your_objective_function(b, k1)
+
+    # # Initial parameter values
+    # initial_params = [initial_b, initial_k1]
+
+    # # Perform optimization
+    # result = minimize(objective_function, initial_params, method='L-BFGS-B')
+
+    # Updated parameter values
+# optimal_b, optimal_k1 = result.x

@@ -30,7 +30,7 @@ class SMART_ltn(WeightingFunction):
         
         return 0
     
-    def compute_score(self, documents, query, indexer):
+    def compute_scores(self, documents, query, indexer):
         """
         Return a dictionary of scores for each document for each query.
         The keys of the dictionary are the queries ids.

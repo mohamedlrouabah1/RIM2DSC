@@ -85,10 +85,16 @@ def main() -> None:
 
 
     # Now we can use the index and the preprocessor to do the queries
-    queries = args.queries
+    csv_queries = args.query_path
+    try:
+        queries = [line.strip().split(',') for line in open(csv_queries, "r")]
+    except FileNotFoundError:
+        print(f"File {csv_queries} not found.")
+        return
     delimiter = "-" * 80
     top_n = args.top_n
-    for id, query in enumerate(queries):
+    for id, query in queries:
+        id = int(id)
         print(f"Query: {query}")
         collection.Timer.start(f"query{id:02d}_preprocessing")
         query = collection.preprocessor.doc_preprocessing(query)

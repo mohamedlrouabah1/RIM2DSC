@@ -82,10 +82,9 @@ def parse_command_line_arguments() -> argparse.Namespace:
         )
     
     parser.add_argument(
-        "queries",
+        "query_path",
         type=str,
-        nargs="+",
-        help="Queries to run."
+        help="Path to a csv file containing the queries and their ids."
         )
 
 

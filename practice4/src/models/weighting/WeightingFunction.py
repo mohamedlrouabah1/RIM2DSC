@@ -3,5 +3,5 @@ from abc import ABC, abstractmethod
 class WeightingFunction(ABC):
 
     @abstractmethod
-    def compute_score(self, **kargs):
+    def compute_score(self, documents, query, indexer):
         raise NotImplementedError("Should implement get_ranking()")

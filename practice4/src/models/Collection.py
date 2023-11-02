@@ -154,17 +154,7 @@ class Collection:
         """
         compute the Relevant Status Value of a document for a query
         """
-        scores = {}
-        for doc in self.documents:
-            score = 0
-            for term in query:
-                df = self.indexer.get_df(term)
-                tf = self.indexer.get_tf(term, doc.id)
-                dl = len(doc)
-                # !!! WARNING !!! only for BM25 for now
-                score += self.information_retriever.compute_score(tf, df, dl)
-            scores[doc.id] = score
-           
+        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
 

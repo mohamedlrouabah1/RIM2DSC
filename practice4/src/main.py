@@ -72,9 +72,9 @@ def main() -> None:
 
     # We create the ranking function
     if args.ranking == "smart_ltn":
-        ranking_function = SMART_ltn()
+        ranking_function = SMART_ltn(N=len(collection))
     elif args.ranking == "smart_ltc":
-        ranking_function = SMART_ltc()
+        ranking_function = SMART_ltc(N=len(collection))
     else:
         ranking_function = BM25(
             N=len(collection),

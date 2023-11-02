@@ -42,7 +42,7 @@ class BM25(WeightingFunction):
         return self.k1_times_b_times_inv_avdl * dl
     
     @lru_cache(maxsize=None)
-    def compute_score(self, tf, df, dl):
+    def compute_weight(self, tf, df, dl):
         """
         tf: term frequency in the document
         df: document frequency of the term
@@ -56,3 +56,20 @@ class BM25(WeightingFunction):
         tf_weight = tf_num / tf_den_dl
         return tf_weight * idf
     
+    def compute_score(self, documents, query, indexer):
+        """
+        Return a dictionary of scores for each document for each query.
+        The keys of the dictionary are the queries ids.
+        """        
+        scores = {}
+        for doc in documents:
+            score = 0
+            for term in query:
+                df = indexer.get_df(term)
+                tf = indexer.get_tf(term, doc.id)
+                dl = len(doc)
+                score += self.compute_weight(tf, df, dl)
+            scores[doc.id] = score
+
+        return scores
+           

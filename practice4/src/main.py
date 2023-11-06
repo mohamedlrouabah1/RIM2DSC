@@ -1,7 +1,9 @@
 import nltk
 import os
+from tqdm import tqdm
 from models.Collection import Collection
 from models.Indexer import Indexer
+from models.IRrun import IRrun
 from models.TextPreprocessor import TextPreprocessor
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
@@ -85,14 +87,25 @@ def main() -> None:
 
 
     # Now we can use the index and the preprocessor to do the queries
-    csv_queries = args.query_path
+    csv_queries = args.queries_file_path
     try:
         queries = [line.strip().split(',') for line in open(csv_queries, "r")]
     except FileNotFoundError:
         print(f"File {csv_queries} not found.")
         return
+    
+    # To create the run file
+    run = IRrun(
+        weighting_function=args.ranking,
+        stop=args.stopword,
+        stem=args.stemmer,
+        params=[f"k{args.k1}", f"b{args.b}"]
+    )
+
+    # for the display
     delimiter = "-" * 80
     top_n = args.top_n
+    
     for id, query in queries:
         id = int(id)
         print(f"Query: {query}")
@@ -116,10 +129,23 @@ def main() -> None:
         print(delimiter)
         print("\n\n")
 
+        # We add the results to the run file
+        for i, (doc_id, score) in enumerate(ranking[:top_n]):
+            run.add_result_line(
+                query_id=id,
+                doc_id=doc_id,
+                rank=i+1,
+                score=score
+            )
+
+    # Finnally we save the run file
+    run.save_run(verbose=True)
+
+
 
 
 if __name__ == "__main__":
     # Downloading nltk dependencies
-    for dep in  ['stopwords', 'wordnet', 'punkt']:
-        nltk.download(dep)
+    for dep in  tqdm(["stopwords", "punkt", "wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
+        nltk.download(dep, quiet=True)
     main()

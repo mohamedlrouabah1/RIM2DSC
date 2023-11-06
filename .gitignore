@@ -7,6 +7,7 @@ rendus/*
 data/*
 uml_diagrams/*.bkp
 saves/*
+**/results/
 
 # python generated files
 **/__pycache__/

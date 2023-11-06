@@ -87,5 +87,11 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help="Path to a csv file containing the queries and their ids."
         )
 
+    parser.add_argument(
+        "-g", "--gradient-descent",
+        choices=["k1", "b"],
+        default=None,
+        help="Perform gradient descent on the given parameter."
+        )
 
     return parser.parse_args()

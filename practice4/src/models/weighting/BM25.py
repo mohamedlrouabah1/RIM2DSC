@@ -1,8 +1,11 @@
 from functools import lru_cache
 from math import log10
-from WeightingFunction import WeightingFunction
+from models.weighting.WeightingFunction import WeightingFunction
 
-class SMART_ltn(WeightingFunction):
+import numpy as np
+from scipy.optimize import minimize
+
+class BM25(WeightingFunction):
 
     def __init__(self, N, avdl, k1=1.2, b=0.75):
         """
@@ -42,7 +45,7 @@ class SMART_ltn(WeightingFunction):
         return self.k1_times_b_times_inv_avdl * dl
     
     @lru_cache(maxsize=None)
-    def compute_score(self, tf, df, dl):
+    def compute_weight(self, tf, df, dl):
         """
         tf: term frequency in the document
         df: document frequency of the term
@@ -55,3 +58,40 @@ class SMART_ltn(WeightingFunction):
         tf_den_dl = tf_den + self.compute_tf_weight_dl_part(dl)
         tf_weight = tf_num / tf_den_dl
         return tf_weight * idf
+    
+    def compute_scores(self, documents, query, indexer):
+        """
+        Return a dictionary of scores for each document for each query.
+        The keys of the dictionary are the queries ids.
+        """        
+        scores = {}
+        for doc in documents:
+            score = 0
+            for term in query:
+                df = indexer.get_df(term)
+                tf = indexer.get_tf(term, doc.id)
+                dl = len(doc)
+                score += self.compute_weight(tf, df, dl)
+            scores[doc.id] = score
+
+        return scores
+           
+
+
+if __name__ == "__main__":
+    pass
+    # # Define your objective function
+    # def objective_function(params):
+    #     b, k1 = params
+    #     # Calculate the objective function (e.g., MAP) using b and k1
+    #     # Return the negative of the objective function to minimize it
+    #     return -your_objective_function(b, k1)
+
+    # # Initial parameter values
+    # initial_params = [initial_b, initial_k1]
+
+    # # Perform optimization
+    # result = minimize(objective_function, initial_params, method='L-BFGS-B')
+
+    # Updated parameter values
+# optimal_b, optimal_k1 = result.x

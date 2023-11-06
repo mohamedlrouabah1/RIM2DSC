@@ -1,7 +1,65 @@
 # Compte rendu du TP3 de RI
 
+# output after updates of TP4
 
-# Summary
+--------------------------------------------------
+Collection: ../../data\Text_Only_Ascii_Coll_NoSem
+Number of documents: 9804
+Average Document Length: 669.8407792737659 (words)
+Average Term Length: 5.6430457261085865 (characters)
+Vocabulary Size: 153823 (unique terms)
+Total Collection Frequency: 2745993 (terms)
+Loading time: 00h00m00s502472ms500ns seconds
+Preprocessing time: 00h03m10s575938ms500ns seconds
+Indexation time: 00h00m08s687772ms400ns seconds
+Total time: 00h03m10s575938ms500ns00h00m08s687772ms400ns seconds
+Computing statistics time: 00h00m00s545055ms900ns seconds
+--------------------------------------------------
+
+Query: porter
+Query preprocessed in 00h00m00s8851ms300ns seconds.
+Query preprocessed: ['porter']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s29190ms100ns seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 475964 with score 3.9563805806923136
+#2 - Document 4144848 with score 3.700728513922686
+#3 - Document 5227249 with score 3.453529400263648
+#4 - Document 4072714 with score 3.4092796175950517
+#5 - Document 6202931 with score 3.367247297952634
+#6 - Document 1158236 with score 3.2865953202455143
+#7 - Document 927540 with score 3.269505175825067
+#8 - Document 3710057 with score 3.2409994355479372
+#9 - Document 15553221 with score 3.1032328920245584
+#10 - Document 3438796 with score 2.963510079596289
+--------------------------------------------------------------------------------
+
+
+
+Query: web ranking scoring algorithm
+Query preprocessed in 00h00m00s287ms600ns seconds.
+Query preprocessed: ['web', 'rank', 'score', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s84433ms000ns seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 23724 with score 5.335838548655488
+#2 - Document 3503154 with score 5.035812208432635
+#3 - Document 1793571 with score 4.929107827264286
+#4 - Document 6422823 with score 4.803656772187606
+#5 - Document 465576 with score 4.763635599711661
+#6 - Document 1482394 with score 4.694174894031159
+#7 - Document 18096221 with score 4.689826145600097
+#8 - Document 18543218 with score 4.565370502279264
+#9 - Document 752465 with score 4.556075047684384
+#10 - Document 5339275 with score 4.524822595695764
+--------------------------------------------------------------------------------
+
+
+# Summary TP 3
 
 The scores provided here represent various relevance measures 
 for documents related to the search terms "SMART LTN," 

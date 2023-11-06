@@ -1,8 +1,5 @@
 from collections import  Counter
-import nltk
-from nltk import PorterStemmer, WordNetLemmatizer
-from nltk import word_tokenize
-from nltk.corpus import stopwords
+
 import re
 import string
 from tqdm import tqdm
@@ -14,32 +11,11 @@ from models.PostingList import PostingList
 from models.PostingListUnit import PostingListUnit
 
 
-nltk.download('stopwords')
-stop_words = set(stopwords.words('english'))
-stemmer = PorterStemmer()
-lemmatizer = WordNetLemmatizer()
 
-def pre_processing(content, mode="basic"):
-    tokens = [token for token in word_tokenize(content.lower()) if token not in string.punctuation]
-    
-    if mode == "nltk_stopwords":
-        return [token for token in tokens if token not in stop_words]
-    elif mode == "nltk_stopwords_stemmer":
-        return [stemmer.stem(lemmatizer.lemmatize(token)) for token in tokens if token not in stop_words]
-    elif mode == "stemmer":
-        return [stemmer.stem(token) for token in tokens]
-    elif mode == "basic":
-        return tokens
-    else:
-        raise ValueError("Invalid mode provided!")
 
 def generate_index_oop(doc, mode) -> Index:
     index = Index()
-    
-    doc_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
 
-    # Mesurez le temps de prétraitement
-    start_preprocessing_time_ns = time_ns()
     processed_contents = [(doc_id, pre_processing(content, mode)) 
                       for doc_id, content in tqdm(doc_pattern.findall(doc), desc="Preprocessing contents...", colour="blue")]
     index.preprocessing_time_in_ns = time_ns() - start_preprocessing_time_ns

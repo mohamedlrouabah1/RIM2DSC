@@ -1,6 +1,19 @@
 from time import perf_counter_ns
 from enum import Enum
-from Timer import TimeUnit
+
+
+class TimeUnit(Enum):
+    """
+    Value to get the execution time in the desired unit
+    given the per_counter_ns() function that return the
+    time in nanoseconds.
+    """
+    NS = 1
+    MS = 1_000
+    S = 1_000_000_000
+    MIN = 60_000_000_000
+    HOUR = 3_600_000_000_000
+
 
 class Timer:
     """
@@ -19,6 +32,7 @@ class Timer:
         """
         self.measure = {}
         self.default_unit = default_unit
+        self.current = None
 
     def __len__(self) -> int:
         return len(self.measure)
@@ -48,23 +62,26 @@ class Timer:
         self.current = None
         return True
     
-    def computation_time(self, name, unit=TimeUnit.S) -> float:
-        return (self.measure[name][1] - self.measure[name][0])/unit.value
+    def get_time(self, name) -> float:
+        return self.format_time(name)
+    
+
+    def __str__(self) -> str:
+        timer_str = f"Timer with {len(self)} measures\n"
+        for name in self.measure:
+            timer_str += f" - {name} : {self.format_time(name)}\n"
+        return timer_str
+
+    def format_time(self, name) -> str:
+        ns = self.measure[name][1] - self.measure[name][0]
+        hours, remainder = divmod(ns, TimeUnit.HOUR.value)
+        minutes, remainder = divmod(remainder, TimeUnit.MIN.value)
+        seconds, remainder = divmod(remainder, TimeUnit.S.value)
+        milliseconds, remainder = divmod(remainder, TimeUnit.MS.value)
+        formatted_time = f"{hours:02d}h{minutes:02d}m{seconds:02d}s{milliseconds:03d}ms{remainder:03d}ns"
+        return formatted_time
+    
     
     def display_histogram(self):
         raise NotImplementedError("Not implemented yet")
         
-    
-
-
-class TimeUnit(Enum):
-    """
-    Value to get the execution time in the desired unit
-    given the per_counter_ns() function that return the
-    time in nanoseconds.
-    """
-    NS = 1
-    MS = 1,000
-    S = 1,000,000,000
-    MIN = 60,000,000,000
-    HOUR = 3,600,000,000,000

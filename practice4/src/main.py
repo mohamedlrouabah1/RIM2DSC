@@ -1,64 +1,30 @@
-import argparse
-from collection_statistics import collection_statistics
-from ranking_retrieval import print_ranking, plot_ranking
-from utilities.utils import load_text_collection, generate_index_oop
-from utilities.config import *
-
-def parse_command_line_arguments() -> argparse.Namespace:
-    """
-    >main.py -e N
-    N: exercise number to run (1, 2, 3, 5, 7, 9)
-        default value: 9
-    """
-    parser = argparse.ArgumentParser(
-        prog="Information Retrieval Practice",
-        description="Information Retrieval Exercises")
-    parser.add_argument(
-        "-e", "--exercise", 
-        type=int, 
-        help="Exercise number to run (1, 2, 3, 5, 7, 9)")
-    
-    return parser.parse_args()
+import nltk
+import os
+from tqdm import tqdm
+from models.Collection import Collection
+from models.Indexer import Indexer
+from models.IRrun import IRrun
+from models.TextPreprocessor import TextPreprocessor
+from models.weighting.BM25 import BM25
+from models.weighting.SMART_ltc import SMART_ltc
+from models.weighting.SMART_ltn import SMART_ltn
+from utilities.config import DATA_FOLDER, COLLECTION_FILES, COLLECTION_NAME, SAVE_FOLDER
+from utilities.parser import parse_command_line_arguments
 
 
-def validate_command_line_arguments(args: argparse.Namespace) -> argparse.Namespace:
-    if args.exercise is None:
-        print("Please specify an exercise using the --exercise flag with value 1, 2, 3, 5, 7, or 9.")
-        print("Default set to exercice 9.")
-        args.exercise = 9
+def get_index_path(args) -> str:
+    index_path = f"{SAVE_FOLDER}/index_"
+    index_path += "regex_" if args.tokenizer == "regex" else "nltk_"
+    index_path += "stop_" if args.stopword else "nostop_"
+    index_path += "lem_" if args.lemmer else "nolem_"
 
-    if args.exercise not in [1, 2, 3, 5, 7, 9]:
-        print("Exercise not found. Please choose from exercises 1, 2, 3, 5, 7, or 9.")
-        return None
-
-    return args
-
-
-def run_exercice(n: int, index, query, b=0.5, k1=1.2) -> None:
-    if n == 1:
-        collection_statistics(mode="nltk_stopwords_stemmer", chartname="nltk_stopwords_stemmer")
-    elif n == 2:
-        print("Exercice 2:")
-        collection_statistics(mode="basic", chartname="basic")
-    elif n == 3:
-        collection_statistics(mode="stemmer", chartname="stemmer")
-    elif n == 5:
-        scoring_mode = "smart_ltn"
-        print_ranking(query, scoring_mode, index, b, k1)
-        plot_ranking(query, index, b, k1)
-    elif n == 7:
-        scoring_mode = "smart_ltc"
-        print_ranking(query, scoring_mode, index, b, k1)
-        plot_ranking(query, index, b, k1)
-        scoring_mode = "bm25"
-        print_ranking(query, scoring_mode, index, b, k1)
-        plot_ranking(query, index, b, k1)
-    # elif n == 9:
-        # scoring_mode = "bm25"
-        # print_ranking(query, scoring_mode, index, b, k1)
-        # plot_ranking(query, index, b, k1)
+    if args.stemmer is None:
+        index_path += "nostem_"
     else:
-        print("Exercise not found. Please choose from exercises 1, 2, 3, 5, 7, or 9.")
+        index_path += "snow_" if args.stemmer == "snowball" else "porter_"  
+
+    index_path += COLLECTION_NAME + ".pkl"
+    return index_path
 
 
 
@@ -66,18 +32,120 @@ def run_exercice(n: int, index, query, b=0.5, k1=1.2) -> None:
 def main() -> None:
     # Process program's arguments
     args = parse_command_line_arguments()
-    args = validate_command_line_arguments(args)
-    if args is None: return
 
-    # Load the document collection and create the index
-    content = load_text_collection(f"{DATA_FOLDER}/{COLLECTION_FILES[0]}")
-    index = generate_index_oop(content, mode="nltk_stopwords_stemmer")
-    query = "web ranking scoring algorithm"
+    # First create the path to the save index file
+    index_path = get_index_path(args)    
+    is_existing_index = os.path.isfile(index_path)
+    if is_existing_index:
+        print(f"Index file {index_path} already exists.")
+    else:
+        print(f"Index file {index_path} does not exist.")
 
-    # Run the exercise
-    run_exercice(args.exercise, index, query)
-    # run_exercice(args.exercise)
+    # Second we create the TextPreProcessor object
+    text_preprocessor = TextPreprocessor(
+        exclude_stopwords=args.stopword,
+        exclude_digits=args.stopword,
+        tokenizer=args.tokenizer,
+        lemmer=args.lemmer,
+        stemmer=args.stemmer
+    )
+
+
+    # Finnally Do we need to compute the indexed Collection ?
+    if args.generate_index or not is_existing_index:
+        index = Indexer()
+        collection = Collection(
+            path=os.path.join(DATA_FOLDER, COLLECTION_NAME),
+            indexer=index,
+            preprocessor=text_preprocessor
+        )
+        collection.load_and_preprocess()
+        collection.compute_index()
+        collection.compute_statistics()
+        collection.serialize(index_path)
+
+    else:
+        collection = Collection.deserialize(index_path)
+        collection.preprocessor = text_preprocessor
+
+    print(collection)
+    if args.plot:
+        collection.plot_statistics()
+
+    # We create the ranking function
+    if args.ranking == "smart_ltn":
+        ranking_function = SMART_ltn(N=len(collection))
+    elif args.ranking == "smart_ltc":
+        ranking_function = SMART_ltc(N=len(collection))
+    else:
+        ranking_function = BM25(
+            N=len(collection),
+            avdl=collection.get_avdl(), 
+            b=args.b, k1=args.k1
+            )
+    collection.information_retriever = ranking_function
+
+
+    # Now we can use the index and the preprocessor to do the queries
+    csv_queries = args.queries_file_path
+    try:
+        queries = [line.strip().split(',') for line in open(csv_queries, "r")]
+    except FileNotFoundError:
+        print(f"File {csv_queries} not found.")
+        return
+    
+    # To create the run file
+    run = IRrun(
+        weighting_function=args.ranking,
+        stop=args.stopword,
+        stem=args.stemmer,
+        params=[f"k{args.k1}", f"b{args.b}"]
+    )
+
+    # for the display
+    delimiter = "-" * 80
+    top_n = args.top_n
+    
+    for id, query in queries:
+        id = int(id)
+        print(f"Query: {query}")
+        collection.Timer.start(f"query{id:02d}_preprocessing")
+        query = collection.preprocessor.doc_preprocessing(query)
+        collection.Timer.stop()
+        print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')} seconds.")
+        print(f"Query preprocessed: {query}")
+        print(delimiter)
+
+        print(f"Ranking documents...")
+        collection.Timer.start(f"query{id:02d}_ranking")
+        ranking = collection.RSV(query)
+        collection.Timer.stop()
+        print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')} seconds.")
+        print(delimiter)
+
+        print(f"Ranking results:")
+        for i, (doc_id, score) in enumerate(ranking[:top_n]):
+            print(f"#{i+1} - Document {doc_id} with score {score}")
+        print(delimiter)
+        print("\n\n")
+
+        # We add the results to the run file
+        for i, (doc_id, score) in enumerate(ranking[:top_n]):
+            run.add_result_line(
+                query_id=id,
+                doc_id=doc_id,
+                rank=i+1,
+                score=score
+            )
+
+    # Finnally we save the run file
+    run.save_run(verbose=True)
+
+
 
 
 if __name__ == "__main__":
+    # Downloading nltk dependencies
+    for dep in  tqdm(["stopwords", "punkt", "wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
+        nltk.download(dep, quiet=True)
     main()

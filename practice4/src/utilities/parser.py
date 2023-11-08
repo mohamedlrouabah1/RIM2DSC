@@ -51,6 +51,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         help="Plot the collection statistics, only if the index is computed with -i."
         )
     
+    parser.add_argument(
+        "-pc", "--parallel-computing",
+        action="store_true",
+        help="Use parallel computing for preprocessing and indexing."
+        )
+    
     # ======= Ranking arguments =======
 
     parser.add_argument(

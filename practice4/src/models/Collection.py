@@ -17,7 +17,7 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path="", indexer=None, preprocessor=None):
+    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         self.documents:list(Document) = []
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
@@ -26,6 +26,7 @@ class Collection:
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
         self.indexer = Indexer() if indexer is None else indexer
         self.information_retriever = None
+        self.use_parallel_computing = use_parallel_computing
 
 
     def load_and_preprocess(self):
@@ -37,7 +38,7 @@ class Collection:
 
         print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-        doc_token_list = self.preprocessor.pre_process(collection_string)
+        doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
         self.Timer.stop()
         print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
 
@@ -54,7 +55,7 @@ class Collection:
     def compute_index(self, save=True):
         print("Indexing collection...")
         self.Timer.start("indexing")
-        for doc in self.documents: self.indexer.index_doc(doc)
+        self.indexer.index(self.documents, self.use_parallel_computing)
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.")
 

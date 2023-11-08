@@ -57,7 +57,8 @@ def main() -> None:
         collection = Collection(
             path=os.path.join(DATA_FOLDER, COLLECTION_NAME),
             indexer=index,
-            preprocessor=text_preprocessor
+            preprocessor=text_preprocessor,
+            use_parallel_computing=args.parallel_computing if args.parallel_computing else False
         )
         collection.load_and_preprocess()
         collection.compute_index()

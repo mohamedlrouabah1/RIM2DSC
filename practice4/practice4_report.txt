@@ -1,4 +1,179 @@
-# Compte rendu du TP3 de RI
+# Compte rendu du TP4 de RI
+
+
+## Code updates:
+
+- improve cli interface for the app, launch with -h to see more details
+- Fix weighting function class and used them in the ranking processed
+- add pytest class for the weighting functions
+- add a Textpreprocessor class to ease the parameterisation of this stage
+- save the collection with pickle (excluding some unnecessary files like preprocessor)
+  in order to avoid the preprocessing stage each time we launch the app
+- use some caching for the computation of each ranking functions in order to fasten the process
+- add a timer class to measure and store steps ofeach process of the app
+- use parralle computing to reduce the preprocessing and indexing time (divide the time by two with a 8core CPU)
+- fix the display of statistics and ranking results, especially by  using __str__ method on each objects
+  that nee to be displayed.
+- use pyinstaller to compute python code into bynary and thus fasten the execution (still experimental)
+- create a run class to handle the building of a run result
+
+
+# Exercise 1: SMART ltn run
+
+> python3 main.py --ranking smart_ltn ../queries.csv 
+Query: olive oil health benefit
+Query preprocessed in 00h00m00s008ms377591ns (total: 8377591ns) seconds.
+Query preprocessed: ['oliv', 'oil', 'health', 'benefit']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s041ms537755ns (total: 41537755ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 22478 with score 9.543896040247535
+#2 - Document 22594 with score 8.197828281887382
+#3 - Document 3951433 with score 7.975024915113314
+#4 - Document 4141841 with score 7.796074655623455
+#5 - Document 62784 with score 7.6856242546685065
+#6 - Document 263487 with score 7.4816087616989115
+#7 - Document 22479 with score 7.383192661730813
+#8 - Document 3946850 with score 7.371768433315834
+#9 - Document 3951728 with score 7.3188975157474525
+#10 - Document 86190 with score 7.2061710352808825
+--------------------------------------------------------------------------------
+
+
+
+Query: notting hill film actors
+Query preprocessed in 00h00m00s000ms371300ns (total: 371300ns) seconds.
+Query preprocessed: ['not', 'hill', 'film', 'actor']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s045ms671429ns (total: 45671429ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 1937693 with score 6.9605856536201784
+#2 - Document 170779 with score 6.578140617819193
+#3 - Document 204019 with score 6.501546346214858
+#4 - Document 2212038 with score 6.442065466115788
+#5 - Document 64394 with score 6.3188939351155184
+#6 - Document 10793 with score 6.023006973015792
+#7 - Document 11942501 with score 6.011776551307905
+#8 - Document 2465576 with score 5.997451578895738
+#9 - Document 52260 with score 5.970313278326717
+#10 - Document 1173571 with score 5.9325550933536375
+--------------------------------------------------------------------------------
+
+
+
+Query: probabilistic models in information retrieval
+Query preprocessed in 00h00m00s000ms209300ns (total: 209300ns) seconds.
+Query preprocessed: ['probabilist', 'model', 'in', 'inform', 'retriev']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s052ms811333ns (total: 52811333ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 15271 with score 6.46556580175182
+#2 - Document 2088675 with score 5.480196360600003
+#3 - Document 14752637 with score 5.17663672786439
+#4 - Document 15261743 with score 5.1211900916388045
+#5 - Document 203996 with score 5.075322386852529
+#6 - Document 454351 with score 5.034574051376483
+#7 - Document 56098 with score 4.954293974734058
+#8 - Document 534400 with score 4.94392947376954
+#9 - Document 18550455 with score 4.911738615592432
+#10 - Document 9223 with score 4.899241307333043
+--------------------------------------------------------------------------------
+
+
+
+Query: web link network analysis
+Query preprocessed in 00h00m00s000ms250400ns (total: 250400ns) seconds.
+Query preprocessed: ['web', 'link', 'network', 'analysi']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s040ms546627ns (total: 40546627ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 15919460 with score 4.663432976824772
+#2 - Document 15411415 with score 4.632693182401904
+#3 - Document 325726 with score 4.5418551241080305
+#4 - Document 8561200 with score 4.392409247031058
+#5 - Document 12398 with score 4.33401723712576
+#6 - Document 766409 with score 4.139583645524322
+#7 - Document 2979338 with score 4.131571076054438
+#8 - Document 13692 with score 4.017282770313869
+#9 - Document 1555022 with score 3.964572599268749
+#10 - Document 39776 with score 3.9595395399084192
+--------------------------------------------------------------------------------
+
+
+
+Query: web ranking scoring algorithm
+Query preprocessed in 00h00m00s000ms268800ns (total: 268800ns) seconds.
+Query preprocessed: ['web', 'rank', 'score', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s039ms621226ns (total: 39621226ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 23724 with score 6.968975727378338
+#2 - Document 70421 with score 6.318786090442736
+#3 - Document 1482394 with score 6.165487012927933
+#4 - Document 448834 with score 6.131435527494414
+#5 - Document 12431 with score 5.775673747867154
+#6 - Document 462448 with score 5.526067095325668
+#7 - Document 207747 with score 5.4169572143481055
+#8 - Document 47293 with score 5.413651323697287
+#9 - Document 1793571 with score 5.396028894140563
+#10 - Document 587642 with score 5.379772574994095
+--------------------------------------------------------------------------------
+
+
+
+Query: supervised machine learning algorithm
+Query preprocessed in 00h00m00s000ms595400ns (total: 595400ns) seconds.
+Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s072ms730634ns (total: 72730634ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 21523 with score 7.814930053906635
+#2 - Document 20926 with score 7.755664816076475
+#3 - Document 233488 with score 7.588733139261259
+#4 - Document 1164 with score 7.280908724388974
+#5 - Document 65309 with score 7.173324769137902
+#6 - Document 454351 with score 6.772332651000958
+#7 - Document 1729542 with score 6.633612794693161
+#8 - Document 6968451 with score 6.5853520366941165
+#9 - Document 6901703 with score 6.564008182834794
+#10 - Document 1179950 with score 6.184334898006508
+--------------------------------------------------------------------------------
+
+
+
+Query: operating system +mutual +exclusion
+Query preprocessed in 00h00m00s000ms179100ns (total: 179100ns) seconds.
+Query preprocessed: ['oper', 'system']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s024ms517095ns (total: 24517095ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 22194 with score 2.846984641841141
+#2 - Document 50394 with score 2.547529347968739
+#3 - Document 71916 with score 2.4719595116478135
+#4 - Document 13856089 with score 2.4692139072364165
+#5 - Document 31642 with score 2.43247959884916
+#6 - Document 1010280 with score 2.3981903894340473
+#7 - Document 40909 with score 2.358708474656861
+#8 - Document 3976325 with score 2.355310385236812
+#9 - Document 55395 with score 2.3384687245465794
+#10 - Document 916759 with score 2.28601226223244
+--------------------------------------------------------------------------------
+
+
 
 # output after updates of TP4
 

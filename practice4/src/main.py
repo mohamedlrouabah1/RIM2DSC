@@ -131,7 +131,7 @@ def main() -> None:
         print("\n\n")
 
         # We add the results to the run file
-        for i, (doc_id, score) in enumerate(ranking[:top_n]):
+        for i, (doc_id, score) in enumerate(ranking):
             run.add_result_line(
                 query_id=id,
                 doc_id=doc_id,

@@ -2,8 +2,8 @@ from functools import lru_cache
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
 
-import numpy as np
-from scipy.optimize import minimize
+# import numpy as np
+# from scipy.optimize import minimize
 
 class BM25(WeightingFunction):
 

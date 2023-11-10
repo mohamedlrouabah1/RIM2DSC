@@ -6,7 +6,7 @@ from models.weighting.WeightingFunction import WeightingFunction
 class SMART_ltc(WeightingFunction):
 
     def __init__(self, N, **kargs):
-        if  kargs['smart_ltn']is not None:
+        if  'smart_ltn' in kargs:
             self.smart_ltn = kargs['smart_ltn']
         else:
             self.smart_ltn = SMART_ltn(N)    
@@ -29,6 +29,7 @@ class SMART_ltc(WeightingFunction):
                 den += w_t_d ** 2
 
             # ltn score normalized
+            den = sqrt(den) if den != 0 else 1
             scores[doc.id] = num / sqrt(den)
 
         return scores

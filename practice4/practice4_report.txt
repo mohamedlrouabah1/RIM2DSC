@@ -1,110 +1,526 @@
-# Compte rendu du TP3 de RI
+# Compte rendu du TP4 de RI
 
 
-# Summary
+## Code updates:
 
-The scores provided here represent various relevance measures 
-for documents related to the search terms "SMART LTN," 
-"SMART LTC," and "BM25." 
+- Improve the CLI interface for the app; 
+  launch with -h to see more details.
 
-Each of these measures evaluates the match between the documents
-and the search query in its own distinct way. 
-  - SMART LTN assigns relatively high scores to documents like 
-     23724, 448834, and 18336216, indicating strong relevance 
-     to the "SMART LTN" search. 
-- In contrast, SMART LTC assigns significantly lower scores to 
-  the same documents, suggesting that they may not be as relevant 
-  to "SMART LTC." 
+- Fix weighting functions classes and use them 
+  in the ranking process.
 
-The discrepancy in relevance between the two versions may stem from 
-variations in the terms or contexts used in these two searches. 
-  - Lastly, the BM25 model calculates scores based on document suitability
-    to the query, where documents like 23724, 18336216, and 207747 receive 
-    notably high scores, signifying high relevance according to this method.
+- Add a Pytest class for the weighting functions.
+
+- Add a TextPreprocessor class to ease the 
+  parameterization of this stage.
+
+- Save the collection with Pickle, excluding unnecessary 
+  files like the preprocessor, 
+  to avoid the preprocessing stage each 
+  time we launch the app.
+
+- Use caching for the computation of each ranking 
+  function to speed up the process.
+
+- Add a timer class to measure and store the steps 
+  of each process in the app.
+
+- Use parallel computing to reduce preprocessing and 
+  indexing time; divide the time by two with an 8-core CPU.
+
+- Fix the display of statistics and ranking results, 
+  especially by using the __str__ method on each object 
+  that needs to be displayed.
+  
+- Use PyInstaller to compile Python code into binary, 
+  thus speeding up the execution (still experimental).
+  
+- Create a run class to handle the building of a run result.
 
 
-These score differences between the three approaches illustrate how relevance 
-measures can vary based on the chosen search algorithm or method, highlighting 
-the importance of selecting the most suitable search method to obtain the most 
-relevant results.
+# Exercise 1: SMART ltn run
 
-
-## results :
-------------------nltk_stopwords_stemmer----------------------
-Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8138.59700122399 (words)  
-Average Term Length: 9.266840412354142 (characters)
-Vocabulary Size: 388307 (unique terms)
-Total Collection Frequency: 7699851 (terms)
-Time taken Indexing collection: 278.31 seconds
---------------------basic--------------------
-Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8138.59700122399 (words)  
-Average Term Length: 7.540367914769234 (characters)
-Vocabulary Size: 271639 (unique terms)
-Total Collection Frequency: 11674409 (terms)       
-Time taken: 20.88 seconds
-------------------stemmer----------------------
-Indexing file: Text_Only_Ascii_Coll_NoSem
-Average Document Length: 8138.59700122399 (words)
-Average Term Length: 9.265322200681243 (characters)        
-Vocabulary Size: 388407 (unique terms)
-Total Collection Frequency: 13119008 (terms)
-Time taken with stemmer Indexing collection: 366.57 seconds
-----------------------------------------
-
-The presented statistics reflect the outcomes of indexing a text collection using three distinct techniques: "nltk_stopwords_stemmer," "basic," and "stemmer." 
-These statistics offer valuable insights into the characteristics of the processed text data. 
-Notably, 
-    - the "nltk_stopwords_stemmer" approach resulted in a vocabulary of 388,307 unique terms and a total collection frequency of 7,699,851 terms, taking 278.31 seconds for indexing.
-    - The "basic" method, on the other hand, produced similar vocabulary and collection frequency figures but with a shorter average term length and significantly faster indexing time of 20.88 seconds. 
-    - The "stemmer" approach yielded a larger vocabulary, a higher total collection frequency, and an indexing time of 366.57 seconds. 
-
-These variations emphasize the trade-offs between vocabulary size, indexing time, and average term length, 
-highlighting the importance of choosing the most appropriate indexing method based on specific requirements and priorities.
-
-##### SMART LTN #######
-Document ID: 23724, Score: 26.001476852197754
-Document ID: 448834, Score: 22.7365003314182
-Document ID: 18336216, Score: 22.334895865350816
-Document ID: 207747, Score: 20.92168395272993
-Document ID: 363695, Score: 19.48392007576976
-Document ID: 719095, Score: 19.40426509850978
-Document ID: 1803281, Score: 19.313249540824312
-Document ID: 8967626, Score: 19.192534968374076
-Document ID: 2086074, Score: 19.187373723195375
-Document ID: 149289, Score: 18.80401220207394
-##### SMART LTC ######
-Document ID: 23724, Score: 0.19110491831233037
-Document ID: 448834, Score: 0.18113201952061955
-Document ID: 18336216, Score: 0.18110429695666547
-Document ID: 207747, Score: 0.1663910689316672
-Document ID: 719095, Score: 0.1587521600393294
-Document ID: 1803281, Score: 0.1565047201894842
-Document ID: 2086074, Score: 0.15634035934684254
-Document ID: 8967626, Score: 0.15468943570549626
-Document ID: 6082436, Score: 0.15097417616215025
-Document ID: 15116785, Score: 0.1499149660358603
-###### BM25 ########
-Document ID: 23724, Score: 50.08305045208795
-Document ID: 18336216, Score: 47.54121391600216
-Document ID: 207747, Score: 42.81491241218825  
-Document ID: 448834, Score: 42.43818986174094  
-Document ID: 1803281, Score: 40.956414000400116
-Document ID: 2086074, Score: 40.943049356043836
-Document ID: 6082436, Score: 40.04725418996074 
-Document ID: 15116785, Score: 39.57938854203819
-Document ID: 363695, Score: 39.27606933849006  
-Document ID: 9567871, Score: 38.00006952395094 
-
-## Plot
-
-path for the plot :
- - ./graph/
-
-## Launch program  
-
->python3 ./src/main.py
+> python3 main.py --ranking smart_ltn ../queries.csv 
+Query: olive oil health benefit
+Query preprocessed in 00h00m00s008ms377591ns (total: 8377591ns) seconds.
+Query preprocessed: ['oliv', 'oil', 'health', 'benefit']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s041ms537755ns (total: 41537755ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 22478 with score 9.543896040247535
+#2 - Document 22594 with score 8.197828281887382
+#3 - Document 3951433 with score 7.975024915113314
+#4 - Document 4141841 with score 7.796074655623455
+#5 - Document 62784 with score 7.6856242546685065
+#6 - Document 263487 with score 7.4816087616989115
+#7 - Document 22479 with score 7.383192661730813
+#8 - Document 3946850 with score 7.371768433315834
+#9 - Document 3951728 with score 7.3188975157474525
+#10 - Document 86190 with score 7.2061710352808825
+--------------------------------------------------------------------------------
 
 
 
+Query: notting hill film actors
+Query preprocessed in 00h00m00s000ms371300ns (total: 371300ns) seconds.
+Query preprocessed: ['not', 'hill', 'film', 'actor']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s045ms671429ns (total: 45671429ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 1937693 with score 6.9605856536201784
+#2 - Document 170779 with score 6.578140617819193
+#3 - Document 204019 with score 6.501546346214858
+#4 - Document 2212038 with score 6.442065466115788
+#5 - Document 64394 with score 6.3188939351155184
+#6 - Document 10793 with score 6.023006973015792
+#7 - Document 11942501 with score 6.011776551307905
+#8 - Document 2465576 with score 5.997451578895738
+#9 - Document 52260 with score 5.970313278326717
+#10 - Document 1173571 with score 5.9325550933536375
+--------------------------------------------------------------------------------
+
+
+
+Query: probabilistic models in information retrieval
+Query preprocessed in 00h00m00s000ms209300ns (total: 209300ns) seconds.
+Query preprocessed: ['probabilist', 'model', 'in', 'inform', 'retriev']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s052ms811333ns (total: 52811333ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 15271 with score 6.46556580175182
+#2 - Document 2088675 with score 5.480196360600003
+#3 - Document 14752637 with score 5.17663672786439
+#4 - Document 15261743 with score 5.1211900916388045
+#5 - Document 203996 with score 5.075322386852529
+#6 - Document 454351 with score 5.034574051376483
+#7 - Document 56098 with score 4.954293974734058
+#8 - Document 534400 with score 4.94392947376954
+#9 - Document 18550455 with score 4.911738615592432
+#10 - Document 9223 with score 4.899241307333043
+--------------------------------------------------------------------------------
+
+
+
+Query: web link network analysis
+Query preprocessed in 00h00m00s000ms250400ns (total: 250400ns) seconds.
+Query preprocessed: ['web', 'link', 'network', 'analysi']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s040ms546627ns (total: 40546627ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 15919460 with score 4.663432976824772
+#2 - Document 15411415 with score 4.632693182401904
+#3 - Document 325726 with score 4.5418551241080305
+#4 - Document 8561200 with score 4.392409247031058
+#5 - Document 12398 with score 4.33401723712576
+#6 - Document 766409 with score 4.139583645524322
+#7 - Document 2979338 with score 4.131571076054438
+#8 - Document 13692 with score 4.017282770313869
+#9 - Document 1555022 with score 3.964572599268749
+#10 - Document 39776 with score 3.9595395399084192
+--------------------------------------------------------------------------------
+
+
+
+Query: web ranking scoring algorithm
+Query preprocessed in 00h00m00s000ms268800ns (total: 268800ns) seconds.
+Query preprocessed: ['web', 'rank', 'score', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s039ms621226ns (total: 39621226ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 23724 with score 6.968975727378338
+#2 - Document 70421 with score 6.318786090442736
+#3 - Document 1482394 with score 6.165487012927933
+#4 - Document 448834 with score 6.131435527494414
+#5 - Document 12431 with score 5.775673747867154
+#6 - Document 462448 with score 5.526067095325668
+#7 - Document 207747 with score 5.4169572143481055
+#8 - Document 47293 with score 5.413651323697287
+#9 - Document 1793571 with score 5.396028894140563
+#10 - Document 587642 with score 5.379772574994095
+--------------------------------------------------------------------------------
+
+
+
+Query: supervised machine learning algorithm
+Query preprocessed in 00h00m00s000ms595400ns (total: 595400ns) seconds.
+Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s072ms730634ns (total: 72730634ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 21523 with score 7.814930053906635
+#2 - Document 20926 with score 7.755664816076475
+#3 - Document 233488 with score 7.588733139261259
+#4 - Document 1164 with score 7.280908724388974
+#5 - Document 65309 with score 7.173324769137902
+#6 - Document 454351 with score 6.772332651000958
+#7 - Document 1729542 with score 6.633612794693161
+#8 - Document 6968451 with score 6.5853520366941165
+#9 - Document 6901703 with score 6.564008182834794
+#10 - Document 1179950 with score 6.184334898006508
+--------------------------------------------------------------------------------
+
+
+
+Query: operating system +mutual +exclusion
+Query preprocessed in 00h00m00s000ms179100ns (total: 179100ns) seconds.
+Query preprocessed: ['oper', 'system']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s024ms517095ns (total: 24517095ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 22194 with score 2.846984641841141
+#2 - Document 50394 with score 2.547529347968739
+#3 - Document 71916 with score 2.4719595116478135
+#4 - Document 13856089 with score 2.4692139072364165
+#5 - Document 31642 with score 2.43247959884916
+#6 - Document 1010280 with score 2.3981903894340473
+#7 - Document 40909 with score 2.358708474656861
+#8 - Document 3976325 with score 2.355310385236812
+#9 - Document 55395 with score 2.3384687245465794
+#10 - Document 916759 with score 2.28601226223244
+--------------------------------------------------------------------------------
+
+
+## SMART LTC
+
+> python3 main.py --ranking smart_ltc ../queries.csv 
+Query: olive oil health benefit
+Query preprocessed in 00h00m00s008ms680300ns (total: 8680300ns)
+Query preprocessed: ['oliv', 'oil', 'health', 'benefit']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m02s2041ms523600ns (total: 2041523600ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 13182944 with score 0.365198914913151
+#2 - Document 7205933 with score 0.3418681465951698
+#3 - Document 10733441 with score 0.33816294608885705
+#4 - Document 9405400 with score 0.33251732825633984
+#5 - Document 15714978 with score 0.3121585028912443
+#6 - Document 10052718 with score 0.3098392980370425
+#7 - Document 1854492 with score 0.30455173788080797
+#8 - Document 10356531 with score 0.2852573726893962
+#9 - Document 1493776 with score 0.27851907159711464
+#10 - Document 5367458 with score 0.2781650348915144
+--------------------------------------------------------------------------------
+
+
+
+Query: notting hill film actors
+Query preprocessed in 00h00m00s001ms33700ns (total: 1033700ns)
+Query preprocessed: ['not', 'hill', 'film', 'actor']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m01s1901ms18700ns (total: 1901018700ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 13488964 with score 0.45868591857093427
+#2 - Document 6643058 with score 0.4511111180575263
+#3 - Document 14203061 with score 0.4355816612155447
+#4 - Document 19637464 with score 0.4084460613084992
+#5 - Document 7521451 with score 0.37460980114819287
+#6 - Document 13065808 with score 0.35907657061146325
+#7 - Document 12361198 with score 0.35486249956014626
+#8 - Document 6946180 with score 0.35135365906497673
+#9 - Document 13643269 with score 0.34171215051861
+#10 - Document 11261933 with score 0.33548814628650264
+--------------------------------------------------------------------------------
+
+
+
+Query: probabilistic models in information retrieval
+Query preprocessed in 00h00m00s000ms317500ns (total: 317500ns)
+Query preprocessed: ['probabilist', 'model', 'in', 'inform', 'retriev']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m01s1859ms671300ns (total: 1859671300ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 1030028 with score 0.6982146939587552
+#2 - Document 1798853 with score 0.427335692229694
+#3 - Document 6855527 with score 0.32948297741482285
+#4 - Document 465244 with score 0.31085583272546696
+#5 - Document 2229040 with score 0.2963333701895858
+#6 - Document 25694 with score 0.2943348455371203
+#7 - Document 1227106 with score 0.29344247114972294
+#8 - Document 14554774 with score 0.27669771386971587
+#9 - Document 11737468 with score 0.2701275488180138
+#10 - Document 15383889 with score 0.26857079600218575
+--------------------------------------------------------------------------------
+
+
+
+Query: web link network analysis
+Query preprocessed in 00h00m00s000ms329900ns (total: 329900ns)
+Query preprocessed: ['web', 'link', 'network', 'analysi']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m01s1913ms427400ns (total: 1913427400ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 1039587 with score 0.8186660508606699
+#2 - Document 17225347 with score 0.5142626509889368
+#3 - Document 1117716 with score 0.2708230520054844
+#4 - Document 10083025 with score 0.2629131490310128
+#5 - Document 19064419 with score 0.24812454594651803
+#6 - Document 1477394 with score 0.23798741147783867
+#7 - Document 14381393 with score 0.23360016414123216
+#8 - Document 1462640 with score 0.23135810605288923
+#9 - Document 10141125 with score 0.22712039849488275
+#10 - Document 483924 with score 0.22267909885239576
+--------------------------------------------------------------------------------
+
+
+
+Query: web ranking scoring algorithm
+Query preprocessed in 00h00m00s000ms410300ns (total: 410300ns)
+Query preprocessed: ['web', 'rank', 'score', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m01s1860ms472800ns (total: 1860472800ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 10008302 with score 0.38922683921017925
+#2 - Document 8080270 with score 0.3856404148014817
+#3 - Document 18096221 with score 0.34482571028488607
+#4 - Document 17109715 with score 0.3115988621654764
+#5 - Document 2363262 with score 0.3054196781272437
+#6 - Document 3503154 with score 0.29630392888763685
+#7 - Document 17303714 with score 0.29537449711868563
+#8 - Document 1395835 with score 0.2924550978163251
+#9 - Document 1004679 with score 0.2912710856868267
+#10 - Document 465576 with score 0.2876422060475762
+--------------------------------------------------------------------------------
+
+
+
+Query: supervised machine learning algorithm
+Query preprocessed in 00h00m00s000ms365400ns (total: 365400ns)
+Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m02s2416ms878300ns (total: 2416878300ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 5721403 with score 0.6753435393206115
+#2 - Document 12156745 with score 0.6475749506768187
+#3 - Document 8908590 with score 0.6316514153999951
+#4 - Document 16378228 with score 0.5804739152875215
+#5 - Document 470314 with score 0.5790592800515079
+#6 - Document 13545817 with score 0.5629711669864719
+#7 - Document 12114107 with score 0.5054424135357278
+#8 - Document 1222568 with score 0.5047634128192601
+#9 - Document 3326075 with score 0.4830227720051112
+#10 - Document 1817228 with score 0.46930016665732677
+--------------------------------------------------------------------------------
+
+
+
+Query: operating system +mutual +exclusion
+Query preprocessed in 00h00m00s000ms524600ns (total: 524600ns)
+Query preprocessed: ['oper', 'system']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m02s2062ms438400ns (total: 2062438400ns)
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 230359 with score 0.27919364922373635
+#2 - Document 13100537 with score 0.22864724887796423
+#3 - Document 683014 with score 0.22623849531758627
+#4 - Document 206797 with score 0.21187769956888064
+#5 - Document 4722341 with score 0.20591304148416
+#6 - Document 2285973 with score 0.20076980527382393
+#7 - Document 3190322 with score 0.19787732914167205
+#8 - Document 17092 with score 0.1853953315820054
+#9 - Document 1471470 with score 0.18534666150483664
+#10 - Document 19570976 with score 0.18169750305822377
+--------------------------------------------------------------------------------
+
+
+
+Saving run file to ../results/MohammedWilliam_02_smart_ltc_article[1]_nostop_porter_k1.2_b0.5.txt...
+Done.
+
+
+## Exercise 3: BM25 run
+
+python3 python3 main.py --ranking smart_ltc --k1 1.2 -b 0.75 ../queries.csv
+
+Query: olive oil health benefit
+Query preprocessed in 00h00m00s011ms165001ns (total: 11165001ns) seconds.
+Query preprocessed: ['oliv', 'oil', 'health', 'benefit']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s064ms817708ns (total: 64817708ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 2094823 with score 6.076622811969182
+#2 - Document 22478 with score 5.947381714327684
+#3 - Document 460499 with score 5.886604088169711
+#4 - Document 2921902 with score 5.859845595129091
+#5 - Document 10733441 with score 5.7842331203956965
+#6 - Document 13868798 with score 5.506643730640778
+#7 - Document 212394 with score 5.440110245780447
+#8 - Document 4295731 with score 5.320143422196167
+#9 - Document 5538293 with score 5.268544481488498
+#10 - Document 86190 with score 5.17837029070953
+--------------------------------------------------------------------------------
+
+
+
+Query: notting hill film actors
+Query preprocessed in 00h00m00s000ms374600ns (total: 374600ns) seconds.
+Query preprocessed: ['not', 'hill', 'film', 'actor']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s063ms357607ns (total: 63357607ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 2936308 with score 4.3830966697033515
+#2 - Document 163903 with score 4.370284599939129
+#3 - Document 14850255 with score 4.350446121737804
+#4 - Document 11261933 with score 4.345911067579496
+#5 - Document 13488964 with score 4.337481997218561
+#6 - Document 15769364 with score 4.332604447697733
+#7 - Document 2419643 with score 4.3027607180531176
+#8 - Document 14935011 with score 4.286992266457853
+#9 - Document 61186 with score 4.26238413000011
+#10 - Document 13554598 with score 4.26057696858681
+--------------------------------------------------------------------------------
+
+
+
+Query: probabilistic models in information retrieval
+Query preprocessed in 00h00m00s000ms331200ns (total: 331200ns) seconds.
+Query preprocessed: ['probabilist', 'model', 'in', 'inform', 'retriev']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s087ms955010ns (total: 87955010ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 408108 with score 3.3229542466986883
+#2 - Document 13805160 with score 3.1092247508159034
+#3 - Document 6457721 with score 2.727017484196404
+#4 - Document 4195092 with score 2.6632940282409936
+#5 - Document 465244 with score 2.3237790906945976
+#6 - Document 4477141 with score 2.1029178733916054
+#7 - Document 404009 with score 2.0694840840443707
+#8 - Document 7309892 with score 1.8111340796505098
+#9 - Document 9672354 with score 1.7120142989127407
+#10 - Document 5706188 with score 1.6484753687657347
+--------------------------------------------------------------------------------
+
+
+
+Query: web link network analysis
+Query preprocessed in 00h00m00s000ms260600ns (total: 260600ns) seconds.
+Query preprocessed: ['web', 'link', 'network', 'analysi']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s068ms991607ns (total: 68991607ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 7033602 with score 2.4989773894013814
+#2 - Document 7092174 with score 2.4224563976904685
+#3 - Document 14381393 with score 2.4012527913456645
+#4 - Document 5933882 with score 2.363467366635175
+#5 - Document 1398206 with score 2.3484163442268646
+#6 - Document 2769199 with score 2.3470503887481047
+#7 - Document 19043977 with score 2.3407694264745587
+#8 - Document 5858326 with score 2.3237672691620515
+#9 - Document 1199793 with score 2.3200501796780975
+#10 - Document 19525715 with score 2.3137029355387013
+--------------------------------------------------------------------------------
+
+
+
+Query: web ranking scoring algorithm
+Query preprocessed in 00h00m00s000ms335501ns (total: 335501ns) seconds.
+Query preprocessed: ['web', 'rank', 'score', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s072ms915309ns (total: 72915309ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 3503154 with score 5.237703156303074
+#2 - Document 465576 with score 5.138559952024818
+#3 - Document 18096221 with score 5.123840773499416
+#4 - Document 18543218 with score 5.036474211992151
+#5 - Document 23724 with score 4.998388666586827
+#6 - Document 1793571 with score 4.947287393123914
+#7 - Document 6422823 with score 4.839664374172882
+#8 - Document 3940868 with score 4.591046060998972
+#9 - Document 1482394 with score 4.541276933022768
+#10 - Document 16186070 with score 4.510112519300738
+--------------------------------------------------------------------------------
+
+
+
+Query: supervised machine learning algorithm
+Query preprocessed in 00h00m00s000ms232900ns (total: 232900ns) seconds.
+Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s072ms150110ns (total: 72150110ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 20926 with score 6.388559066358381
+#2 - Document 233488 with score 6.315303232158302
+#3 - Document 1222568 with score 5.884428862172559
+#4 - Document 2829632 with score 5.874204289562264
+#5 - Document 12114107 with score 5.634452098533231
+#6 - Document 1179950 with score 5.584590850177362
+#7 - Document 90500 with score 5.576678251353824
+#8 - Document 233497 with score 5.528864574655751
+#9 - Document 827635 with score 5.500551916592608
+#10 - Document 2384385 with score 5.465796970788244
+--------------------------------------------------------------------------------
+
+
+
+Query: operating system +mutual +exclusion
+Query preprocessed in 00h00m00s000ms206600ns (total: 206600ns) seconds.
+Query preprocessed: ['oper', 'system']
+--------------------------------------------------------------------------------
+Ranking documents...
+Documents ranked in 00h00m00s045ms561206ns (total: 45561206ns) seconds.
+--------------------------------------------------------------------------------
+Ranking results:
+#1 - Document 22194 with score 0.847901893262297
+#2 - Document 247968 with score 0.8466875718163445
+#3 - Document 41411 with score 0.8459827668562545
+#4 - Document 13100537 with score 0.8451883211719685
+#5 - Document 7576424 with score 0.8442136290858598
+#6 - Document 622973 with score 0.8441395146171132
+#7 - Document 18921242 with score 0.8413432638964394
+#8 - Document 230359 with score 0.8408603704257495
+#9 - Document 71916 with score 0.8408153465538923
+#10 - Document 55395 with score 0.84001040858298
+--------------------------------------------------------------------------------
+
+
+
+Saving run file to ../results/MohammedWilliam_04_bm25_article[1]_nostop_porter_k1.2_b0.75.txt...
+Done.
+
+
+## Exercise 4: Stemmer, stop-words
+
+script src/run_ex4.sh
+
+Exercise 5: BM25 tuning
+
+script src/run_ex5.sh

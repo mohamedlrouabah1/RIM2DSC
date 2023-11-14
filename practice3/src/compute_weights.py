@@ -14,6 +14,8 @@ def compute_weights(index, weighting_function) -> None:
     Function to compute weights for the terms in the document collection
     """
     N = len(index.collection.documents)
+    # TODO : compute this values using the pre-process Document and
+    # thus counting the number of token instead of characters
     avg_doc_len = sum(d.length for d in index.collection.documents) / N
     
     for term, posting_list in index.posting_lists.items():

@@ -26,6 +26,14 @@ done
 
 echo "EXCLUDED_FILES :" $EXCLUDED_FILES
 
+
+# move the run file outside result folder
+mv "practice$NUM_TP"/results/MohammedWilliam*.txt "practice$NUM_TP"
+
+
 zip -9 "$ZIP_NAME" -r "practice$NUM_TP" $EXCLUDED_FILES
 
 zipinfo "$ZIP_NAME"
+
+# move the run file back to result folder
+mv "practice$NUM_TP"/MohammedWilliam*.txt "practice$NUM_TP/results/"

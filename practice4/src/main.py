@@ -8,7 +8,7 @@ from models.TextPreprocessor import TextPreprocessor
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
-from utilities.config import DATA_FOLDER, COLLECTION_FILES, COLLECTION_NAME, SAVE_FOLDER
+from utilities.config import DATA_FOLDER, COLLECTION_NAME, SAVE_FOLDER, NB_RANKING
 from utilities.parser import parse_command_line_arguments
 
 
@@ -57,7 +57,8 @@ def main() -> None:
         collection = Collection(
             path=os.path.join(DATA_FOLDER, COLLECTION_NAME),
             indexer=index,
-            preprocessor=text_preprocessor
+            preprocessor=text_preprocessor,
+            use_parallel_computing=args.parallel_computing if args.parallel_computing else False
         )
         collection.load_and_preprocess()
         collection.compute_index()
@@ -112,7 +113,7 @@ def main() -> None:
         collection.Timer.start(f"query{id:02d}_preprocessing")
         query = collection.preprocessor.doc_preprocessing(query)
         collection.Timer.stop()
-        print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')} seconds.")
+        print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')}")
         print(f"Query preprocessed: {query}")
         print(delimiter)
 
@@ -120,7 +121,7 @@ def main() -> None:
         collection.Timer.start(f"query{id:02d}_ranking")
         ranking = collection.RSV(query)
         collection.Timer.stop()
-        print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')} seconds.")
+        print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')}")
         print(delimiter)
 
         print(f"Ranking results:")
@@ -130,7 +131,7 @@ def main() -> None:
         print("\n\n")
 
         # We add the results to the run file
-        for i, (doc_id, score) in enumerate(ranking[:top_n]):
+        for i, (doc_id, score) in enumerate(ranking[:NB_RANKING]):
             run.add_result_line(
                 query_id=id,
                 doc_id=doc_id,

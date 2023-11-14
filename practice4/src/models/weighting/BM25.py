@@ -2,8 +2,8 @@ from functools import lru_cache
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
 
-import numpy as np
-from scipy.optimize import minimize
+# import numpy as np
+# from scipy.optimize import minimize
 
 class BM25(WeightingFunction):
 
@@ -56,7 +56,10 @@ class BM25(WeightingFunction):
         idf = self.compute_idf_part(df)
         tf_num, tf_den = self.compute_tf_weight_tf_part(tf)
         tf_den_dl = tf_den + self.compute_tf_weight_dl_part(dl)
-        tf_weight = tf_num / tf_den_dl
+        try:
+            tf_weight = tf_num / tf_den_dl
+        except ZeroDivisionError:
+            tf_weight = 0
         return tf_weight * idf
     
     def compute_scores(self, documents, query, indexer):

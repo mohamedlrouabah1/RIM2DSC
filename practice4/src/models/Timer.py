@@ -9,7 +9,7 @@ class TimeUnit(Enum):
     time in nanoseconds.
     """
     NS = 1
-    MS = 1_000
+    MS = 1_000_000
     S = 1_000_000_000
     MIN = 60_000_000_000
     HOUR = 3_600_000_000_000
@@ -63,7 +63,10 @@ class Timer:
         return True
     
     def get_time(self, name) -> float:
-        return self.format_time(name)
+        try:
+            return self.format_time(name)
+        except KeyError:
+            return "Not measured"
     
 
     def __str__(self) -> str:
@@ -77,8 +80,8 @@ class Timer:
         hours, remainder = divmod(ns, TimeUnit.HOUR.value)
         minutes, remainder = divmod(remainder, TimeUnit.MIN.value)
         seconds, remainder = divmod(remainder, TimeUnit.S.value)
-        milliseconds, remainder = divmod(remainder, TimeUnit.MS.value)
-        formatted_time = f"{hours:02d}h{minutes:02d}m{seconds:02d}s{milliseconds:03d}ms{remainder:03d}ns"
+        milliseconds, remainder = divmod(ns, TimeUnit.MS.value)
+        formatted_time = f"{hours:02d}h{minutes:02d}m{seconds:02d}s{milliseconds:03d}ms{remainder:03d}ns (total: {ns}ns)"
         return formatted_time
     
     

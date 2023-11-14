@@ -18,7 +18,7 @@ class SMART_ltn(WeightingFunction):
     
     @lru_cache(maxsize=None)
     def compute_tf_part(self, tf):
-        return 1 + log10(tf)
+        return 1 + log10(tf) if tf > 0 else 0
 
     # TODO optimize this computation by computing the idf outside and not for each document 
     @lru_cache(maxsize=None)

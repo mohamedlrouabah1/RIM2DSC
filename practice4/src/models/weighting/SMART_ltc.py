@@ -30,7 +30,7 @@ class SMART_ltc(WeightingFunction):
 
             # ltn score normalized
             den = sqrt(den) if den != 0 else 1
-            scores[doc.id] = num / sqrt(den)
+            scores[doc.id] = num / den
 
         return scores
         

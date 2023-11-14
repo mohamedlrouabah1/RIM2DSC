@@ -198,155 +198,155 @@ Ranking results:
 
 > python3 main.py --ranking smart_ltc ../queries.csv 
 Query: olive oil health benefit
-Query preprocessed in 00h00m00s012ms281104ns (total: 12281104ns) seconds.
+Query preprocessed in 00h00m00s008ms680300ns (total: 8680300ns)
 Query preprocessed: ['oliv', 'oil', 'health', 'benefit']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s045ms438613ns (total: 45438613ns) seconds.
+Documents ranked in 00h00m02s2041ms523600ns (total: 2041523600ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 9966 with score 6135.7029917688515
-#2 - Document 996096 with score 6135.192633554023
-#3 - Document 9958535 with score 6134.172044473238
-#4 - Document 9957455 with score 6132.1313756083
-#5 - Document 9955995 with score 6128.052074274339
-#6 - Document 98974 with score 6120.935781369455
-#7 - Document 9895760 with score 6120.880554452127
-#8 - Document 9893185 with score 6120.770102112342
-#9 - Document 989145 with score 6120.54920341213
-#10 - Document 988997 with score 6120.107429928132
+#1 - Document 13182944 with score 0.365198914913151
+#2 - Document 7205933 with score 0.3418681465951698
+#3 - Document 10733441 with score 0.33816294608885705
+#4 - Document 9405400 with score 0.33251732825633984
+#5 - Document 15714978 with score 0.3121585028912443
+#6 - Document 10052718 with score 0.3098392980370425
+#7 - Document 1854492 with score 0.30455173788080797
+#8 - Document 10356531 with score 0.2852573726893962
+#9 - Document 1493776 with score 0.27851907159711464
+#10 - Document 5367458 with score 0.2781650348915144
 --------------------------------------------------------------------------------
 
 
 
 Query: notting hill film actors
-Query preprocessed in 00h00m00s000ms360200ns (total: 360200ns) seconds.
+Query preprocessed in 00h00m00s001ms33700ns (total: 1033700ns)
 Query preprocessed: ['not', 'hill', 'film', 'actor']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s042ms330213ns (total: 42330213ns) seconds.
+Documents ranked in 00h00m01s1901ms18700ns (total: 1901018700ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 9857724 with score 7549.519980029981
-#2 - Document 9930959 with score 7535.516584734279
-#3 - Document 9997248 with score 7524.583930091063
-#4 - Document 9702425 with score 7518.054953369168
-#5 - Document 9857721 with score 7515.48719086954
-#6 - Document 9701718 with score 7508.683264567958
-#7 - Document 9700475 with score 7489.974919453492
-#8 - Document 9780918 with score 7482.729451208333
-#9 - Document 963808 with score 7457.398081528774
-#10 - Document 9627564 with score 7455.3401987034085
+#1 - Document 13488964 with score 0.45868591857093427
+#2 - Document 6643058 with score 0.4511111180575263
+#3 - Document 14203061 with score 0.4355816612155447
+#4 - Document 19637464 with score 0.4084460613084992
+#5 - Document 7521451 with score 0.37460980114819287
+#6 - Document 13065808 with score 0.35907657061146325
+#7 - Document 12361198 with score 0.35486249956014626
+#8 - Document 6946180 with score 0.35135365906497673
+#9 - Document 13643269 with score 0.34171215051861
+#10 - Document 11261933 with score 0.33548814628650264
 --------------------------------------------------------------------------------
 
 
 
 Query: probabilistic models in information retrieval
-Query preprocessed in 00h00m00s000ms273500ns (total: 273500ns) seconds.
+Query preprocessed in 00h00m00s000ms317500ns (total: 317500ns)
 Query preprocessed: ['probabilist', 'model', 'in', 'inform', 'retriev']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s051ms853816ns (total: 51853816ns) seconds.
+Documents ranked in 00h00m01s1859ms671300ns (total: 1859671300ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 9854002 with score 7332.743439158917
-#2 - Document 9886567 with score 7323.8502766236115
-#3 - Document 993823 with score 7320.0497472812085
-#4 - Document 9916995 with score 7290.36889170843
-#5 - Document 963808 with score 7271.295257834988
-#6 - Document 9772231 with score 7260.43312705138
-#7 - Document 9851844 with score 7247.655963404524
-#8 - Document 99209 with score 7241.3968606918725
-#9 - Document 9778272 with score 7235.612474028808
-#10 - Document 9741361 with score 7229.01826260369
+#1 - Document 1030028 with score 0.6982146939587552
+#2 - Document 1798853 with score 0.427335692229694
+#3 - Document 6855527 with score 0.32948297741482285
+#4 - Document 465244 with score 0.31085583272546696
+#5 - Document 2229040 with score 0.2963333701895858
+#6 - Document 25694 with score 0.2943348455371203
+#7 - Document 1227106 with score 0.29344247114972294
+#8 - Document 14554774 with score 0.27669771386971587
+#9 - Document 11737468 with score 0.2701275488180138
+#10 - Document 15383889 with score 0.26857079600218575
 --------------------------------------------------------------------------------
 
 
 
 Query: web link network analysis
-Query preprocessed in 00h00m00s000ms246300ns (total: 246300ns) seconds.
+Query preprocessed in 00h00m00s000ms329900ns (total: 329900ns)
 Query preprocessed: ['web', 'link', 'network', 'analysi']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s057ms116817ns (total: 57116817ns) seconds.
+Documents ranked in 00h00m01s1913ms427400ns (total: 1913427400ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 998623 with score 7205.40791212545
-#2 - Document 9986097 with score 7197.6651509050735
-#3 - Document 978611 with score 7189.63631220222
-#4 - Document 9985520 with score 7182.028171110737
-#5 - Document 978631 with score 7168.17620899131
-#6 - Document 9791036 with score 7164.741896489333
-#7 - Document 9916995 with score 7158.279258938868
-#8 - Document 9780918 with score 7156.030963468486
-#9 - Document 9616469 with score 7149.103810455394
-#10 - Document 996096 with score 7134.882861227762
+#1 - Document 1039587 with score 0.8186660508606699
+#2 - Document 17225347 with score 0.5142626509889368
+#3 - Document 1117716 with score 0.2708230520054844
+#4 - Document 10083025 with score 0.2629131490310128
+#5 - Document 19064419 with score 0.24812454594651803
+#6 - Document 1477394 with score 0.23798741147783867
+#7 - Document 14381393 with score 0.23360016414123216
+#8 - Document 1462640 with score 0.23135810605288923
+#9 - Document 10141125 with score 0.22712039849488275
+#10 - Document 483924 with score 0.22267909885239576
 --------------------------------------------------------------------------------
 
 
 
 Query: web ranking scoring algorithm
-Query preprocessed in 00h00m00s000ms251100ns (total: 251100ns) seconds.
+Query preprocessed in 00h00m00s000ms410300ns (total: 410300ns)
 Query preprocessed: ['web', 'rank', 'score', 'algorithm']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s045ms410209ns (total: 45410209ns) seconds.
+Documents ranked in 00h00m01s1860ms472800ns (total: 1860472800ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 975924 with score 6721.551574033612
-#2 - Document 97574 with score 6703.382753063058
-#3 - Document 9933014 with score 6695.662989008292
-#4 - Document 963094 with score 6683.96035565237
-#5 - Document 9747393 with score 6675.284029796825
-#6 - Document 9851844 with score 6667.775892154517
-#7 - Document 9751665 with score 6667.192313126705
-#8 - Document 9629828 with score 6657.410205665587
-#9 - Document 9565322 with score 6646.1052793138615
-#10 - Document 974627 with score 6612.03185994865
+#1 - Document 10008302 with score 0.38922683921017925
+#2 - Document 8080270 with score 0.3856404148014817
+#3 - Document 18096221 with score 0.34482571028488607
+#4 - Document 17109715 with score 0.3115988621654764
+#5 - Document 2363262 with score 0.3054196781272437
+#6 - Document 3503154 with score 0.29630392888763685
+#7 - Document 17303714 with score 0.29537449711868563
+#8 - Document 1395835 with score 0.2924550978163251
+#9 - Document 1004679 with score 0.2912710856868267
+#10 - Document 465576 with score 0.2876422060475762
 --------------------------------------------------------------------------------
 
 
 
 Query: supervised machine learning algorithm
-Query preprocessed in 00h00m00s000ms238400ns (total: 238400ns) seconds.
+Query preprocessed in 00h00m00s000ms365400ns (total: 365400ns)
 Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s041ms512508ns (total: 41512508ns) seconds.
+Documents ranked in 00h00m02s2416ms878300ns (total: 2416878300ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 9930959 with score 6415.705895588956
-#2 - Document 9925230 with score 6409.463748908373
-#3 - Document 992397 with score 6396.997669486116
-#4 - Document 9916995 with score 6393.015146735629
-#5 - Document 9922495 with score 6372.138201146703
-#6 - Document 9916906 with score 6364.997777223654
-#7 - Document 996096 with score 6356.589401052951
-#8 - Document 99209 with score 6322.70870929833
-#9 - Document 9886567 with score 6315.692216306216
-#10 - Document 9916623 with score 6309.330858201282
+#1 - Document 5721403 with score 0.6753435393206115
+#2 - Document 12156745 with score 0.6475749506768187
+#3 - Document 8908590 with score 0.6316514153999951
+#4 - Document 16378228 with score 0.5804739152875215
+#5 - Document 470314 with score 0.5790592800515079
+#6 - Document 13545817 with score 0.5629711669864719
+#7 - Document 12114107 with score 0.5054424135357278
+#8 - Document 1222568 with score 0.5047634128192601
+#9 - Document 3326075 with score 0.4830227720051112
+#10 - Document 1817228 with score 0.46930016665732677
 --------------------------------------------------------------------------------
 
 
 
 Query: operating system +mutual +exclusion
-Query preprocessed in 00h00m00s000ms193100ns (total: 193100ns) seconds.
+Query preprocessed in 00h00m00s000ms524600ns (total: 524600ns)
 Query preprocessed: ['oper', 'system']
 --------------------------------------------------------------------------------
 Ranking documents...
-Documents ranked in 00h00m00s029ms391520ns (total: 29391520ns) seconds.
+Documents ranked in 00h00m02s2062ms438400ns (total: 2062438400ns)
 --------------------------------------------------------------------------------
 Ranking results:
-#1 - Document 993823 with score 4686.757706240669
-#2 - Document 993522 with score 4668.063446101695
-#3 - Document 9772231 with score 4649.032080451003
-#4 - Document 9916995 with score 4645.811498424771
-#5 - Document 9771965 with score 4632.646528654848
-#6 - Document 99031 with score 4632.626923535373
-#7 - Document 9933014 with score 4630.898328053081
-#8 - Document 9875090 with score 4616.662438277188
-#9 - Document 953041 with score 4614.898610027189
-#10 - Document 9616469 with score 4614.870642785661
+#1 - Document 230359 with score 0.27919364922373635
+#2 - Document 13100537 with score 0.22864724887796423
+#3 - Document 683014 with score 0.22623849531758627
+#4 - Document 206797 with score 0.21187769956888064
+#5 - Document 4722341 with score 0.20591304148416
+#6 - Document 2285973 with score 0.20076980527382393
+#7 - Document 3190322 with score 0.19787732914167205
+#8 - Document 17092 with score 0.1853953315820054
+#9 - Document 1471470 with score 0.18534666150483664
+#10 - Document 19570976 with score 0.18169750305822377
 --------------------------------------------------------------------------------
 
 

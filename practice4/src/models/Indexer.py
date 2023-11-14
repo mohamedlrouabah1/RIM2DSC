@@ -7,7 +7,7 @@ from models.PostingListUnit import PostingListUnit
 
 class Indexer:
     def __init__(self,):
-        self.posting_lists: list(PostingList) = {}
+        self.posting_lists: dict(PostingList) = {}
 
     def get_vocabulary_size(self):
         return len(self.posting_lists)

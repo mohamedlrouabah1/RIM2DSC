@@ -23,7 +23,7 @@ class SMART_ltn(WeightingFunction):
     # TODO optimize this computation by computing the idf outside and not for each document 
     @lru_cache(maxsize=None)
     def compute_weight(self, tf, df):
-        if df > 0 and self.N > df:
+        if df > 0 and self.N >= df:
             idf = self.compute_idf(df, self.N)
             tf_part = self.compute_tf_part(tf)
             return tf_part * idf

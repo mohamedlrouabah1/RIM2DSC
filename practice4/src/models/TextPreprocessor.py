@@ -5,9 +5,10 @@ import types
 from multiprocessing import Pool
 from typing import Any
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
-from nltk.corpus import stopwords
+# from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
+from utilities.config import STOPWORDS_DIR
 
 def _pickle_method(method):
     attached_object = method.im_self or method.im_class
@@ -20,13 +21,17 @@ def _pickle_method(method):
         
 copyreg.pickle(types.MethodType, _pickle_method)
 class TextPreprocessor:
+    # get stopwords from stopwords package
+    # os.path.join(os.path.dirname(__file__), STOPWORDS_DIR)
 
     def _identity(x):
         return x
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
         if exclude_stopwords:
-            self.stopwords = set(stopwords.words('english') + list(punctuation))
+            #self.stopwords = set(stopwords.words('english') + list(punctuation))
+            with open(STOPWORDS_DIR, 'r') as f:
+                self.stopwords = set(f.read().splitlines() + list(punctuation))
         else:
             self.stopwords = set()
 

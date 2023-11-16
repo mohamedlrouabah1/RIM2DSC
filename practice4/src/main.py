@@ -147,6 +147,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     # Downloading nltk dependencies
-    for dep in  tqdm(["stopwords", "punkt", "wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
+    for dep in  tqdm(["wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
         nltk.download(dep, quiet=True)
     main()

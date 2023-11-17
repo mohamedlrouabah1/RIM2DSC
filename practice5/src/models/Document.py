@@ -23,5 +23,7 @@ class Document:
         return self.content
     
     def compute_avtl(self):
+    # a retravailler pour que utilise la nouvelle taille de tous les xml parser et integere pas encore fait
+        if not self.content:
+            return 0
         return sum(len(t) for t in self.content) / len(self.content)
-    

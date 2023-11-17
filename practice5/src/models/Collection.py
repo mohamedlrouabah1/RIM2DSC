@@ -18,12 +18,11 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self,doc_id=None, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
+    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         self.documents:list(Document) = []
         self.terms_frequency:dict(str, int) = {} 
         self.vocabulary_size = 0
         self.path = path
-        self.doc_id = doc_id
         self.Timer = Timer()
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
         self.indexer = Indexer() if indexer is None else indexer
@@ -33,33 +32,32 @@ class Collection:
 
 
     def load_and_preprocess(self):
-        print(f"Loading collection from file {self.path} ...")
+        # print(f"Loading collection from file {self.path} ...")
         self.Timer.start("load_collection")
 
-        # Fetch articles from the XML file
-        articles = self.preprocessor.fetch_articles(self.path)
+        # articles_data = self.preprocessor.parse_xml_file(self.path)
+        self.preprocessor.browse_article(self.path, Document, self.preprocessor, self.documents)
         self.Timer.stop()
-        print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
+        # print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
 
-        print("Preprocessing collection...")
+        # print("Preprocessing collection...")
         self.Timer.start("preprocessing")
 
-        # Process each article
-        for article in articles:
-            # Extract text from the article using browse_article
-            sections_text, paragraphs_text, title_text, abstract_text, body_text = self.preprocessor.browse_article(article)
-
-            # Combine all text parts and preprocess
-            combined_text = ' '.join([title_text, abstract_text] + sections_text + paragraphs_text + [body_text])
-            doc_tokens = self.preprocessor.doc_preprocessing(combined_text)
-
-            # Create a Document object for each article
-            # Assuming doc_id is extracted from the article or generated
-            doc_id = self.doc_id
-            self.documents.append(Document(doc_id, doc_tokens))
+        # for article_data in articles_data:
+        #     doc_id = article_data['doc_id']
+        #     title = article_data['title']
+        #     abstract = article_data['abstract']
+        #     body = article_data['body']
+        #     section = article_data['section']
+        #     paragraph = article_data['paragraph']
+            
+            # # Combine title and body, preprocess, and create Document objects
+            # combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
+            # doc_tokens = self.preprocessor.doc_preprocessing(combined_text)
+            # self.documents.append(Document(doc_id, doc_tokens))
 
         self.Timer.stop()
-        print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
+        # print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
     
     def compute_index(self, save=True):
         print("Indexing collection...")
@@ -197,3 +195,5 @@ class Collection:
     
     def set_ranking_function(self, ranking_function):
         self.information_retriever = ranking_function
+        
+        

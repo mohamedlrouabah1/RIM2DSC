@@ -1,4 +1,5 @@
 import copyreg
+import glob
 import os
 import re
 import types
@@ -8,15 +9,17 @@ from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 # from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
-from utilities.config import STOPWORDS_DIR
+from utilities.config import DATA_FOLDER, STOPWORDS_DIR
 from xml.dom.minidom import parse
+
+
 
 def _pickle_method(method):
     attached_object = method.im_self or method.im_class
     func_name = method.im_func.func_name
 
     if func_name.startswith('pre_'):
-        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))[0]
+        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))[0] # type: ignore
 
     return (getattr, (attached_object, func_name))
         
@@ -24,8 +27,8 @@ copyreg.pickle(types.MethodType, _pickle_method)
 class TextPreprocessor:
     # get stopwords from stopwords package
     # os.path.join(os.path.dirname(__file__), STOPWORDS_DIR)
-
-    def _identity(x):
+    # xml_files = glob.glob(os.path.join(DATA_FOLDER, "*.xml"))
+    def _identity(x): # type: ignore
         return x
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
@@ -79,7 +82,7 @@ class TextPreprocessor:
             self.collection_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
 
     def normalize(self, w):
-        return self.stemming(self.lemmatizing(w))
+        return self.stemming(self.lemmatizing(w)) # type: ignore
     
     def tokenize(self, w):
         return word_tokenize(w)
@@ -143,38 +146,73 @@ class TextPreprocessor:
         return dom.getElementsByTagName('article')
    
 
-    def browse_article(self, article):
+    
+    # def browse_article(self, article) -> list:
+    #     """
+    #     Browse an article and extract its text.
+    #     """
+    #     def get_text_from_node(node):
+    #         return "".join(t.nodeValue for t in node.childNodes if t.nodeType == t.TEXT_NODE)
+
+    #     # Extract different parts of the article
+    #     title = get_text_from_node(article.getElementsByTagName('title')[0]) if article.getElementsByTagName('title') else ''
+    #     doc_id = get_text_from_node(article.getElementsByTagName('id')[0]) if article.getElementsByTagName('id') and article.getElementsByTagName('title')[0].firstChild else ''
+    #     abstract = get_text_from_node(article.getElementsByTagName('abstract')[0]) if article.getElementsByTagName('abstract') else ''
+    #     body = get_text_from_node(article.getElementsByTagName('bdy')[0]) if article.getElementsByTagName('bdy') else ''
+    #     sections = [get_text_from_node(sec) for sec in article.getElementsByTagName('sec')]
+    #     paragraphs = [get_text_from_node(p) for p in article.getElementsByTagName('p')]
+
+        
+    #     return [title, doc_id, abstract, body, sections, paragraphs]
+    
+    def browse_article(self, article, Document, preprocessor,documents) -> list:
         """
         Browse an article and extract its text.
         """
-        # sections_text = []
-        # paragraphs_text = []
-        # title_text = ""
-        # abstract_text = ""
-        # body_text = ""
+        data = []
+        articles = self.fetch_articles(article)
+        for article in articles:
+            title = ''
+            doc_id = ''
+            body = ''
+            abstract=''
+            section=''
+            paragraph=''
+            # Extract title and id
+            if article.getElementsByTagName('title'):
+                title_element = article.getElementsByTagName('title')[0]
+                title = title_element.firstChild.nodeValue if title_element.firstChild else '' # type: ignore
+                sibling = title_element.nextSibling
+                while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+                    sibling = sibling.nextSibling
+                if sibling and sibling.tagName == 'id':
+                    doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
 
-        # # Extract text from the article using browse_article
-        # for section in article.getElementsByTagName('section'):
-        #     sections_text.append(section.firstChild.data)
-        
-        # for paragraph in article.getElementsByTagName('p'):
-        #     paragraphs_text.append(paragraph.firstChild.data)
-        
-        # title_text = article.getElementsByTagName('title')[0].firstChild.data
-        # abstract_text = article.getElementsByTagName('abstract')[0].firstChild.data
-        # body_text = article.getElementsByTagName('body')[0].firstChild.data
-        
-        # return sections_text, paragraphs_text, title_text, abstract_text, body_text
-                # Helper function to extract text from a node
-        def get_text_from_node(node):
-            return "".join(t.nodeValue for t in node.childNodes if t.nodeType == t.TEXT_NODE)
-
-        # Extract different parts of the article
-        title = get_text_from_node(article.getElementsByTagName('title')[0]) if article.getElementsByTagName('title') else ''
-        abstract = get_text_from_node(article.getElementsByTagName('abstract')[0]) if article.getElementsByTagName('abstract') else ''
-        body = get_text_from_node(article.getElementsByTagName('bdy')[0]) if article.getElementsByTagName('bdy') else ''
-
-        sections = [get_text_from_node(sec) for sec in article.getElementsByTagName('sec')]
-        paragraphs = [get_text_from_node(p) for p in article.getElementsByTagName('p')]
-
-        return sections, paragraphs, title, abstract, body
+            # Extract body similar to above or as per your XML structure
+            if article.getElementsByTagName('bdy'):
+                body_element = article.getElementsByTagName('bdy')[0]
+                body = body_element.firstChild.nodeValue if body_element.firstChild else '' # type: ignore
+                
+            # Extract sections and paragraphs
+            if article.getElementsByTagName('section'):
+                section_element = article.getElementsByTagName('section')[0]
+                section = section_element.firstChild.nodeValue if section_element.firstChild else '' # type: ignore
+            
+            # Extract abstract 
+            if article.getElementsByTagName('abstract'):
+                abstract_element = article.getElementsByTagName('abstract')[0]
+                abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else '' # type: ignore
+            
+            # Extract paragraphs
+            if article.getElementsByTagName('p'):
+                paragraph_element = article.getElementsByTagName('p')[0]
+                paragraph = paragraph_element.firstChild.nodeValue if paragraph_element.firstChild else '' # type: ignore
+            
+            # Combine title and body, preprocess, and create Document objects
+            combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
+            doc_tokens = preprocessor.doc_preprocessing(combined_text)
+            documents.append(Document(doc_id, doc_tokens))
+                
+ 
+            data.append({'doc_id': doc_id, 'title': title, 'body': body, 'section': section, 'paragraph': paragraph})
+        return data

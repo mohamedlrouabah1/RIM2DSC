@@ -13,15 +13,17 @@ from utilities.config import GRAPH_FOLDER
 # TODO make a subclass Collection Inex
 # to make specific function to extract documents
 # from loaded files
+# class : ignore all warnings
 class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
+    def __init__(self,doc_id=None, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         self.documents:list(Document) = []
-        self.terms_frequency:dict(str, int) = {}
+        self.terms_frequency:dict(str, int) = {} 
         self.vocabulary_size = 0
         self.path = path
+        self.doc_id = doc_id
         self.Timer = Timer()
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
         self.indexer = Indexer() if indexer is None else indexer
@@ -29,27 +31,35 @@ class Collection:
         self.use_parallel_computing = use_parallel_computing
 
 
+
     def load_and_preprocess(self):
-        print("Loading collection from file {path} ...")
+        print(f"Loading collection from file {self.path} ...")
         self.Timer.start("load_collection")
-        collection_string = self.preprocessor.load_and_lower_text_collection(self.path)
+
+        # Fetch articles from the XML file
+        articles = self.preprocessor.fetch_articles(self.path)
         self.Timer.stop()
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
 
         print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-        doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
+
+        # Process each article
+        for article in articles:
+            # Extract text from the article using browse_article
+            sections_text, paragraphs_text, title_text, abstract_text, body_text = self.preprocessor.browse_article(article)
+
+            # Combine all text parts and preprocess
+            combined_text = ' '.join([title_text, abstract_text] + sections_text + paragraphs_text + [body_text])
+            doc_tokens = self.preprocessor.doc_preprocessing(combined_text)
+
+            # Create a Document object for each article
+            # Assuming doc_id is extracted from the article or generated
+            doc_id = self.doc_id
+            self.documents.append(Document(doc_id, doc_tokens))
+
         self.Timer.stop()
         print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
-
-        print("Instantiate Document objects...")
-        self.Timer.start("instantiate_documents")
-        self.documents = [ Document(doc_id, doc_tokens) 
-                          for doc_id, doc_tokens in 
-                          tqdm(doc_token_list, desc="Instantiating documents...", colour="blue")
-                          ]
-        self.Timer.stop()
-        print(f"Documents instantiated in {self.Timer.get_time('instantiate_documents')} seconds.")
     
     def compute_index(self, save=True):
         print("Indexing collection...")

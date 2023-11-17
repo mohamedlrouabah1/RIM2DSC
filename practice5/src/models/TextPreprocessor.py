@@ -9,8 +9,7 @@ from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from string import punctuation
 from tqdm import tqdm
 from utilities.config import STOPWORDS_DIR
-import xml.etree.ElementTree as ET
-from lxml import etree 
+from xml.dom.minidom import parse
 
 def _pickle_method(method):
     attached_object = method.im_self or method.im_class
@@ -98,7 +97,7 @@ class TextPreprocessor:
             str: the document collection as a lowered 
                  string
         """
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf-8') as f:
             document_collection_str = f.read().lower()
         return document_collection_str
     
@@ -139,26 +138,43 @@ class TextPreprocessor:
         # NB: when we quit the with block automatically wait all future objects
         return list(results)
 
-    def fetch_articles(xml_content):
-        root = etree.fromstring(xml_content)
-        articles = root.findall('.//article') 
-        return articles
+    def fetch_articles(self, path):
+        dom = parse(path)
+        return dom.getElementsByTagName('article')
+   
 
-    def browse_article(article):
-        body = article.find('.//body')  # Adjust XPath for different elements
-        sections = article.findall('.//sec')  # Adjust XPath for different elements
-        paragraphs = article.findall('.//p') 
-        title = article.find('.//title')
-        abstract = article.find('.//abstract')
+    def browse_article(self, article):
+        """
+        Browse an article and extract its text.
+        """
+        # sections_text = []
+        # paragraphs_text = []
+        # title_text = ""
+        # abstract_text = ""
+        # body_text = ""
 
-        # Extract text or process these elements as required
-        sections_text = [etree.tostring(section, method='text', encoding='unicode').strip() for section in sections]
-        paragraphs_text = [etree.tostring(p, method='text', encoding='unicode').strip() for p in paragraphs]
-        title_text = etree.tostring(title, method='text', encoding='unicode').strip()
-        abstract_text = etree.tostring(abstract, method='text', encoding='unicode').strip()
-        body_text = etree.tostring(body, method='text', encoding='unicode').strip()
+        # # Extract text from the article using browse_article
+        # for section in article.getElementsByTagName('section'):
+        #     sections_text.append(section.firstChild.data)
+        
+        # for paragraph in article.getElementsByTagName('p'):
+        #     paragraphs_text.append(paragraph.firstChild.data)
+        
+        # title_text = article.getElementsByTagName('title')[0].firstChild.data
+        # abstract_text = article.getElementsByTagName('abstract')[0].firstChild.data
+        # body_text = article.getElementsByTagName('body')[0].firstChild.data
+        
+        # return sections_text, paragraphs_text, title_text, abstract_text, body_text
+                # Helper function to extract text from a node
+        def get_text_from_node(node):
+            return "".join(t.nodeValue for t in node.childNodes if t.nodeType == t.TEXT_NODE)
 
-        return sections_text, paragraphs_text, title_text, abstract_text, body_text
+        # Extract different parts of the article
+        title = get_text_from_node(article.getElementsByTagName('title')[0]) if article.getElementsByTagName('title') else ''
+        abstract = get_text_from_node(article.getElementsByTagName('abstract')[0]) if article.getElementsByTagName('abstract') else ''
+        body = get_text_from_node(article.getElementsByTagName('bdy')[0]) if article.getElementsByTagName('bdy') else ''
 
-    # Example usage for the first article
-    # sections_text, paragraphs_text = browse_article(articles[0])
+        sections = [get_text_from_node(sec) for sec in article.getElementsByTagName('sec')]
+        paragraphs = [get_text_from_node(p) for p in article.getElementsByTagName('p')]
+
+        return sections, paragraphs, title, abstract, body

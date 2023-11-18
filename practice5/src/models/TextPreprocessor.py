@@ -114,63 +114,33 @@ class TextPreprocessor:
     def _preprocessing(self, doc_id, content):
         return (doc_id, self.doc_preprocessing(content))
 
-    def pre_process(self, data, use_parallel_computing=False):
-        # use_parallel_computing = False # For now bc pbm with pickle instance of this class
-        if not use_parallel_computing :
+    def pre_process(self, documents, use_parallel_computing=False):
+        if not use_parallel_computing:
             return [
-                (doc_id, self.doc_preprocessing(content))
-                for doc_id, content in tqdm(self.collection_pattern.findall(data), 
-                                            desc="Preprocessing contents...", 
-                                            colour="blue")
+                (doc['doc_id'], self.doc_preprocessing(doc['title'] + " " + doc['abstract'] + " " + doc['body'] + " " + doc['section'] + " " + doc['paragraph']))
+                for doc in documents
             ]
-        
-        # compute it using parallel computing
+
+        # For parallel computing
         print("Using pool to preprocess documents...")
         num_processes = os.cpu_count()
-        # preprocessing = lambda doc : (doc[0], self.doc_preprocessing(doc[1]))
-
         with Pool(num_processes) as executor:
-            results = executor.starmap(self._preprocessing, self.collection_pattern.findall(data))
+            results = executor.map(lambda doc: (doc['doc_id'], self.doc_preprocessing(doc['title'] + " " + doc['abstract'] + " " + doc['body'] + " " + doc['section'] + " " + doc['paragraph'])), documents)
 
-        # results, remainnings = wait(results, return_when=ALL_COMPLETED)
-
-        preprocessing = None
-        # if remainnings is not None:
-        #     print(f"{len(remainnings)} tasks not completed.")
-
-        # NB: when we quit the with block automatically wait all future objects
         return list(results)
+
 
     def fetch_articles(self, path):
         dom = parse(path)
         return dom.getElementsByTagName('article')
    
-
     
-    # def browse_article(self, article) -> list:
-    #     """
-    #     Browse an article and extract its text.
-    #     """
-    #     def get_text_from_node(node):
-    #         return "".join(t.nodeValue for t in node.childNodes if t.nodeType == t.TEXT_NODE)
-
-    #     # Extract different parts of the article
-    #     title = get_text_from_node(article.getElementsByTagName('title')[0]) if article.getElementsByTagName('title') else ''
-    #     doc_id = get_text_from_node(article.getElementsByTagName('id')[0]) if article.getElementsByTagName('id') and article.getElementsByTagName('title')[0].firstChild else ''
-    #     abstract = get_text_from_node(article.getElementsByTagName('abstract')[0]) if article.getElementsByTagName('abstract') else ''
-    #     body = get_text_from_node(article.getElementsByTagName('bdy')[0]) if article.getElementsByTagName('bdy') else ''
-    #     sections = [get_text_from_node(sec) for sec in article.getElementsByTagName('sec')]
-    #     paragraphs = [get_text_from_node(p) for p in article.getElementsByTagName('p')]
-
-        
-    #     return [title, doc_id, abstract, body, sections, paragraphs]
-    
-    def browse_article(self, article, Document, preprocessor,documents) -> list:
+    def browse_article(self, path, Document, preprocessor,documents, granurality) -> list:
         """
         Browse an article and extract its text.
         """
         data = []
-        articles = self.fetch_articles(article)
+        articles = self.fetch_articles(path)
         for article in articles:
             title = ''
             doc_id = ''
@@ -198,10 +168,10 @@ class TextPreprocessor:
                 section_element = article.getElementsByTagName('section')[0]
                 section = section_element.firstChild.nodeValue if section_element.firstChild else '' # type: ignore
             
-            # Extract abstract 
+            # Extract abstract
             if article.getElementsByTagName('abstract'):
                 abstract_element = article.getElementsByTagName('abstract')[0]
-                abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else '' # type: ignore
+                abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else ''
             
             # Extract paragraphs
             if article.getElementsByTagName('p'):
@@ -212,7 +182,8 @@ class TextPreprocessor:
             combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
             doc_tokens = preprocessor.doc_preprocessing(combined_text)
             documents.append(Document(doc_id, doc_tokens))
-                
+    
  
-            data.append({'doc_id': doc_id, 'title': title, 'body': body, 'section': section, 'paragraph': paragraph})
+            data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section, 'paragraph': paragraph})
         return data
+

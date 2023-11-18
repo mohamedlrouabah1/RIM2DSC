@@ -18,7 +18,7 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
+    def __init__(self, path=[], indexer=None, preprocessor=None, use_parallel_computing=False, granularity="articles"):
         self.documents:list(Document) = []
         self.terms_frequency:dict(str, int) = {} 
         self.vocabulary_size = 0
@@ -28,36 +28,22 @@ class Collection:
         self.indexer = Indexer() if indexer is None else indexer
         self.information_retriever = None
         self.use_parallel_computing = use_parallel_computing
+        self.granularity = granularity
 
 
 
     def load_and_preprocess(self):
-        # print(f"Loading collection from file {self.path} ...")
         self.Timer.start("load_collection")
-
-        # articles_data = self.preprocessor.parse_xml_file(self.path)
-        self.preprocessor.browse_article(self.path, Document, self.preprocessor, self.documents)
+        collection_string = self.preprocessor.browse_article(self.path, Document, self.preprocessor, self.documents, self.granularity) 
         self.Timer.stop()
-        # print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
-
-        # print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-
-        # for article_data in articles_data:
-        #     doc_id = article_data['doc_id']
-        #     title = article_data['title']
-        #     abstract = article_data['abstract']
-        #     body = article_data['body']
-        #     section = article_data['section']
-        #     paragraph = article_data['paragraph']
-            
-            # # Combine title and body, preprocess, and create Document objects
-            # combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
-            # doc_tokens = self.preprocessor.doc_preprocessing(combined_text)
-            # self.documents.append(Document(doc_id, doc_tokens))
-
+        doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
         self.Timer.stop()
-        # print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
+        self.Timer.start("instantiate_documents")
+        self.documents = [ Document(doc_id, doc_tokens) 
+                          for doc_id, doc_tokens in doc_token_list
+                          ]
+        self.Timer.stop()        
     
     def compute_index(self, save=True):
         print("Indexing collection...")

@@ -1,0 +1,43 @@
+# Compte rendu du TP5 de RI
+
+
+## Code updates:
+
+- Improve the CLI interface for the app; 
+  launch with -h to see more details.
+
+- Fix weighting functions classes and use them 
+  in the ranking process.
+
+- Add a Pytest class for the weighting functions.
+
+- Add a TextPreprocessor class to ease the 
+  parameterization of this stage.
+
+- Save the collection with Pickle, excluding unnecessary 
+  files like the preprocessor, 
+  to avoid the preprocessing stage each 
+  time we launch the app.
+
+- Use caching for the computation of each ranking 
+  function to speed up the process.
+
+- Add a timer class to measure and store the steps 
+  of each process in the app.
+
+- Use parallel computing to reduce preprocessing and 
+  indexing time; divide the time by two with an 8-core CPU.
+
+- Fix the display of statistics and ranking results, 
+  especially by using the __str__ method on each object 
+  that needs to be displayed.
+  
+- Use PyInstaller to compile Python code into binary, 
+  thus speeding up the execution (still experimental).
+  
+- Create a run class to handle the building of a run result.
+
+
+# Exercise 1:  Indexing XML documents
+
+

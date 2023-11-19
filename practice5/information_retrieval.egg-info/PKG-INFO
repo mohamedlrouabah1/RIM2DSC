@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: information-retrieval
+Version: 1.0
+Summary: Project of the information course in order to implement a search engine
+Home-page: https://github.com/mohamedlrouabah1/RIM2DSC/
+Author: Mohammed Rouabah - William Maillard
+Author-email: mohamed.rouabah@univ-st-etienne.fr - william.maillard@etu.univ-st-etienne.fr
+Classifier: Development Status :: 1 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: MIT License
+Classifier: Programming Language :: Python :: 3

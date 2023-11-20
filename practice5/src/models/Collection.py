@@ -1,4 +1,5 @@
 import gzip
+import json
 import matplotlib.pyplot as plt
 import os
 import pickle
@@ -9,7 +10,7 @@ from models.TextPreprocessor import TextPreprocessor
 from models.Indexer import Indexer
 from models.weighting.BM25 import BM25
 from utilities.config import GRAPH_FOLDER
-
+import pandas as pd
 # TODO make a subclass Collection Inex
 # to make specific function to extract documents
 # from loaded files
@@ -18,9 +19,9 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path=[], indexer=None, preprocessor=None, use_parallel_computing=False, granularity="articles"):
-        self.documents:list(Document) = []
-        self.terms_frequency:dict(str, int) = {} 
+    def __init__(self, path=[], indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
+        self.documents:list(Document) = [] # type: ignore
+        self.terms_frequency:dict(str, int) = {}  # type: ignore
         self.vocabulary_size = 0
         self.path = path
         self.Timer = Timer()
@@ -30,20 +31,20 @@ class Collection:
         self.use_parallel_computing = use_parallel_computing
         self.granularity = granularity
 
-
-
     def load_and_preprocess(self):
         self.Timer.start("load_collection")
-        collection_string = self.preprocessor.browse_article(self.path, Document, self.preprocessor, self.documents, self.granularity) 
+        collection_string = self.preprocessor.fetch_articles(self.path)
+        # print(collection_string)
         self.Timer.stop()
         self.Timer.start("preprocessing")
-        doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
+        doc_token_list=  self.preprocessor.browse_article(collection_string, Document, self.preprocessor, self.documents, self.granularity, self.use_parallel_computing) 
+        # print(doc_token_list)
         self.Timer.stop()
         self.Timer.start("instantiate_documents")
-        self.documents = [ Document(doc_id, doc_tokens) 
-                          for doc_id, doc_tokens in doc_token_list
+        self.documents = [ Document(doc_id, doc_tokens, granularity_info=tag)  # type: ignore
+                          for doc_id, doc_tokens, tag in doc_token_list
                           ]
-        self.Timer.stop()        
+        self.Timer.stop()
     
     def compute_index(self, save=True):
         print("Indexing collection...")
@@ -91,23 +92,37 @@ class Collection:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
     
     
+    # def compute_avdl(self):
+    #     return sum(len(doc.content) for doc in self.documents) / len(self.documents)
+
+    # def compute_avtl(self):
+    #     return sum(sum(len(term) for term in doc.content) / len(doc.content) for doc in self.documents) / len(self.documents)
+
+    # def compute_terms_collection_frequency(self):
+    #     term_frequency = {}
+    #     for doc in self.documents:
+    #         for term in doc.content:
+    #             term_frequency[term] = term_frequency.get(term, 0) + 1
+    #     return term_frequency
+
+    
     def get_terms_collection_frequency(self):
         return self.cf
     
-    def set_ranking_function(self, ranking_function):
+    def set_ranking_function(self, ranking_function): # type: ignore
         self.information_retriever = ranking_function
 
     def search(self, query, k=10):
-        return self.information_retriever.search(query, k)
+        return self.information_retriever.search(query, k) # type: ignore
     
     def __str__(self) -> str:
         s = "-"*50 + "\n"
-        s += f"Collection: {self.path}\n"
-        s += f"Number of documents: {len(self.documents)}\n"
+        s += f"Collection: {'../../data/XML-Coll-withSem'}\n"
+        # s += f"Number of documents: {len(self.documents)}\n"
         s += f"Average Document Length: {self.avdl} (words)\n"
         s += f"Average Term Length: {self.avtl} (characters)\n"
         s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"
-        s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
+        # s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
         s += f"Loading time: {self.Timer.get_time('load_collection')} seconds\n"
         s += f"Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n"
         s += f"Indexation time: {self.Timer.get_time('indexing')} seconds\n"
@@ -116,7 +131,7 @@ class Collection:
         s += "-"*50 + "\n"
         return s
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str: # type: ignore
         pass
 
 
@@ -148,7 +163,7 @@ class Collection:
         """
         compute the Relevant Status Value of a document for a query
         """
-        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
+        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer) # type: ignore
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
 

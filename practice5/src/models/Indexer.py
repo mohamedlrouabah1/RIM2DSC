@@ -32,16 +32,16 @@ class Indexer:
         """Deprecated. Use Collection__str__ instead. Will be updated later."""
         s = "-"*50 + "\n"
         #s += f"Indexing the collection at {self.collection.path}" + "\n"
-        s += f"Preprocessing time: {self.preprocessing_time_in_ns} ns" + "\n"
-        s += f"Indexing time: {self.indexing_time_in_ns} ns" + "\n"
+        s += f"Preprocessing time: {self.preprocessing_time_in_ns} ns" + "\n" # type: ignore
+        s += f"Indexing time: {self.indexing_time_in_ns} ns" + "\n" # type: ignore
         s += f"Vocabulary size: {self.get_vocabulary_size()}" + "\n"
 
         # print(f"Average Document Length: {avg_doc_len} (words)")
         # print(f"Average Term Length: {avg_term_len} (characters)")
         s += f"Vocabulary Size: {self.get_vocabulary_size} (unique terms)" + "\n"
         # print(f"Total Collection Frequency: {total_coll_freq} (terms)")
-        s =+ f"Indexation time: {self.indexing_time_in_ns} ns" + "\n"
-        s += f"Preprocessing time: {self.preprocessing_time_in_ns} ns" + "\n"
+        s =+ f"Indexation time: {self.indexing_time_in_ns} ns" + "\n" # type: ignore
+        s += f"Preprocessing time: {self.preprocessing_time_in_ns} ns" + "\n" # type: ignore
 
         s = "-"*50 + "\n"
         

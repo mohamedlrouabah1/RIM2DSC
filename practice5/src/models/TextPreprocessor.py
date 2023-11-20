@@ -159,7 +159,7 @@ class TextPreprocessor:
                 updated_tag_path = self.format_tag_path(tag_path)
                 doc_tokens = preprocessor.doc_preprocessing(text_content)
                 # Ajoutez doc_id et tag_path à l'objet Document
-                doc = Document(doc_id, doc_tokens, updated_tag_path, tag_path)
+                doc = Document(id=doc_id, content=doc_tokens, tag_path=updated_tag_path, original_tag_path=tag_path)
                 documents.append(doc)
 
                 # Ajoutez les données dans la liste de résultats

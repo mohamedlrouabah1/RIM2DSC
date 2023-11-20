@@ -41,8 +41,8 @@ class Collection:
         # print(doc_token_list)
         self.Timer.stop()
         self.Timer.start("instantiate_documents")
-        self.documents = [ Document(doc_id, doc_tokens, granularity_info=tag)  # type: ignore
-                          for doc_id, doc_tokens, tag in doc_token_list
+        self.documents = [ Document(id=doc_id, content=doc_tokens, tag_path=tag_path)  # type: ignore
+                          for doc_id, doc_tokens, tag_path in doc_token_list
                           ]
         self.Timer.stop()
     

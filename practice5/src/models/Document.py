@@ -29,3 +29,11 @@ class Document:
         if not self.content:
             return 0
         return sum(len(t) for t in self.content) / len(self.content)
+    
+    def get_xml_path(self, doc_id=None):
+        """
+        Generate and return the XML path for the document.
+        """
+        if doc_id is not None and self.id != doc_id:
+            return "/article[1]"
+        return self.tag_path    

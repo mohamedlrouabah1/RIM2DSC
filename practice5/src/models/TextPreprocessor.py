@@ -10,7 +10,8 @@ from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from string import punctuation
 from tqdm import tqdm
 from utilities.config import DATA_FOLDER, STOPWORDS_DIR
-from xml.dom.minidom import parse
+from xml.dom.minidom import Node, parse, parseString
+import xml.etree.ElementTree as ET
 
 
 
@@ -111,154 +112,101 @@ class TextPreprocessor:
             if self.is_valid_token(token)
         ]
     
-    def _preprocessing(self, doc_id, content):
-        return (doc_id, self.doc_preprocessing(content))
+    def _preprocessing(self, doc_id,tag_path, content):
+        return (doc_id, tag_path, self.doc_preprocessing(content))
 
-    def pre_process(self, documents,tag_names, use_parallel_computing=False):
-        if not use_parallel_computing:
-            return [
-                (doc['doc_id'], self.doc_preprocessing(doc['title'] + " " + doc['abstract'] + " " + doc['body'] + " " + doc['section'] + " " + doc['paragraph']))
-                for doc in documents
-            ]
-            # return [
-            #     (
-            #         doc.get('doc_id', ''),
-            #         self.doc_preprocessing(
-            #             ' '.join(doc.get(tag, '') for tag in tag_names)
-            #         )
-            #     )
-            #     for doc in documents
-            # ]
+    # def pre_process(self, content, use_parallel_computing=False):
+    #     if not use_parallel_computing:
+    #          return self.doc_preprocessing(content)
+            
 
+    #     # For parallel computing
+    #     print("Using pool to preprocess documents...")
+    #     num_processes = os.cpu_count()
+    #     with Pool(num_processes) as executor:
+    #         results = executor.map(
+    #             lambda doc: (self.doc_preprocessing(doc)),
+    #             content
+    #         )
 
-        # For parallel computing
-        print("Using pool to preprocess documents...")
-        num_processes = os.cpu_count()
-        with Pool(num_processes) as executor:
-            results = executor.map(lambda doc: (doc['doc_id'], self.doc_preprocessing(doc['title'] + " " + doc['abstract'] + " " + doc['body'] + " " + doc['section'] + " " + doc['paragraph'])), documents)
-
-        return list(results)
-
-
+    #     return results
+                
     def fetch_articles(self, path):
         dom = parse(path)
         return dom.getElementsByTagName('article')
    
-    
-    def browse_article(self, path, Document, preprocessor,documents, granurality) -> list:
+
+    def browse_article(self, articles, Document, preprocessor, documents, granularity, use_parallel_computing) -> list:
         """
-        Browse an article and extract its text.
+        Parcourir un article et extraire son texte.
         """
         data = []
-        articles = self.fetch_articles(path)
         for article in articles:
-            title = ''
+            doc_data = {}
             doc_id = ''
-            body = ''
-            abstract=''
-            section=''
-            paragraph=''
-            granurality = granurality            
-            # Extract title and id
             if article.getElementsByTagName('title'):
                 title_element = article.getElementsByTagName('title')[0]
-                title = title_element.firstChild.nodeValue if title_element.firstChild else '' # type: ignore
                 sibling = title_element.nextSibling
                 while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
                     sibling = sibling.nextSibling
                 if sibling and sibling.tagName == 'id':
                     doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
 
-            # Extract body similar to above or as per your XML structure
-            if article.getElementsByTagName('bdy'):
-                body_element = article.getElementsByTagName('bdy')[0]
-                body = body_element.firstChild.nodeValue if body_element.firstChild else '' # type: ignore
-                
-            # Extract sections and paragraphs
-            if article.getElementsByTagName('section'):
-                section_element = article.getElementsByTagName('section')[0]
-                section = section_element.firstChild.nodeValue if section_element.firstChild else '' # type: ignore
-            
-            # Extract abstract
-            if article.getElementsByTagName('abstract'):
-                abstract_element = article.getElementsByTagName('abstract')[0]
-                abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else '' # type: ignore
-            
-            # Extract paragraphs
-            if article.getElementsByTagName('p'):
-                paragraph_element = article.getElementsByTagName('p')[0]
-                paragraph = paragraph_element.firstChild.nodeValue if paragraph_element.firstChild else '' # type: ignore
-            
-            # Combine title and body, preprocess, and create Document objects
-            combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
-            doc_tokens = preprocessor.doc_preprocessing(combined_text)
-            documents.append(Document(doc_id, doc_tokens))
+            self.recursive_element_extraction(article, doc_data, granularity)
 
-            data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section, 'paragraph': paragraph})
+            # Prétraiter et créer des objets Document pour chaque balise
+            for tag_path, text_content in doc_data.items():
+                updated_tag_path = self.format_tag_path(tag_path)
+                doc_tokens = preprocessor.doc_preprocessing(text_content)
+                # Ajoutez doc_id et tag_path à l'objet Document
+                doc = Document(doc_id, doc_tokens, updated_tag_path, tag_path)
+                documents.append(doc)
+
+                # Ajoutez les données dans la liste de résultats
+                data.append({
+                    'doc_id': doc_id,
+                    'tag_path': updated_tag_path,
+                    'content': doc_tokens
+                })
+
         return data
 
+
+
+    def recursive_element_extraction(self, element, doc_data, granularity, current_path='', index=1):
+        """
+        Fonction récursive pour extraire les données des éléments et de leurs enfants.
+        """
+        tag_name = element.nodeName
+        tag_path = f"{current_path}/{tag_name}[{index}]"
+
+        text_content = self.extract_text_from_element(element).strip()
+        doc_data[tag_path] = text_content
+
+        for child_index, child in enumerate(element.childNodes, start=1):
+            if child.nodeType == Node.ELEMENT_NODE:
+                self.recursive_element_extraction(child, doc_data, granularity, tag_path, index=child_index)
+                
+    def extract_text_from_element(self, element):
+        """
+        Fonction récursive pour extraire le texte de tous les éléments et de leurs enfants.
+        """
+        text = ''
+        for child in element.childNodes:
+            if child.nodeType == Node.ELEMENT_NODE:
+                text += self.extract_text_from_element(child)
+            elif child.nodeType == Node.TEXT_NODE:
+                text += child.nodeValue + ' '
+        return text
     
-    # def browse_article(self, path, Document, preprocessor, documents, granularity_info) -> tuple:
-    #     """
-    #     Browse an article and extract its text.
-    #     """
-    #     data = []
-    #     articles = self.fetch_articles(path)
-    #     tag_names = set()  # Collect unique tag names
+    def format_tag_path(self, tag_path):
+        """
+        Formater le chemin de la balise avec le format row[2] pour chaque tag.
+        """
+        formatted_path = tag_path
+        for match in re.finditer(r'/(\w+)(\[\d+\])?', tag_path):
+            tag_name = match.group(1)
+            position = match.group(2) or '[1]'
+            formatted_path = formatted_path.replace(match.group(), f'/{tag_name}{position}')
 
-    #     for article in articles:
-    #         title = ''
-    #         doc_id = ''
-    #         body = ''
-    #         abstract = ''
-    #         section = ''
-    #         paragraph = ''
-    #         granularity_info = None  # Initialize granularity information
-
-    #         # Extract title and id
-    #         if article.getElementsByTagName('title'):
-    #             title_element = article.getElementsByTagName('title')[0]
-    #             title = title_element.firstChild.nodeValue if title_element.firstChild else ''  # type: ignore
-    #             sibling = title_element.nextSibling
-    #             while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
-    #                 sibling = sibling.nextSibling
-    #             if sibling and sibling.tagName == 'id':
-    #                 doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
-
-    #         # Extract body similar to above or as per your XML structure
-    #         if article.getElementsByTagName('bdy'):
-    #             body_element = article.getElementsByTagName('bdy')[0]
-    #             body = body_element.firstChild.nodeValue if body_element.firstChild else ''  # type: ignore
-
-    #         # Extract sections and paragraphs
-    #         for elem in article.childNodes:
-    #             if elem.nodeType == elem.ELEMENT_NODE:
-    #                 tag_name = elem.tagName.lower()
-    #                 tag_names.add(tag_name)  # Add the tag name to the set
-
-    #                 # Update granularity info for sections
-    #                 if tag_name.startswith('section'):
-    #                     granularity_level = int(tag_name[len('section'):])
-    #                     section = f"{tag_name} {granularity_level}"
-    #                     granularity_info = (tag_name, granularity_level)
-
-    #                 # Extract abstract
-    #                 elif tag_name == 'abstract':
-    #                     abstract_element = article.getElementsByTagName('abstract')[0]
-    #                     abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else ''  # type: ignore
-
-    #                 # Extract paragraphs and other tags
-    #                 elif tag_name in ['p', 'other_tag']:  # Add more tag names as needed
-    #                     paragraph_element = article.getElementsByTagName(tag_name)[0]
-    #                     paragraph = paragraph_element.firstChild.nodeValue if paragraph_element.firstChild else ''  # type: ignore
-
-    #         # Combine title and body, preprocess, and create Document objects
-    #         combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
-    #         doc_tokens = preprocessor.doc_preprocessing(combined_text)
-
-    #         # Append Document object with granularity info to the documents list
-    #         documents.append(Document(doc_id, doc_tokens, granularity_info=granularity_info))
-
-    #         data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section, 'paragraph': paragraph})
-
-    #     return data, list(tag_names)  # Return both data and tag_names
+        return formatted_path

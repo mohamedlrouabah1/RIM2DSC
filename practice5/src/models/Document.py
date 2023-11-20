@@ -2,11 +2,12 @@ class Document:
     """
     Store a document and its related metadata.
     """
-    def __init__(self, id:int, content, granularity_info=None):
+    def __init__(self, id:int, content, granularity_info=None, tag_path="", original_tag_path=""):
         self.id = id
         self.content = content
         self.granularity_info = granularity_info
-
+        self.tag_path = tag_path
+        self.original_tag_path = original_tag_path
     def __len__(self):
         return len(self.content)
     

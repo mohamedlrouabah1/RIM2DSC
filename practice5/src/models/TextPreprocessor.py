@@ -114,12 +114,22 @@ class TextPreprocessor:
     def _preprocessing(self, doc_id, content):
         return (doc_id, self.doc_preprocessing(content))
 
-    def pre_process(self, documents, use_parallel_computing=False):
+    def pre_process(self, documents,tag_names, use_parallel_computing=False):
         if not use_parallel_computing:
             return [
                 (doc['doc_id'], self.doc_preprocessing(doc['title'] + " " + doc['abstract'] + " " + doc['body'] + " " + doc['section'] + " " + doc['paragraph']))
                 for doc in documents
             ]
+            # return [
+            #     (
+            #         doc.get('doc_id', ''),
+            #         self.doc_preprocessing(
+            #             ' '.join(doc.get(tag, '') for tag in tag_names)
+            #         )
+            #     )
+            #     for doc in documents
+            # ]
+
 
         # For parallel computing
         print("Using pool to preprocess documents...")
@@ -148,6 +158,7 @@ class TextPreprocessor:
             abstract=''
             section=''
             paragraph=''
+            granurality = granurality            
             # Extract title and id
             if article.getElementsByTagName('title'):
                 title_element = article.getElementsByTagName('title')[0]
@@ -171,7 +182,7 @@ class TextPreprocessor:
             # Extract abstract
             if article.getElementsByTagName('abstract'):
                 abstract_element = article.getElementsByTagName('abstract')[0]
-                abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else ''
+                abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else '' # type: ignore
             
             # Extract paragraphs
             if article.getElementsByTagName('p'):
@@ -182,8 +193,72 @@ class TextPreprocessor:
             combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
             doc_tokens = preprocessor.doc_preprocessing(combined_text)
             documents.append(Document(doc_id, doc_tokens))
-    
- 
+
             data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section, 'paragraph': paragraph})
         return data
 
+    
+    # def browse_article(self, path, Document, preprocessor, documents, granularity_info) -> tuple:
+    #     """
+    #     Browse an article and extract its text.
+    #     """
+    #     data = []
+    #     articles = self.fetch_articles(path)
+    #     tag_names = set()  # Collect unique tag names
+
+    #     for article in articles:
+    #         title = ''
+    #         doc_id = ''
+    #         body = ''
+    #         abstract = ''
+    #         section = ''
+    #         paragraph = ''
+    #         granularity_info = None  # Initialize granularity information
+
+    #         # Extract title and id
+    #         if article.getElementsByTagName('title'):
+    #             title_element = article.getElementsByTagName('title')[0]
+    #             title = title_element.firstChild.nodeValue if title_element.firstChild else ''  # type: ignore
+    #             sibling = title_element.nextSibling
+    #             while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+    #                 sibling = sibling.nextSibling
+    #             if sibling and sibling.tagName == 'id':
+    #                 doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
+
+    #         # Extract body similar to above or as per your XML structure
+    #         if article.getElementsByTagName('bdy'):
+    #             body_element = article.getElementsByTagName('bdy')[0]
+    #             body = body_element.firstChild.nodeValue if body_element.firstChild else ''  # type: ignore
+
+    #         # Extract sections and paragraphs
+    #         for elem in article.childNodes:
+    #             if elem.nodeType == elem.ELEMENT_NODE:
+    #                 tag_name = elem.tagName.lower()
+    #                 tag_names.add(tag_name)  # Add the tag name to the set
+
+    #                 # Update granularity info for sections
+    #                 if tag_name.startswith('section'):
+    #                     granularity_level = int(tag_name[len('section'):])
+    #                     section = f"{tag_name} {granularity_level}"
+    #                     granularity_info = (tag_name, granularity_level)
+
+    #                 # Extract abstract
+    #                 elif tag_name == 'abstract':
+    #                     abstract_element = article.getElementsByTagName('abstract')[0]
+    #                     abstract = abstract_element.firstChild.nodeValue if abstract_element.firstChild else ''  # type: ignore
+
+    #                 # Extract paragraphs and other tags
+    #                 elif tag_name in ['p', 'other_tag']:  # Add more tag names as needed
+    #                     paragraph_element = article.getElementsByTagName(tag_name)[0]
+    #                     paragraph = paragraph_element.firstChild.nodeValue if paragraph_element.firstChild else ''  # type: ignore
+
+    #         # Combine title and body, preprocess, and create Document objects
+    #         combined_text = f"{doc_id} {title} {abstract} {body} {section} {paragraph}"
+    #         doc_tokens = preprocessor.doc_preprocessing(combined_text)
+
+    #         # Append Document object with granularity info to the documents list
+    #         documents.append(Document(doc_id, doc_tokens, granularity_info=granularity_info))
+
+    #         data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section, 'paragraph': paragraph})
+
+    #     return data, list(tag_names)  # Return both data and tag_names

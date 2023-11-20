@@ -2,9 +2,10 @@ class Document:
     """
     Store a document and its related metadata.
     """
-    def __init__(self, id:int, content):
+    def __init__(self, id:int, content, granularity_info=None):
         self.id = id
         self.content = content
+        self.granularity_info = granularity_info
 
     def __len__(self):
         return len(self.content)
@@ -21,7 +22,7 @@ class Document:
 
     def get_tokens(self):
         return self.content
-    
+                
     def compute_avtl(self):
     # a retravailler pour que utilise la nouvelle taille de tous les xml parser et integere pas encore fait
         if not self.content:

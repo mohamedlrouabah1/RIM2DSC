@@ -1,6 +1,9 @@
 import glob
+from pathlib import Path
 import nltk
 import os
+from numpy import gradient
+from regex import D
 from tqdm import tqdm
 import xml
 from models.Collection import Collection
@@ -10,8 +13,10 @@ from models.TextPreprocessor import TextPreprocessor
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
+from models.Document import Document
 from utilities.config import DATA_FOLDER, COLLECTION_NAME, SAVE_FOLDER, NB_RANKING
 from utilities.parser import parse_command_line_arguments
+import pandas as pd
 
 
 def get_index_path(args) -> str:
@@ -32,7 +37,7 @@ def get_index_path(args) -> str:
 
 
 def main() -> None:
-    # Process program's arguments
+    # # Process program's arguments
     args = parse_command_line_arguments()    
     
     # First create the path to the save index file
@@ -53,8 +58,9 @@ def main() -> None:
     )
 
     # Find all XML files in the DATA_FOLDER
-    xml_files = glob.glob(os.path.join(DATA_FOLDER, "*.xml"))
-    
+    xml_files = [str(file_path).replace("\\", "/") for file_path in Path(DATA_FOLDER).glob('*.xml')]
+    # print(xml_files)
+    # print(len(xml_files))
     # Finnally Do we need to compute the indexed Collection ?
     if args.generate_index or not is_existing_index:
         pbar = tqdm(total=len(xml_files), desc="browse XML articles", unit="file")
@@ -78,8 +84,8 @@ def main() -> None:
 
     else:
         collection = Collection.deserialize(index_path)
-        collection.preprocessor = text_preprocessor
-
+        collection.preprocessor = text_preprocessor #type: ignore
+    
     print(collection)
     if args.plot:
         collection.plot_statistics()
@@ -148,7 +154,8 @@ def main() -> None:
                 query_id=id,
                 doc_id=doc_id,
                 rank=i+1,
-                score=score
+                score=score,
+                # xml_path= Document.get_granularity_info(id, doc_id) # type: ignore
             )
 
     # Finnally we save the run file

@@ -18,9 +18,9 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path=[], indexer=None, preprocessor=None, use_parallel_computing=False, granularity="articles"):
-        self.documents:list(Document) = []
-        self.terms_frequency:dict(str, int) = {} 
+    def __init__(self, path, indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
+        self.documents:list(Document) = [] # type: ignore
+        self.terms_frequency:dict(str, int) = {}  # type: ignore
         self.vocabulary_size = 0
         self.path = path
         self.Timer = Timer()
@@ -30,20 +30,20 @@ class Collection:
         self.use_parallel_computing = use_parallel_computing
         self.granularity = granularity
 
-
-
     def load_and_preprocess(self):
         self.Timer.start("load_collection")
         collection_string = self.preprocessor.browse_article(self.path, Document, self.preprocessor, self.documents, self.granularity) 
+        # data, tag_names = self.preprocessor.browse_article(self.path, Document, self.preprocessor, self.documents, self.granularity)
         self.Timer.stop()
         self.Timer.start("preprocessing")
         doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
+        # doc_token_list = self.preprocessor.pre_process(data, tag_names, self.use_parallel_computing)
         self.Timer.stop()
         self.Timer.start("instantiate_documents")
         self.documents = [ Document(doc_id, doc_tokens) 
                           for doc_id, doc_tokens in doc_token_list
                           ]
-        self.Timer.stop()        
+        self.Timer.stop()
     
     def compute_index(self, save=True):
         print("Indexing collection...")
@@ -94,11 +94,11 @@ class Collection:
     def get_terms_collection_frequency(self):
         return self.cf
     
-    def set_ranking_function(self, ranking_function):
+    def set_ranking_function(self, ranking_function): # type: ignore
         self.information_retriever = ranking_function
 
     def search(self, query, k=10):
-        return self.information_retriever.search(query, k)
+        return self.information_retriever.search(query, k) # type: ignore
     
     def __str__(self) -> str:
         s = "-"*50 + "\n"
@@ -116,7 +116,7 @@ class Collection:
         s += "-"*50 + "\n"
         return s
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str: # type: ignore
         pass
 
 
@@ -148,7 +148,7 @@ class Collection:
         """
         compute the Relevant Status Value of a document for a query
         """
-        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
+        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer) # type: ignore
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
 

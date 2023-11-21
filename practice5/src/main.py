@@ -58,26 +58,26 @@ def main() -> None:
     )
 
     # Find all XML files in the DATA_FOLDER
-    # xml_files = [str(file_path).replace("\\", "/") for file_path in Path(DATA_FOLDER).glob('*.xml')]
-    xml_path="../../data/XML-Coll-withSem/612.xml"
+    xml_files = [str(file_path).replace("\\", "/") for file_path in Path(DATA_FOLDER).glob('*.xml')]
+    # xml_path="../../data/XML-Coll-withSem/612.xml"
     # print(xml_files)
     # print(len(xml_files))
     # Finnally Do we need to compute the indexed Collection ?
     if args.generate_index or not is_existing_index:
-        # pbar = tqdm(total=len(xml_files), desc="browse XML articles", unit="file")
+        pbar = tqdm(total=len(xml_files), desc="browse XML articles", unit="file")
         fetch_all_collection = []
         index = Indexer()
-        # for xml_path in xml_files:
-        collection = Collection(
-            path=xml_path,
-            indexer=index,
-            preprocessor=text_preprocessor,
-            use_parallel_computing=args.parallel_computing if args.parallel_computing else False
-        )
-        collection.load_and_preprocess()
-        fetch_all_collection.extend(collection.documents) # type: ignore
-        # pbar.update(1)
-        # pbar.close()
+        for xml_path in xml_files:
+            collection = Collection(
+                path=xml_path,
+                indexer=index,
+                preprocessor=text_preprocessor,
+                use_parallel_computing=args.parallel_computing if args.parallel_computing else False
+            )
+            collection.load_and_preprocess()
+            fetch_all_collection.extend(collection.documents) # type: ignore
+            pbar.update(1)
+        pbar.close()
         collection.documents = fetch_all_collection # type: ignore
         collection.compute_index() # type: ignore
         collection.compute_statistics() # type: ignore
@@ -156,9 +156,7 @@ def main() -> None:
                 doc_id=doc_id,
                 rank=i+1,
                 score=score,
-                xml_path=xml_path
             )
-
     # Finnally we save the run filea
     run.save_run(verbose=True)
 

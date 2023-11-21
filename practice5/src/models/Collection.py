@@ -38,13 +38,17 @@ class Collection:
         self.Timer.stop()
         self.Timer.start("preprocessing")
         doc_token_list=  self.preprocessor.browse_article(collection_string, Document, self.preprocessor, self.documents, self.granularity, self.use_parallel_computing) 
+        # doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
         # print(doc_token_list)
         self.Timer.stop()
-        self.Timer.start("instantiate_documents")
-        self.documents = [ Document(id=doc_id, content=doc_tokens, tag_path=tag_path)  # type: ignore
-                          for doc_id, doc_tokens, tag_path in doc_token_list
-                          ]
-        self.Timer.stop()
+        # self.Timer.start("instantiate_documents")
+        # self.documents = [ Document(id=doc_id, content=doc_tokens, tag_path=tag_path)  # type: ignore
+        #                   for doc_id, doc_tokens, tag_path in doc_token_list
+        #                   ]
+        # self.documents = [ Document(doc_id, doc_tokens)  # type: ignore
+        #                   for doc_id, doc_tokens in doc_token_list
+        #                   ]
+        # self.Timer.stop()
     
     def compute_index(self, save=True):
         print("Indexing collection...")
@@ -74,6 +78,8 @@ class Collection:
         return len(self.documents)
 
     def compute_avdl(self):
+        if len(self.documents) == 0:
+            return 0
         return sum(len(d) for d in self.documents) / len(self.documents)
     
     def get_avdl(self):
@@ -118,11 +124,11 @@ class Collection:
     def __str__(self) -> str:
         s = "-"*50 + "\n"
         s += f"Collection: {'../../data/XML-Coll-withSem'}\n"
-        # s += f"Number of documents: {len(self.documents)}\n"
+        s += f"Number of documents: {len(self.documents)}\n"
         s += f"Average Document Length: {self.avdl} (words)\n"
         s += f"Average Term Length: {self.avtl} (characters)\n"
         s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"
-        # s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
+        s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
         s += f"Loading time: {self.Timer.get_time('load_collection')} seconds\n"
         s += f"Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n"
         s += f"Indexation time: {self.Timer.get_time('indexing')} seconds\n"

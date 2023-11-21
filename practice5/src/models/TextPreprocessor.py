@@ -80,7 +80,7 @@ class TextPreprocessor:
         if collection_pattern:
             self.collection_pattern = collection_pattern
         else:
-            self.collection_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
+            self.collection_pattern = re.compile(r'<article><id>(.*?)</id>(.*?)</article>', re.DOTALL)
 
     def normalize(self, w):
         return self.stemming(self.lemmatizing(w)) # type: ignore
@@ -130,46 +130,47 @@ class TextPreprocessor:
     #         )
 
     #     return results
-                
+    
+                 
     def fetch_articles(self, path):
         dom = parse(path)
         return dom.getElementsByTagName('article')
    
 
-    def browse_article(self, articles, Document, preprocessor, documents, granularity, use_parallel_computing) -> list:
-        """
-        Parcourir un article et extraire son texte.
-        """
-        data = []
-        for article in articles:
-            doc_data = {}
-            doc_id = ''
-            if article.getElementsByTagName('title'):
-                title_element = article.getElementsByTagName('title')[0]
-                sibling = title_element.nextSibling
-                while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
-                    sibling = sibling.nextSibling
-                if sibling and sibling.tagName == 'id':
-                    doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
+    # def browse_article(self, articles, Document, preprocessor, documents, granularity, use_parallel_computing) -> list:
+    #     """
+    #     Parcourir un article et extraire son texte.
+    #     """
+    #     data = []
+    #     for article in articles:
+    #         doc_data = {}
+    #         doc_id = ''
+    #         if article.getElementsByTagName('title'):
+    #             title_element = article.getElementsByTagName('title')[0]
+    #             sibling = title_element.nextSibling
+    #             while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+    #                 sibling = sibling.nextSibling
+    #             if sibling and sibling.tagName == 'id':
+    #                 doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
 
-            self.recursive_element_extraction(article, doc_data, granularity)
+    #         self.recursive_element_extraction(article, doc_data, granularity)
 
-            # Prétraiter et créer des objets Document pour chaque balise
-            for tag_path, text_content in doc_data.items():
-                updated_tag_path = self.format_tag_path(tag_path)
-                doc_tokens = preprocessor.doc_preprocessing(text_content)
-                # Ajoutez doc_id et tag_path à l'objet Document
-                doc = Document(id=doc_id, content=doc_tokens, tag_path=updated_tag_path, original_tag_path=tag_path)
-                documents.append(doc)
+    #         # Prétraiter et créer des objets Document pour chaque balise
+    #         for tag_path, text_content in doc_data.items():
+    #             updated_tag_path = self.format_tag_path(tag_path)
+    #             doc_tokens = preprocessor.doc_preprocessing(text_content)
+    #             # Ajoutez doc_id et tag_path à l'objet Document
+    #             doc = Document(id=doc_id, content=doc_tokens, tag_path=updated_tag_path, original_tag_path=tag_path)
+    #             documents.append(doc)
 
-                # Ajoutez les données dans la liste de résultats
-                data.append({
-                    'doc_id': doc_id,
-                    'tag_path': updated_tag_path,
-                    'content': doc_tokens
-                })
+    #             # Ajoutez les données dans la liste de résultats
+    #             data.append({
+    #                 'doc_id': doc_id,
+    #                 'tag_path': updated_tag_path,
+    #                 'content': doc_tokens
+    #             })
 
-        return data
+    #     return data
 
 
 
@@ -210,3 +211,89 @@ class TextPreprocessor:
             formatted_path = formatted_path.replace(match.group(), f'/{tag_name}{position}')
 
         return formatted_path
+    
+    # def browse_article(self, articles, Document, preprocessor, documents, granularity, use_parallel_computing) -> list:
+    #     """
+    #     Browse an article and extract its text.
+    #     """
+    #     data = []
+    #     for article in articles:
+    #         title = ''
+    #         doc_id = ''
+    #         body = ''
+    #         abstract = ''
+    #         section = ''
+    #         paragraph = ''
+
+    #         # Extract title and id
+    #         title_elements = article.getElementsByTagName('title')
+    #         if title_elements:
+    #             title_element = title_elements[0]
+    #             title = title_element.firstChild.nodeValue if title_element.firstChild else ''  # type: ignore
+    #             sibling = title_element.nextSibling
+    #             while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+    #                 sibling = sibling.nextSibling
+    #             if sibling and sibling.tagName == 'id':
+    #                 doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
+
+    #         # Extract body similar to above or as per your XML structure
+    #         body_elements = article.getElementsByTagName('bdy')
+    #         if body_elements:
+    #             for body_element in body_elements:
+    #                 body += body_element.firstChild.nodeValue if body_element.firstChild else ''  # type: ignore
+
+    #         # Extract sections and paragraphs
+    #         section_elements = article.getElementsByTagName('section')
+    #         if section_elements:
+    #             for section_element in section_elements:
+    #                 section += section_element.firstChild.nodeValue if section_element.firstChild else ''  # type: ignore
+
+    #         # Extract abstract
+    #         abstract_elements = article.getElementsByTagName('abstract')
+    #         if abstract_elements:
+    #             for abstract_element in abstract_elements:
+    #                 abstract += abstract_element.firstChild.nodeValue if abstract_element.firstChild else ''
+
+    #         # Extract paragraphs
+    #         paragraph_elements = article.getElementsByTagName('p')
+    #         if paragraph_elements:
+    #             for paragraph_element in paragraph_elements:
+    #                 paragraph += paragraph_element.firstChild.nodeValue if paragraph_element.firstChild else ''  # type: ignore
+
+    #         # Combine title and body, preprocess, and create Document objects
+    #         combined_text = f"{title} {abstract} {body} {section} {paragraph}"
+    #         doc_tokens = preprocessor.doc_preprocessing(combined_text)
+    #         documents.append(Document(doc_id, doc_tokens))
+
+    #         data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section,
+    #                     'paragraph': paragraph})
+    #     return data
+    
+    def browse_article(self, articles, Document, preprocessor, documents, granularity, use_parallel_computing) -> list:
+        """
+        Browse an article and extract its text.
+        """
+        data = []
+        for article in articles:
+            doc_id = ''
+            content = ''
+
+            # Extract doc_id
+            title_elements = article.getElementsByTagName('title')
+            if title_elements:
+                title_element = title_elements[0]
+                sibling = title_element.nextSibling
+                while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+                    sibling = sibling.nextSibling
+                if sibling and sibling.tagName == 'id':
+                    doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
+            # Extract content
+            content = self.extract_text_from_element(article)
+
+            # Combine doc_id and content, preprocess, and create Document objects
+            combined_text = f"{doc_id} {content}"
+            doc_tokens = preprocessor.doc_preprocessing(combined_text)
+            documents.append(Document(doc_id, doc_tokens))
+
+            data.append({'doc_id': doc_id, 'content': content})
+        return data

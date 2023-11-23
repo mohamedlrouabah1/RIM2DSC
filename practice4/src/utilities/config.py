@@ -7,7 +7,7 @@ COLLECTION_FILES = [
 ]
 GRAPH_FOLDER = "../graph/"
 
-COLLECTION_NAME = "Text_Only_Ascii_Coll_NoSem"
+COLLECTION_NAME = "Practice_05_data"
 
 # size of the ranking saved for a run
 NB_RANKING = 1500

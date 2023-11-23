@@ -1,4 +1,5 @@
 import gzip
+from importlib import metadata
 import json
 import matplotlib.pyplot as plt
 import os
@@ -9,7 +10,7 @@ from models.Timer import Timer
 from models.TextPreprocessor import TextPreprocessor
 from models.Indexer import Indexer
 from models.weighting.BM25 import BM25
-from utilities.config import GRAPH_FOLDER
+from utilities.config import GRAPH_FOLDER, COLLECTION_NAME
 import pandas as pd
 # TODO make a subclass Collection Inex
 # to make specific function to extract documents
@@ -19,8 +20,8 @@ class Collection:
     """"
     Store a collection of documents and its related metadata.
     """
-    def __init__(self, path=[], indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
-        self.documents:list(Document) = [] # type: ignore
+    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
+        self.documents:list(Document) = []
         self.terms_frequency:dict(str, int) = {}  # type: ignore
         self.vocabulary_size = 0
         self.path = path
@@ -32,22 +33,27 @@ class Collection:
         self.granularity = granularity
 
     def load_and_preprocess(self):
+        print("Loading collection from file {path} ...")
         self.Timer.start("load_collection")
         collection_string = self.preprocessor.fetch_articles(self.path)
         # print(collection_string)
+        # for article in collection_string:
+        #     print(article.toxml())
         self.Timer.stop()
+        print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
+        print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-        doc_token_list=  self.preprocessor.browse_article(collection_string, Document, self.preprocessor, self.documents, self.granularity, self.use_parallel_computing) 
-        # doc_token_list = self.preprocessor.pre_process(collection_string, self.use_parallel_computing)
-        # print(doc_token_list)
+        doc_token_list=  self.preprocessor.browse_article(collection_string, self.preprocessor) 
+        print(doc_token_list)
         self.Timer.stop()
+        print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
+        print("Instantiate Document objects...")
         # self.Timer.start("instantiate_documents")
-        # self.documents = [ Document(id=doc_id, content=doc_tokens, tag_path=tag_path)  # type: ignore
-        #                   for doc_id, doc_tokens, tag_path in doc_token_list
+        # self.documents = [ Document(doc_id, tag_id, updated_tag_path, doc_tokens)  
+        #                   for doc_id, tag_id, updated_tag_path, doc_tokens  in doc_token_list
         #                   ]
-        # self.documents = [ Document(doc_id, doc_tokens)  # type: ignore
-        #                   for doc_id, doc_tokens in doc_token_list
-        #                   ]
+
+        # print(self.documents)
         # self.Timer.stop()
     
     def compute_index(self, save=True):
@@ -78,8 +84,6 @@ class Collection:
         return len(self.documents)
 
     def compute_avdl(self):
-        if len(self.documents) == 0:
-            return 0
         return sum(len(d) for d in self.documents) / len(self.documents)
     
     def get_avdl(self):
@@ -97,19 +101,6 @@ class Collection:
     def compute_terms_collection_frequency(self):
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
     
-    
-    # def compute_avdl(self):
-    #     return sum(len(doc.content) for doc in self.documents) / len(self.documents)
-
-    # def compute_avtl(self):
-    #     return sum(sum(len(term) for term in doc.content) / len(doc.content) for doc in self.documents) / len(self.documents)
-
-    # def compute_terms_collection_frequency(self):
-    #     term_frequency = {}
-    #     for doc in self.documents:
-    #         for term in doc.content:
-    #             term_frequency[term] = term_frequency.get(term, 0) + 1
-    #     return term_frequency
 
     
     def get_terms_collection_frequency(self):

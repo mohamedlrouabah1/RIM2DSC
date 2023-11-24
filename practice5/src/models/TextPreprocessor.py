@@ -37,6 +37,7 @@ class TextPreprocessor:
         return x
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
+        self.tag_id_counter = 0
         if exclude_stopwords:
             #self.stopwords = set(stopwords.words('english') + list(punctuation))
             with open(STOPWORDS_DIR, 'r') as f:
@@ -177,70 +178,62 @@ class TextPreprocessor:
         for match in re.finditer(r'/(\w+)(\[\d+\])?', tag_path):
             tag_name = match.group(1)
             position = match.group(2) or '[1]'
+
             formatted_path = formatted_path.replace(match.group(), f'/{tag_name}{position}')
 
         return formatted_path
+    
     def fetch_articles(self, xml_path):
+        # Simplification de la récupération des fichiers XML
+        xml_files = [f for f in os.listdir(xml_path) if f.lower().endswith('.xml')]
         articles = []
-        
-        # List all files in the specified directory
-        files = [f for f in os.listdir(xml_path) if os.path.isfile(os.path.join(xml_path, f))]
-
-        # Filter out XML files
-        xml_files = [f for f in files if f.lower().endswith('.xml')]
-
         for xml_file in tqdm(xml_files, desc="loading --- fetching ---- articles"):
             file_path = os.path.join(xml_path, xml_file)
             dom = parse(file_path).getElementsByTagName('article')
             articles.extend(dom)
-
         return articles
 
     def browse_article(self, articles, preprocessor) -> list:
         data = []
-        tag_id_counter = 0
-        metadata = []
         unique_doc_ids = set()
+        old_doc_id = ''
         for article in tqdm(articles, desc="browse ---- articles"):
             doc_data = {}
-            doc_id = ''
-            
-            # Check if article is a valid XML element
-            if article.nodeType == article.ELEMENT_NODE:
-                title_elements = article.getElementsByTagName('title')
-                
-                # Check if 'title' elements exist
-                if title_elements:
-                    title_element = title_elements[0]
-                    sibling = title_element.nextSibling
-                    
-                    # Traverse siblings to find 'id' element
-                    while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
-                        sibling = sibling.nextSibling
-                    
-                    if sibling and sibling.tagName == 'id':
-                        doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
-            
-            self.tag_id_counter = 0
-            self.recursive_element_extraction(article, doc_data, tag_id_counter)
-            tmp = []
+            doc_id = self.get_doc_id(article)
 
-            # Prétraiter et créer des objets Document pour chaque balise
+            self.recursive_element_extraction(article, doc_data, tag_id_counter=self.tag_id_counter)
+
+            metadata = []
+            seen_tag_paths = set()  # Pour éviter les duplications de tag_path
+            if doc_id == old_doc_id:
+                increment = True
+            else:
+                increment = False
             for tag_path, text_content in doc_data.items():
-                updated_tag_path = self.format_tag_path(tag_path)
-                doc_tokens = preprocessor.doc_preprocessing(text_content)
-                tag_id = self.tag_id_counter
-                self.tag_id_counter += 1
-                tmp = {'tag_id': tag_id, 'tag_path': updated_tag_path, 'content': doc_tokens}
-                metadata.append(tmp)
-            
-            # Check if doc_id is unique before appending
+                if tag_path not in seen_tag_paths:
+                    seen_tag_paths.add(tag_path)
+                    updated_tag_path = self.format_tag_path(tag_path)
+                    doc_tokens = preprocessor.doc_preprocessing(text_content)
+                    metadata.append((self.tag_id_counter, updated_tag_path, doc_tokens))
+                    self.tag_id_counter += 1
+
+            # Vérifier l'unicité de doc_id
             if doc_id not in unique_doc_ids:
                 unique_doc_ids.add(doc_id)
                 data.append((doc_id, metadata))
-        
+
         return data
-    
+
+    def get_doc_id(self, article):
+        # Nouvelle méthode pour extraire doc_id
+        title_element = article.getElementsByTagName('title')[0] if article.getElementsByTagName('title') else None
+        if title_element and title_element.nextSibling:
+            sibling = title_element.nextSibling
+            while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+                sibling = sibling.nextSibling
+            if sibling and sibling.tagName == 'id':
+                return sibling.firstChild.nodeValue if sibling.firstChild else ''
+        return ''
     
     
     # fetch for each file in the zip file

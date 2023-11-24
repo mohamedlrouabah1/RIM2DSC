@@ -19,6 +19,9 @@ import pandas as pd
 class Collection:
     """"
     Store a collection of documents and its related metadata.
+    [-1] : content
+    [0] : tag_path
+    [1] : tag_id
     """
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
         self.documents:list(Document) = []
@@ -51,8 +54,10 @@ class Collection:
         self.Timer.start("instantiate_documents")
         self.documents = [Document(id, metadata) for id, metadata in doc_token_list]
 
-
-        print(self.documents)
+        # output to json file
+        with open('data.json', 'w') as f:
+            json.dump(doc_token_list, f)
+        # print(self.documents)
         self.Timer.stop()
     
     def compute_index(self, save=True):

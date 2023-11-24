@@ -13,7 +13,7 @@ class Document:
         self.metadata = metadata
 
     def __len__(self):
-        return sum(len(metadata['content']) for metadata in self.metadata)
+        return sum(len(metadata[-1]) for metadata in self.metadata)
 
     def __repr__(self):
         return f"Document(id={self.id}, metadata={self.metadata})"
@@ -23,18 +23,18 @@ class Document:
 
     def get_next_token(self):
         for metadata in self.metadata:
-            for token in metadata['content']:
+            for token in metadata[-1]:
                 yield token
 
     def get_tokens(self):
-        return [token for metadata in self.metadata for token in metadata['content']]
+        return [token for metadata in self.metadata for token in metadata[-1]]
 
     def compute_avtl(self):
-        total_tokens = sum(len(metadata['content']) for metadata in self.metadata)
+        total_tokens = sum(len(metadata[-1]) for metadata in self.metadata)
         return total_tokens / len(self.metadata) if len(self.metadata) > 0 else 0
 
     def get_tag_paths(self):
-        return [metadata['tag_path'] for metadata in self.metadata]
+        return [metadata[1] for metadata in self.metadata]
 
     
     # def to_dict(self):

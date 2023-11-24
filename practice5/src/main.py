@@ -79,9 +79,9 @@ def main() -> None:
         collection = Collection.deserialize(index_path)
         collection.preprocessor = text_preprocessor #type: ignore
     
-    # print(collection) # type: ignore
-    # if args.plot:
-    #     collection.plot_statistics() # type: ignore
+    print(collection) # type: ignore
+    if args.plot:
+        collection.plot_statistics() # type: ignore
 
     # We create the ranking function
     # if args.ranking == "smart_ltn":

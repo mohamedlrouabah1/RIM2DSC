@@ -8,9 +8,9 @@ class Document:
     #     self.tag_id = tag_id
     #     self.tag_path = tag_path
     
-    def __init__(self, id:int, tag_id, tag_path, content):
+    def __init__(self, id:int, metadata):
         self.id = id
-        self.metadata = [{'tag_id': tag_id, 'tag_path': tag_path, 'content': content}]
+        self.metadata = metadata
 
     def __len__(self):
         return sum(len(metadata['content']) for metadata in self.metadata)

@@ -197,9 +197,6 @@ class TextPreprocessor:
         return articles
 
     def browse_article(self, articles, preprocessor) -> list:
-        """
-        Parcourir un article et extraire son texte.
-        """
         data = []
         tag_id_counter = 0
         metadata = []
@@ -207,13 +204,23 @@ class TextPreprocessor:
         for article in tqdm(articles, desc="browse ---- articles"):
             doc_data = {}
             doc_id = ''
-            if article.getElementsByTagName('title'):
-                title_element = article.getElementsByTagName('title')[0]
-                sibling = title_element.nextSibling
-                while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
-                    sibling = sibling.nextSibling
-                if sibling and sibling.tagName == 'id':
-                    doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
+            
+            # Check if article is a valid XML element
+            if article.nodeType == article.ELEMENT_NODE:
+                title_elements = article.getElementsByTagName('title')
+                
+                # Check if 'title' elements exist
+                if title_elements:
+                    title_element = title_elements[0]
+                    sibling = title_element.nextSibling
+                    
+                    # Traverse siblings to find 'id' element
+                    while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
+                        sibling = sibling.nextSibling
+                    
+                    if sibling and sibling.tagName == 'id':
+                        doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
+            
             self.tag_id_counter = 0
             self.recursive_element_extraction(article, doc_data, tag_id_counter)
             tmp = []
@@ -222,32 +229,19 @@ class TextPreprocessor:
             for tag_path, text_content in doc_data.items():
                 updated_tag_path = self.format_tag_path(tag_path)
                 doc_tokens = preprocessor.doc_preprocessing(text_content)
-                # Initialize the counter for the tag_path if not exists
-                # if tag_path not in tag_id_counter:
-                #     tag_id_counter[tag_path] = 0
-                # Générer un identifiant unique pour le chemin de balise
                 tag_id = self.tag_id_counter
                 self.tag_id_counter += 1
                 tmp = {'tag_id': tag_id, 'tag_path': updated_tag_path, 'content': doc_tokens}
                 metadata.append(tmp)
-                # Ajoutez les données dans la liste de résultats
+            
             # Check if doc_id is unique before appending
             if doc_id not in unique_doc_ids:
                 unique_doc_ids.add(doc_id)
-                # Ajoutez les données dans la liste de résultats
                 data.append((doc_id, metadata))
+        
         return data
     
-    # def browse_article(self, articles, preprocessor) -> list:
-    #     """
-    #     Browse an article and extract its text.
-    #     """
-    #     data = []
-    #     for xml_article in articles:
-    #         # Directly use the provided structured XML document
-    #         elements = [f"{xml_article.tagName}/{element.tagName}" for element in xml_article.childNodes if element.nodeType == element.ELEMENT_NODE]
-    #         data.extend(elements)
-    #     return data
+    
     
     # fetch for each file in the zip file
     # def fetch_articles(self, path):
@@ -263,6 +257,22 @@ class TextPreprocessor:
     #                 articles.append(dom)
                     
     #     return articles
+    # ###################################################################### #
+    # ###################################################################### #
+    # ###################################################################### #
+    # ###################################################################### #
+    # ###################################################################### #
+    # def browse_article(self, articles, preprocessor) -> list:
+    #     """
+    #     Browse an article and extract its text.
+    #     """
+    #     data = []
+    #     for xml_article in articles:
+    #         # Directly use the provided structured XML document
+    #         elements = [f"{xml_article.tagName}/{element.tagName}" for element in xml_article.childNodes if element.nodeType == element.ELEMENT_NODE]
+    #         data.extend(elements)
+    #     return data
+    
     
     
     # browse for each file in the zip file
@@ -356,3 +366,4 @@ class TextPreprocessor:
     #         data.append({'doc_id': doc_id, 'title': title, 'body': body, 'abstract': abstract, 'section': section,
     #                     'paragraph': paragraph})
     #     return data
+    

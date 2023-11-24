@@ -44,17 +44,16 @@ class Collection:
         print("Preprocessing collection...")
         self.Timer.start("preprocessing")
         doc_token_list=  self.preprocessor.browse_article(collection_string, self.preprocessor) 
-        print(doc_token_list)
+        # print(doc_token_list)
         self.Timer.stop()
         print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
         print("Instantiate Document objects...")
-        # self.Timer.start("instantiate_documents")
-        # self.documents = [ Document(doc_id, tag_id, updated_tag_path, doc_tokens)  
-        #                   for doc_id, tag_id, updated_tag_path, doc_tokens  in doc_token_list
-        #                   ]
+        self.Timer.start("instantiate_documents")
+        self.documents = [Document(id, metadata) for id, metadata in doc_token_list]
 
-        # print(self.documents)
-        # self.Timer.stop()
+
+        print(self.documents)
+        self.Timer.stop()
     
     def compute_index(self, save=True):
         print("Indexing collection...")

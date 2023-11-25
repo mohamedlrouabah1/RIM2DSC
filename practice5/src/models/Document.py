@@ -2,30 +2,40 @@ class Document:
     """
     Store a document and its related metadata.
     """
-    def __init__(self, id:int, content, granularity_info=None, tag_path="", original_tag_path=""):
-        self.id = id
-        self.content = content
-        self.granularity_info = granularity_info
-        self.tag_path = tag_path
-        self.original_tag_path = original_tag_path
-    def __len__(self):
-        return len(self.content)
+    # def __init__(self, id:int, content, tag_id, tag_path=""):
+    #     self.id = id
+    #     self.content = content
+    #     self.tag_id = tag_id
+    #     self.tag_path = tag_path
     
-    def __repr__(self) -> str:
-        pass
+    def __init__(self, id:int, metadata):
+        self.id = id
+        self.metadata = metadata
 
-    def __str__(self) -> str:
-        return f"Document {self.id} ({len(self.content)} tokens)"
+    def __len__(self):
+        return sum(len(metadata[-1]) for metadata in self.metadata)
 
-    def get_next_token(self) -> str:
-        for token in self.content:
-            yield token
+    def __repr__(self):
+        return f"Document(id={self.id}, metadata={self.metadata})"
+
+    def __str__(self):
+        return f"Document {self.id} ({len(self)} tokens)"
+
+    def get_next_token(self):
+        for metadata in self.metadata:
+            for token in metadata[-1]:
+                yield token
 
     def get_tokens(self):
-        return self.content
-                
+        return [token for metadata in self.metadata for token in metadata[-1]]
+
     def compute_avtl(self):
-    # a retravailler pour que utilise la nouvelle taille de tous les xml parser et integere pas encore fait
-        if not self.content:
-            return 0
-        return sum(len(t) for t in self.content) / len(self.content)
+        total_tokens = sum(len(metadata[-1]) for metadata in self.metadata)
+        return total_tokens / len(self.metadata) if len(self.metadata) > 0 else 0
+
+    def get_tag_paths(self):
+        return [metadata[1] for metadata in self.metadata]
+
+    
+    # def to_dict(self):
+    #     return {'id': self.id, 'metadata': {'tag_id': self.tag_id, 'tag_path': self.tag_path, 'content': self.content}}

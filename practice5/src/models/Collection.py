@@ -1,4 +1,5 @@
 import gzip
+from importlib import metadata
 import json
 import matplotlib.pyplot as plt
 import os
@@ -9,7 +10,7 @@ from models.Timer import Timer
 from models.TextPreprocessor import TextPreprocessor
 from models.Indexer import Indexer
 from models.weighting.BM25 import BM25
-from utilities.config import GRAPH_FOLDER
+from utilities.config import GRAPH_FOLDER, COLLECTION_NAME
 import pandas as pd
 # TODO make a subclass Collection Inex
 # to make specific function to extract documents
@@ -18,9 +19,12 @@ import pandas as pd
 class Collection:
     """"
     Store a collection of documents and its related metadata.
+    [-1] : content
+    [0] : tag_path
+    [1] : tag_id
     """
-    def __init__(self, path=[], indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
-        self.documents:list(Document) = [] # type: ignore
+    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
+        self.documents:list(Document) = []
         self.terms_frequency:dict(str, int) = {}  # type: ignore
         self.vocabulary_size = 0
         self.path = path
@@ -32,18 +36,28 @@ class Collection:
         self.granularity = granularity
 
     def load_and_preprocess(self):
+        print("Loading collection from file {path} ...")
         self.Timer.start("load_collection")
         collection_string = self.preprocessor.fetch_articles(self.path)
         # print(collection_string)
+        # for article in collection_string:
+        #     print(article.toxml())
         self.Timer.stop()
+        print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
+        print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-        doc_token_list=  self.preprocessor.browse_article(collection_string, Document, self.preprocessor, self.documents, self.granularity, self.use_parallel_computing) 
+        doc_token_list=  self.preprocessor.browse_article(collection_string, self.preprocessor) 
         # print(doc_token_list)
         self.Timer.stop()
+        print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
+        print("Instantiate Document objects...")
         self.Timer.start("instantiate_documents")
-        self.documents = [ Document(doc_id, doc_tokens, granularity_info=tag)  # type: ignore
-                          for doc_id, doc_tokens, tag in doc_token_list
-                          ]
+        self.documents = [Document(id, metadata) for id, metadata in doc_token_list]
+
+        # output to json file
+        with open('data.json', 'w') as f:
+            json.dump(doc_token_list, f)
+        # print(self.documents)
         self.Timer.stop()
     
     def compute_index(self, save=True):
@@ -91,19 +105,6 @@ class Collection:
     def compute_terms_collection_frequency(self):
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
     
-    
-    # def compute_avdl(self):
-    #     return sum(len(doc.content) for doc in self.documents) / len(self.documents)
-
-    # def compute_avtl(self):
-    #     return sum(sum(len(term) for term in doc.content) / len(doc.content) for doc in self.documents) / len(self.documents)
-
-    # def compute_terms_collection_frequency(self):
-    #     term_frequency = {}
-    #     for doc in self.documents:
-    #         for term in doc.content:
-    #             term_frequency[term] = term_frequency.get(term, 0) + 1
-    #     return term_frequency
 
     
     def get_terms_collection_frequency(self):
@@ -118,11 +119,11 @@ class Collection:
     def __str__(self) -> str:
         s = "-"*50 + "\n"
         s += f"Collection: {'../../data/XML-Coll-withSem'}\n"
-        # s += f"Number of documents: {len(self.documents)}\n"
+        s += f"Number of documents: {len(self.documents)}\n"
         s += f"Average Document Length: {self.avdl} (words)\n"
         s += f"Average Term Length: {self.avtl} (characters)\n"
         s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"
-        # s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
+        s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
         s += f"Loading time: {self.Timer.get_time('load_collection')} seconds\n"
         s += f"Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n"
         s += f"Indexation time: {self.Timer.get_time('indexing')} seconds\n"

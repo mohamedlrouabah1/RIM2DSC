@@ -40,4 +40,42 @@
 
 # Exercise 1:  Indexing XML documents
 
+#### NO STOPWORD #####
+Index file ../../saves/index_nltk_nostop_nolem_porter_XML_Only_Ascii_Coll_NoSem.pkl already exists.
+--------------------------------------------------
+--------------------------------------------------
+Collection: ../../data/XML-Coll-withSem
+Number of documents: 9982
+Average Document Length: 1014.1470647164897 (words)
+Average Term Length: 4.656589177868675 (characters)
+Vocabulary Size: 158614 (unique terms)
+Total Collection Frequency: 3178697 (terms)
+Loading time: 00h00m00s006ms940900ns (total: 6940900ns) seconds
+Preprocessing time: 00h00m00s038ms690600ns (total: 38690600ns) seconds
+Indexation time: 00h00m11s11307ms821200ns (total: 11307821200ns) seconds
+Total time: 00h00m11s11307ms821200ns (total: 11307821200ns) seconds
+Computing statistics time: 00h00m01s1111ms301500ns (total: 1111301500ns) seconds
+
+
+#### STOPWORD ######
+Index file ../../saves/index_nltk_stop_nolem_porter_XML_Only_Ascii_Coll_NoSem.pkl already exists.
+--------------------------------------------------
+Collection: ../../data/XML-Coll-withSem
+Number of documents: 9982
+Average Document Length: 653.766980565017 (words)
+Average Term Length: 5.453852456342994 (characters)
+Vocabulary Size: 158605 (unique terms)
+Total Collection Frequency: 2624528 (terms)
+Loading time: 00h00m00s006ms71900ns (total: 6071900ns) seconds
+Preprocessing time: 00h00m00s021ms172400ns (total: 21172400ns) seconds
+Indexation time: 00h00m08s8260ms160400ns (total: 8260160400ns) seconds
+Total time: 00h00m08s8260ms160400ns (total: 8260160400ns) seconds
+Computing statistics time: 00h00m00s726ms972700ns (total: 726972700ns) seconds
+
+
+runs are on : ./results 
+
+we can see that the resutls we getting are not better than the previous runs, this is due to the fact that the parsing of the collection isn't yet completed we still need to figure out
+what are the major tags that we have to parse and the one that have to be forgotten.
+
 

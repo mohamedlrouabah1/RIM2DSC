@@ -74,6 +74,7 @@ def main() -> None:
         collection.plot_statistics()
 
     # We create the ranking function
+    params=[]
     if args.ranking == "smart_ltn":
         ranking_function = SMART_ltn(N=len(collection))
     elif args.ranking == "smart_ltc":
@@ -84,6 +85,7 @@ def main() -> None:
             avdl=collection.get_avdl(), 
             b=args.b, k1=args.k1
             )
+        params = [f"k{args.k1}", f"b{args.b}"]
     collection.information_retriever = ranking_function
 
 
@@ -100,7 +102,7 @@ def main() -> None:
         weighting_function=args.ranking,
         stop=args.stopword,
         stem=args.stemmer,
-        params=[f"k{args.k1}", f"b{args.b}"]
+        params=params
     )
 
     # for the display

@@ -90,28 +90,29 @@ class Collection:
     def compute_avdl(self):
         return sum(len(d) for d in self.documents) / len(self.documents)
     
-    def get_avdl(self):
-        return self.avdl
-    
     def compute_avtl(self):
         return sum(doc.compute_avtl() for doc in self.documents) / len(self.documents)
     
-    def get_avtl(self):
+    def get_avdl(self): 
+        return self.avdl
+    
+    def get_avtl(self): 
         return self.avtl
 
     def get_vocabulary_size(self):
         return len(self.indexer)
-    
-    def compute_terms_collection_frequency(self):
-        return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
-    
-
     
     def get_terms_collection_frequency(self):
         return self.cf
     
     def set_ranking_function(self, ranking_function): # type: ignore
         self.information_retriever = ranking_function
+
+    def set_ranking_function(self, ranking_function):
+        self.information_retriever = ranking_function     
+
+    def compute_terms_collection_frequency(self):
+        return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
 
     def search(self, query, k=10):
         return self.information_retriever.search(query, k) # type: ignore
@@ -193,9 +194,4 @@ class Collection:
             return index
         
         print(f"Deserialized object from {path} is not an instance of the Index class.")
-        return None
-    
-    def set_ranking_function(self, ranking_function):
-        self.information_retriever = ranking_function
-        
-        
+        return None 

@@ -1,17 +1,15 @@
-class Document:
+from concepts.InformationRessource import InformationRessource
+
+class Document(InformationRessource):
     """
     Store a document and its related metadata.
     """
     def __init__(self, id:int, content):
-        self.id = id
-        self.content = content
+        super().__init__(id, content)
 
     def __len__(self):
         return len(self.content)
     
-    def __repr__(self) -> str:
-        pass
-
     def __str__(self) -> str:
         return f"Document {self.id} ({len(self.content)} tokens)"
 

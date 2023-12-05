@@ -1,3 +1,4 @@
+import nltk
 from tqdm import tqdm
 from models.IRrun import IRrun
 from models.weighting.BM25 import BM25

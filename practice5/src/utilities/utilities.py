@@ -1,6 +1,6 @@
 import os
 from sys import stderr
-from config import SAVE_FOLDER, COLLECTION_NAME, DATA_PRACTICE_5
+from utilities.config import SAVE_FOLDER, COLLECTION_NAME, DATA_PRACTICE_5
 from models.Collection import Collection
 from models.Indexer import Indexer
 from models.TextPreprocessor import TextPreprocessor

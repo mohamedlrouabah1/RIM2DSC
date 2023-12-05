@@ -3,6 +3,8 @@ import copyreg
 import os
 import re
 import types
+import xml.dom.minidom as minidom
+from sys import stderr
 from multiprocessing import Pool
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from string import punctuation
@@ -105,12 +107,13 @@ class TextPreprocessor:
         return results   
     
     
-    def recursive_element_extraction(self, element, doc_data, current_path='', index=1):
+    def recursive_element_extraction(self, element, current_path='', index=1):
         """
         Extrait récursivement les données des éléments et de leurs enfants.
         """
         tag_name = element.nodeName
         tag_path = f"{current_path}/{tag_name}[{index}]"
+        doc_data = {}
 
         # Générer un identifiant unique pour le chemin de balise
         self.tag_id_counter += 1
@@ -120,12 +123,19 @@ class TextPreprocessor:
 
         for child_index, child in enumerate(element.childNodes, start=1):
             if child.nodeType == Node.ELEMENT_NODE:
-                self.recursive_element_extraction(child, doc_data, tag_path, index=child_index)
+                doc_data.update(
+                    self.recursive_element_extraction(child, tag_path, index=child_index)
+                )
+        
+        return doc_data
                 
 
-    def _extract_text_from_element(self, element):
+    def _extract_text_from_element(self, element) -> list:
         """
         Fonction récursive pour extraire le texte de tous les éléments et de leurs enfants.
+
+        Return:
+            list(str): liste de tokens
         """
         text = ''
         for child in element.childNodes:
@@ -148,56 +158,40 @@ class TextPreprocessor:
 
         return formatted_path
     
-    def fetch_articles(self, xml_path):
+    def fetch_articles(self, xml_path) -> minidom.Document:
         xml_files = [f for f in os.listdir(xml_path) if f.lower().endswith('.xml')]
         articles = []
         for xml_file in tqdm(xml_files, desc="loading --- fetching ---- articles"):
             file_path = os.path.join(xml_path, xml_file)
+            id = xml_file.split('.')[0]
             dom = parse(file_path).getElementsByTagName(START_TAG)
-            articles.extend(dom)
+            articles += [(id, dom)]
         return articles
 
-    def browse_article(self, articles, preprocessor) -> list:
+
+    def browse_article(self, xml_files, preprocessor) -> list:
         data = []
         unique_doc_ids = set()
         old_doc_id = ''
-        for article in tqdm(articles, desc="browse ---- articles"):
-            doc_data = {}
-            doc_id = self.get_doc_id(article)
+        for doc_id, tags_list in tqdm(xml_files, desc="browse ---- xml_files"):
+            for article in tqdm(tags_list, desc="browse ---- tags"):
+                print(article, file=stderr)
+                doc_data = self.recursive_element_extraction(article)
+                metadata = []
+                seen_xpaths = set()
+    
+                for xpath, text_content in doc_data.items():
+                    if xpath not in seen_xpaths:
+                        seen_xpaths.add(xpath)
+                        updated_xpath = self.format_xpath(xpath)
+                        doc_tokens = preprocessor.doc_preprocessing(text_content)
+                        metadata.append((self.tag_id_counter, updated_xpath, doc_tokens))
+                        self.tag_id_counter += 1
 
-            self.recursive_element_extraction(article, doc_data, tag_id_counter=self.tag_id_counter)
-
-            metadata = []
-            seen_tag_paths = set()  # Pour éviter les duplications de tag_path
-            if doc_id == old_doc_id:
-                increment = True
-            else:
-                increment = False
-            for tag_path, text_content in doc_data.items():
-                if tag_path not in seen_tag_paths:
-                    seen_tag_paths.add(tag_path)
-                    updated_tag_path = self.format_xpath(tag_path)
-                    doc_tokens = preprocessor.doc_preprocessing(text_content)
-                    metadata.append((self.tag_id_counter, updated_tag_path, doc_tokens))
-                    self.tag_id_counter += 1
-
-            # Vérifier l'unicité de doc_id
-            if doc_id not in unique_doc_ids:
-                unique_doc_ids.add(doc_id)
-                data.append((doc_id, metadata))
-
+        print(f"Number of unique documents: {len(unique_doc_ids)}", file=stderr)
+        print(f"Number of documents: {len(data)}", file=stderr)
+        print(data, file=stderr)
         return data
-
-    def get_doc_id(self, article):
-        # Nouvelle méthode pour extraire doc_id
-        title_element = article.getElementsByTagName('title')[0] if article.getElementsByTagName('title') else None
-        if title_element and title_element.nextSibling:
-            sibling = title_element.nextSibling
-            while sibling and sibling.nodeType != sibling.ELEMENT_NODE:
-                sibling = sibling.nextSibling
-            if sibling and sibling.tagName == 'id':
-                return sibling.firstChild.nodeValue if sibling.firstChild else ''
-        return ''
     
     
     # fetch for each file in the zip file

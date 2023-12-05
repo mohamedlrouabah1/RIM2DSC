@@ -12,6 +12,7 @@ from models.Indexer import Indexer
 from models.weighting.BM25 import BM25
 from utilities.config import GRAPH_FOLDER, COLLECTION_NAME
 import pandas as pd
+
 # TODO make a subclass Collection Inex
 # to make specific function to extract documents
 # from loaded files
@@ -38,27 +39,22 @@ class Collection:
     def load_and_preprocess(self):
         print("Loading collection from file {path} ...")
         self.Timer.start("load_collection")
-        collection_string = self.preprocessor.fetch_articles(self.path)
-        # print(collection_string)
-        # for article in collection_string:
-        #     print(article.toxml())
+        raw_collection = self.preprocessor.fetch_articles(self.path)
         self.Timer.stop()
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
+        
         print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-        doc_token_list=  self.preprocessor.browse_article(collection_string, self.preprocessor) 
-        # print(doc_token_list)
+        doc_token_list=  self.preprocessor.browse_article(raw_collection, self.preprocessor) 
         self.Timer.stop()
         print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
+        
         print("Instantiate Document objects...")
         self.Timer.start("instantiate_documents")
         self.documents = [Document(id, metadata) for id, metadata in doc_token_list]
-
-        # output to json file
-        with open('data.json', 'w') as f:
-            json.dump(doc_token_list, f)
-        print(self.documents)
         self.Timer.stop()
+        print(f"Documents instantiated in {self.Timer.get_time('instantiate_documents')} seconds.")
+
     
     def compute_index(self, save=True):
         print("Indexing collection...")

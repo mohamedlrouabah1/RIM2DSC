@@ -57,7 +57,7 @@ class Collection:
         # output to json file
         with open('data.json', 'w') as f:
             json.dump(doc_token_list, f)
-        # print(self.documents)
+        print(self.documents)
         self.Timer.stop()
     
     def compute_index(self, save=True):

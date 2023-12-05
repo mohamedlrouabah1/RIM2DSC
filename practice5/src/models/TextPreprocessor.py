@@ -1,22 +1,14 @@
 from collections import defaultdict
 import copyreg
-import glob
-from io import BytesIO
 import os
 import re
 import types
-from multiprocessing import Pool
-from typing import Any
-import zipfile
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 # from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
-from models import Document
-from utilities.config import DATA_FOLDER, STOPWORDS_DIR
+from utilities.config import STOPWORDS_DIR
 from xml.dom.minidom import Node, parse, parseString
-# import xml.etree.ElementTree as ET
-
 
 
 def _pickle_method(method):
@@ -24,52 +16,27 @@ def _pickle_method(method):
     func_name = method.im_func.func_name
 
     if func_name.startswith('pre_'):
-        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))[0] # type: ignore
+        func_name = filter(
+            lambda method_name: method_name.startswith('_') 
+            and
+            method_name.endswith(func_name),
+            dir(attached_object)
+            )[0]
 
     return (getattr, (attached_object, func_name))
         
 copyreg.pickle(types.MethodType, _pickle_method)
-class TextPreprocessor:
-    # get stopwords from stopwords package
-    # os.path.join(os.path.dirname(__file__), STOPWORDS_DIR)
-    # xml_files = glob.glob(os.path.join(DATA_FOLDER, "*.xml"))
-    def _identity(x): # type: ignore
-        return x
 
+
+class TextPreprocessor:
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
         self.tag_id_counter = 0
         if exclude_stopwords:
-            #self.stopwords = set(stopwords.words('english') + list(punctuation))
             with open(STOPWORDS_DIR, 'r') as f:
                 self.stopwords = set(f.read().splitlines() + list(punctuation))
         else:
-            self.stopwords = set()
+            self.stopwords = set()        
 
-        # if exclude_digits:
-        #     self.is_valid_token = lambda w: w.isalpha() and w not in self.stopwords
-        # else:
-        #     self.is_valid_token = lambda w: w not in self.stopwords
-        
-
-        # if tokenizer == "regex":
-        #     # self.tokenize = lambda text: re.findall(r"\b\w+(?:'\w+)?\b", text)
-        # else: 
-        #     #tokenizer == "nltk"
-        #     # self.tokenize = lambda text: word_tokenize(text)
-
-        # lamda function don't work with // computation bc its use pickle
-        # if lemmer and stemmer:
-        #     self.lemmatizer = WordNetLemmatizer()
-        #     self.stemmer = PorterStemmer()
-        #     self.normalize = lambda w : self.stemmer.stem(self.lemmatizer.lemmatize(w))
-        # elif lemmer:
-        #     self.lemmatizer = WordNetLemmatizer()
-        #     self.normalize = lambda w : self.lemmatizer.lemmatize(w)
-        # elif stemmer:
-        #     self.stemmer = PorterStemmer()
-        #     self.normalize = lambda w : self.stemmer.stem(w)
-        # else:
-        #     self.normalize = lambda w : w
         if lemmer:
             self.lemmatizer = WordNetLemmatizer()
             self.lemmatizing = self.lemmatizer.lemmatize
@@ -87,13 +54,16 @@ class TextPreprocessor:
         else:
             self.collection_pattern = re.compile(r'<article><id>(.*?)</id>(.*?)</article>', re.DOTALL)
 
-    def normalize(self, w):
+    def _identity(x):
+        return x
+
+    def _normalize(self, w):
         return self.stemming(self.lemmatizing(w)) # type: ignore
     
-    def tokenize(self, w):
+    def _tokenize(self, w):
         return word_tokenize(w)
     
-    def is_valid_token(self, w):
+    def _is_valid_token(self, w):
         return w.isalpha() and w not in self.stopwords
 
 
@@ -112,9 +82,9 @@ class TextPreprocessor:
     
     def doc_preprocessing(self, doc):
         return [
-            self.normalize(token)
-            for token in self.tokenize(doc)
-            if self.is_valid_token(token)
+            self._normalize(token)
+            for token in self._tokenize(doc)
+            if self._is_valid_token(token)
         ]
     
     def _preprocessing(self, doc_id,tag_path, content):

@@ -1,14 +1,8 @@
-from multiprocessing import Pool
-from pathlib import Path
-import nltk
-from numpy import gradient
-from regex import D
 from tqdm import tqdm
 from models.IRrun import IRrun
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
-from models.Document import Document
 from utilities.config import NB_RANKING
 from utilities.parser import parse_command_line_arguments
 from utilities.utilities import create_or_load_collection, load_queries_from_csv
@@ -41,7 +35,7 @@ def main() -> None:
     queries = load_queries_from_csv(args.queries_file_path)
     
 
-    # To create the run file
+    # To create run result files
     run = IRrun(
         weighting_function=args.ranking,
         stop=args.stopword,
@@ -85,6 +79,8 @@ def main() -> None:
                 rank=i+1,
                 score=score,
             )
+
+
     # Finnally we save the run filea
     run.save_run(verbose=True)
 

@@ -5,10 +5,9 @@ import re
 import types
 from multiprocessing import Pool
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
-# from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
-from utilities.config import STOPWORDS_DIR
+from utilities.config import STOPWORDS_DIR, START_TAG
 from xml.dom.minidom import Node, parse, parseString
 
 
@@ -106,7 +105,7 @@ class TextPreprocessor:
         return results   
     
     
-    def recursive_element_extraction(self, element, doc_data,tag_id_counter, current_path='', index=1):
+    def recursive_element_extraction(self, element, doc_data, current_path='', index=1):
         """
         Extrait récursivement les données des éléments et de leurs enfants.
         """
@@ -114,7 +113,6 @@ class TextPreprocessor:
         tag_path = f"{current_path}/{tag_name}[{index}]"
 
         # Générer un identifiant unique pour le chemin de balise
-        tag_id = self.tag_id_counter
         self.tag_id_counter += 1
 
         text_content = self._extract_text_from_element(element).strip()
@@ -122,7 +120,7 @@ class TextPreprocessor:
 
         for child_index, child in enumerate(element.childNodes, start=1):
             if child.nodeType == Node.ELEMENT_NODE:
-                self.recursive_element_extraction(child, doc_data,tag_id_counter, tag_path, index=child_index)
+                self.recursive_element_extraction(child, doc_data, tag_path, index=child_index)
                 
 
     def _extract_text_from_element(self, element):
@@ -137,12 +135,12 @@ class TextPreprocessor:
                 text += child.nodeValue + ' '
         return text
     
-    def format_tag_path(self, tag_path):
+    def format_xpath(self, xpath):
         """
         Formater le chemin de la balise avec le format row[2] pour chaque tag.
         """
-        formatted_path = tag_path
-        for match in re.finditer(r'/(\w+)(\[\d+\])?', tag_path):
+        formatted_path = xpath
+        for match in re.finditer(r'/(\w+)(\[\d+\])?', xpath):
             tag_name = match.group(1)
             position = match.group(2) or '[1]'
 
@@ -151,12 +149,11 @@ class TextPreprocessor:
         return formatted_path
     
     def fetch_articles(self, xml_path):
-        # Simplification de la récupération des fichiers XML
         xml_files = [f for f in os.listdir(xml_path) if f.lower().endswith('.xml')]
         articles = []
         for xml_file in tqdm(xml_files, desc="loading --- fetching ---- articles"):
             file_path = os.path.join(xml_path, xml_file)
-            dom = parse(file_path).getElementsByTagName('article')
+            dom = parse(file_path).getElementsByTagName(START_TAG)
             articles.extend(dom)
         return articles
 
@@ -179,7 +176,7 @@ class TextPreprocessor:
             for tag_path, text_content in doc_data.items():
                 if tag_path not in seen_tag_paths:
                     seen_tag_paths.add(tag_path)
-                    updated_tag_path = self.format_tag_path(tag_path)
+                    updated_tag_path = self.format_xpath(tag_path)
                     doc_tokens = preprocessor.doc_preprocessing(text_content)
                     metadata.append((self.tag_id_counter, updated_tag_path, doc_tokens))
                     self.tag_id_counter += 1

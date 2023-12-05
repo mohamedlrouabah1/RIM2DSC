@@ -11,3 +11,5 @@ COLLECTION_NAME = "XML_Only_Ascii_Coll_NoSem"
 DATA_PRACTICE_5="../../data/XML-Coll-withSem/"
 # size of the ranking saved for a run
 NB_RANKING = 1500
+
+START_TAG='article'

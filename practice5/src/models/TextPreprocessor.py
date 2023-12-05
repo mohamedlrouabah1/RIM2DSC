@@ -3,6 +3,7 @@ import copyreg
 import os
 import re
 import types
+from multiprocessing import Pool
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 # from nltk.corpus import stopwords
 from string import punctuation
@@ -70,17 +71,15 @@ class TextPreprocessor:
     def load_and_lower_text_collection(self, path) -> str:
         """
         Read the document collection from a file.
-        Handles both regular and gzipped files.
 
         Returns:
-            str: the document collection as a lowered 
-                 string
+            str: the document collection as a lowered string
         """
         with open(path, 'r', encoding='utf-8') as f:
             document_collection_str = f.read().lower()
         return document_collection_str
     
-    def doc_preprocessing(self, doc):
+    def doc_preprocessing(self, doc:list) -> list:
         return [
             self._normalize(token)
             for token in self._tokenize(doc)
@@ -90,29 +89,26 @@ class TextPreprocessor:
     def _preprocessing(self, doc_id,tag_path, content):
         return (doc_id, tag_path, self.doc_preprocessing(content))
 
-    # def pre_process(self, content, use_parallel_computing=False):
-    #     if not use_parallel_computing:
-    #          return self.doc_preprocessing(content)
+
+    def pre_process(self, content, use_parallel_computing=False):
+        if not use_parallel_computing:
+             return self.doc_preprocessing(content)
             
+        # For parallel computing
+        print("Using pool to preprocess documents...")
+        num_processes = os.cpu_count()
+        with Pool(num_processes) as executor:
+            results = executor.map(
+                lambda doc: (self.doc_preprocessing(doc)),
+                content
+            )
 
-    #     # For parallel computing
-    #     print("Using pool to preprocess documents...")
-    #     num_processes = os.cpu_count()
-    #     with Pool(num_processes) as executor:
-    #         results = executor.map(
-    #             lambda doc: (self.doc_preprocessing(doc)),
-    #             content
-    #         )
-
-    #     return results
-    
-                 
-    
+        return results   
     
     
     def recursive_element_extraction(self, element, doc_data,tag_id_counter, current_path='', index=1):
         """
-        Fonction récursive pour extraire les données des éléments et de leurs enfants.
+        Extrait récursivement les données des éléments et de leurs enfants.
         """
         tag_name = element.nodeName
         tag_path = f"{current_path}/{tag_name}[{index}]"
@@ -121,21 +117,22 @@ class TextPreprocessor:
         tag_id = self.tag_id_counter
         self.tag_id_counter += 1
 
-        text_content = self.extract_text_from_element(element).strip()
+        text_content = self._extract_text_from_element(element).strip()
         doc_data[tag_path] = text_content
 
         for child_index, child in enumerate(element.childNodes, start=1):
             if child.nodeType == Node.ELEMENT_NODE:
                 self.recursive_element_extraction(child, doc_data,tag_id_counter, tag_path, index=child_index)
                 
-    def extract_text_from_element(self, element):
+
+    def _extract_text_from_element(self, element):
         """
         Fonction récursive pour extraire le texte de tous les éléments et de leurs enfants.
         """
         text = ''
         for child in element.childNodes:
             if child.nodeType == Node.ELEMENT_NODE:
-                text += self.extract_text_from_element(child)
+                text += self._extract_text_from_element(child)
             elif child.nodeType == Node.TEXT_NODE:
                 text += child.nodeValue + ' '
         return text
@@ -220,11 +217,7 @@ class TextPreprocessor:
     #                 articles.append(dom)
                     
     #     return articles
-    # ###################################################################### #
-    # ###################################################################### #
-    # ###################################################################### #
-    # ###################################################################### #
-    # ###################################################################### #
+
     # def browse_article(self, articles, preprocessor) -> list:
     #     """
     #     Browse an article and extract its text.
@@ -261,7 +254,7 @@ class TextPreprocessor:
     #                     doc_id = sibling.firstChild.nodeValue if sibling.firstChild else ''
 
     #             # Extract content
-    #             content = self.extract_text_from_element(article)
+    #             content = self._extract_text_from_element(article)
     #             doc_tokens = preprocessor.doc_preprocessing(content)
 
     #             data.append({'doc_id': doc_id, 'content': doc_tokens})

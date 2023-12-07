@@ -1,22 +1,13 @@
-import gzip
-from importlib import metadata
-import json
 import matplotlib.pyplot as plt
 import os
 import pickle
-from tqdm import tqdm
-from models.Document import Document
-from models.Timer import Timer
-from models.TextPreprocessor import TextPreprocessor
-from models.Indexer import Indexer
-from models.weighting.BM25 import BM25
-from utilities.config import GRAPH_FOLDER, COLLECTION_NAME
-import pandas as pd
 
-# TODO make a subclass Collection Inex
-# to make specific function to extract documents
-# from loaded files
-# class : ignore all warnings
+from models.Document import Document
+from models.Indexer import Indexer
+from models.TextPreprocessor import TextPreprocessor
+from models.Timer import Timer
+from utilities.config import GRAPH_FOLDER
+
 class Collection:
     """"
     Store a collection of documents and its related metadata.

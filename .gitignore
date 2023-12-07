@@ -8,9 +8,11 @@ data/*
 uml_diagrams/*.bkp
 saves_tp*/*
 **/results/
+**/saves/
 
 # python generated files
 **/__pycache__/
 **/practice3/information_retrieval.egg-info/
 **/.pytest_cache/
 **/build/
+.pytest_cache/

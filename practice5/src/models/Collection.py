@@ -20,9 +20,6 @@ import pandas as pd
 class Collection:
     """"
     Store a collection of documents and its related metadata.
-    [-1] : content
-    [0] : tag_path
-    [1] : tag_id
     """
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False, granularity=None):
         self.documents:list(Document) = []
@@ -45,15 +42,9 @@ class Collection:
         
         print("Preprocessing collection...")
         self.Timer.start("preprocessing")
-        doc_token_list=  self.preprocessor.browse_article(raw_collection, self.preprocessor) 
+        self.documents=  self.preprocessor.browse_article(raw_collection, self.preprocessor) 
         self.Timer.stop()
         print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
-        
-        print("Instantiate Document objects...")
-        self.Timer.start("instantiate_documents")
-        self.documents = [Document(id, metadata) for id, metadata in doc_token_list]
-        self.Timer.stop()
-        print(f"Documents instantiated in {self.Timer.get_time('instantiate_documents')} seconds.")
 
     
     def compute_index(self, save=True):
@@ -63,12 +54,8 @@ class Collection:
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.")
 
-        # print("Save index to disk...")
-        # path = "index.pkl"
-
 
     def compute_statistics(self):
-        # Compute collection statistics
         print("Computing collection statistics...")
         self.Timer.start("compute_statistics")
         self.avdl = self.compute_avdl()
@@ -80,8 +67,9 @@ class Collection:
 
 
     def __len__(self):
-        """ Return the number of documents in the collection """
-        return len(self.documents)
+        """ Return the number of unique documents in the collection"""
+        ids = set([int(doc.id) for doc in self.documents])
+        return len(ids)
 
     def compute_avdl(self):
         return sum(len(d) for d in self.documents) / len(self.documents)
@@ -116,7 +104,7 @@ class Collection:
     def __str__(self) -> str:
         s = "-"*50 + "\n"
         s += f"Collection: {'../../data/XML-Coll-withSem'}\n"
-        s += f"Number of documents: {len(self.documents)}\n"
+        s += f"Number of documents: {self.__len__()}\n"
         s += f"Average Document Length: {self.avdl} (words)\n"
         s += f"Average Term Length: {self.avtl} (characters)\n"
         s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"

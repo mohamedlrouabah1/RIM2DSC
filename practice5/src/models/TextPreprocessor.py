@@ -11,6 +11,7 @@ from string import punctuation
 from tqdm import tqdm
 from utilities.config import STOPWORDS_DIR, START_TAG
 from xml.dom.minidom import Node, parse, parseString
+from models.Document import Document
 
 
 def _pickle_method(method):
@@ -170,12 +171,11 @@ class TextPreprocessor:
 
 
     def browse_article(self, xml_files, preprocessor) -> list:
-        data = []
+        documents = []
         unique_doc_ids = set()
-        old_doc_id = ''
+
         for doc_id, tags_list in tqdm(xml_files, desc="browse ---- xml_files"):
             for article in tqdm(tags_list, desc="browse ---- tags"):
-                print(article, file=stderr)
                 doc_data = self.recursive_element_extraction(article)
                 metadata = []
                 seen_xpaths = set()
@@ -186,12 +186,14 @@ class TextPreprocessor:
                         updated_xpath = self.format_xpath(xpath)
                         doc_tokens = preprocessor.doc_preprocessing(text_content)
                         metadata.append((self.tag_id_counter, updated_xpath, doc_tokens))
-                        self.tag_id_counter += 1
+                        if doc_tokens:
+                            documents += [Document(doc_id, self.tag_id_counter, updated_xpath, doc_tokens)]
+                            self.tag_id_counter += 1
+
 
         print(f"Number of unique documents: {len(unique_doc_ids)}", file=stderr)
-        print(f"Number of documents: {len(data)}", file=stderr)
-        print(data, file=stderr)
-        return data
+        print(f"Number of documents: {len(documents)}", file=stderr)
+        return documents
     
     
     # fetch for each file in the zip file

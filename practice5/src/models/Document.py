@@ -8,34 +8,32 @@ class Document:
     #     self.tag_id = tag_id
     #     self.tag_path = tag_path
     
-    def __init__(self, id:int, metadata):
+    def __init__(self, id, tag_id_counter, xpath, content):
         self.id = id
-        self.metadata = metadata
+        self.tag_id_counter = tag_id_counter
+        self.xpath = xpath
+        self.content = content
 
     def __len__(self):
-        return sum(len(metadata[-1]) for metadata in self.metadata)
-
-    def __repr__(self):
-        return f"Document(id={self.id}, metadata={self.metadata})"
-
-    def __str__(self):
-        return f"Document {self.id} ({len(self)} tokens)"
+        return len(self.content)
+    
+    def __str__(self) -> str:
+        return f"Document {self.id} ({len(self.content)} tokens)"
 
     def get_next_token(self):
-        for metadata in self.metadata:
-            for token in metadata[-1]:
-                yield token
+        for token in self.content:
+            yield token
 
     def get_tokens(self):
-        return [token for metadata in self.metadata for token in metadata[-1]]
+        return self.content
 
     def compute_avtl(self):
-        total_tokens = sum(len(metadata[-1]) for metadata in self.metadata)
-        return total_tokens / len(self.metadata) if len(self.metadata) > 0 else 0
+        return sum(len(t) for t in self.content) / len(self.content)
 
-    def get_tag_paths(self):
-        return [metadata[1] for metadata in self.metadata]
+    def get_tag_path(self):
+        return self.xpath
 
-    
+    def get_xpath_ids(self):
+        return f"{self.id}:{self.xpath}"
     # def to_dict(self):
     #     return {'id': self.id, 'metadata': {'tag_id': self.tag_id, 'tag_path': self.tag_path, 'content': self.content}}

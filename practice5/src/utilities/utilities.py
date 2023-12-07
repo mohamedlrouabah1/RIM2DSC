@@ -11,10 +11,10 @@ def create_or_load_collection(args) -> Collection:
     If it does, load it. Otherwise, create it.
     """
     # First create the path to the save index file
-    index_path = f"{SAVE_FOLDER}/index_" \
-            + "regex_" if args.tokenizer == "regex" else "nltk_" \
-            + "stop_" if args.stopword else "nostop_" \
-            + "lem_" if args.lemmer else "nolem_"
+    index_path = f"{SAVE_FOLDER}/index_" 
+    index_path += "regex_" if args.tokenizer == "regex" else "nltk_" 
+    index_path += "stop_" if args.stopword else "nostop_" 
+    index_path += "lem_" if args.lemmer else "nolem_"
 
     if args.stemmer is None:
         index_path += "nostem_"

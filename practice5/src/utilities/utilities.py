@@ -48,9 +48,10 @@ def create_or_load_collection(args) -> Collection:
             preprocessor=text_preprocessor,
             use_parallel_computing=args.parallel_computing if args.parallel_computing else False
         )
-        collection.load_and_preprocess()
-        collection.compute_index()
-        collection.compute_statistics()
+        raw_collection = collection.load()
+        collection.preprocess(raw_collection)
+        collection.index()
+        collection.compute_stats()
         collection.serialize(index_path)
     else:
         collection = Collection.deserialize(index_path)

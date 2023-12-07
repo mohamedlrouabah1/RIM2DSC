@@ -29,20 +29,21 @@ class TextCollection(CollectionOfRessources):
         self.use_parallel_computing = use_parallel_computing
    
     def __str__(self) -> str:
-        s = "-"*50 + "\n"
-        s += f"Collection: {self.path}\n"
-        s += f"Number of documents: {len(self.documents)}\n"
-        s += f"Average Document Length: {self.avdl} (words)\n"
-        s += f"Average Term Length: {self.avtl} (characters)\n"
-        s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"
-        s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
-        s += f"Loading time: {self.Timer.get_time('load_collection')} seconds\n"
-        s += f"Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n"
-        s += f"Indexation time: {self.Timer.get_time('indexing')} seconds\n"
-        s += f"Total time: {self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')} seconds\n"
-        s += f"Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n"
-        s += "-"*50 + "\n"
-        return s
+        return f"""
+         {'-'*50}\n
+        Collection: {self.path}\n
+        Number of documents: {len(self.documents)}\n
+        Average Document Length: {self.avdl} (words)\n
+        Average Term Length: {self.avtl} (characters)\n
+        Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n
+        Total Collection Frequency: {sum(self.cf)} (terms)\n
+        Loading time: {self.Timer.get_time('load_collection')} seconds\n
+        Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n
+        Indexation time: {self.Timer.get_time('indexing')} seconds\n
+        Total time: {self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')} seconds\n
+        Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n
+        {'-'}*50\n
+        """
     
     def set_ranking_function(self, ranking_function:WeightingFunction) -> None:
         self.information_retriever = ranking_function

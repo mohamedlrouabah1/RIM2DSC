@@ -1,6 +1,6 @@
 from concepts.InformationRessource import InformationRessource
 
-class Document(InformationRessource):
+class TextDocument(InformationRessource):
     """
     Store a document and its related metadata.
     """

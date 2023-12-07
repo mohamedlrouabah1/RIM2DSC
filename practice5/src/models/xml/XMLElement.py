@@ -1,7 +1,17 @@
-class XMLElement:
-    def __init__(self, xml_dict):
-        # self.tag = tag
-        # self.attributes = attributes
-        self.text_content = None
-        # TODO: recursively creat XMLElement for all childrens of the current tag.
-        self.children 
+from models.concepts.InformationRessource import InformationRessource
+class XMLElement(InformationRessource):
+
+    def __init__(self, id:str, xpath:str, attributes:dict, text_content:str, childs:dict('xpath','XMLElement')):
+        super().__init__(f'{id}:{xpath}', text_content)
+        self.attributes = attributes
+        self.childs = childs
+
+    def get_doc_id(self) -> str:
+        return self.id.split(':')[0]
+
+    def get_xpath(self) -> str:
+        return self.id.split(':')[1]
+    
+    def next_child(self) -> 'XMLElement':
+        for child in self.childs:
+            yield child

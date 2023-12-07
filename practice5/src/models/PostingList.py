@@ -10,6 +10,9 @@ class PostingList:
         self.document_frequency = 0
         self.total_frequency = 0
 
+    def __len__(self):
+        return self.document_frequency
+
     def add_posting(self, posting:PostingListUnit):
         self.postings[posting.document_id] =posting
         self.document_frequency += 1
@@ -20,5 +23,3 @@ class PostingList:
             return 0
         return self.postings[doc_id].frequency
     
-    def __len__(self):
-        return self.document_frequency

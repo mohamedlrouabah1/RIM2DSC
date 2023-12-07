@@ -16,3 +16,6 @@ saves_tp*/*
 **/.pytest_cache/
 **/build/
 .pytest_cache/
+
+# diagramio backup file
+**/.$*

@@ -50,7 +50,7 @@ class XMLCollection(CollectionOfRessources):
         scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
-    def compute_stats(self) -> dict(int):
+    def compute_stats(self) -> dict[int]:
          # Compute collection statistics
         print("Computing collection statistics...", file=stderr)
         self.Timer.start("compute_statistics")

@@ -7,5 +7,5 @@ class XMLDocument(InformationRessource):
     def create_xml_elements(cls, xml_dict:dict) -> list(XMLElement):
         raise NotImplementedError("TODO!!")
 
-    def __init__(self, id:int, preprocess_xml:dict):
-        super().__init__(id, XMLDocument.create_xml_element(preprocess_xml))
+    def __init__(self, id:int, dom:XMLElement):
+        super().__init__(id, dom)

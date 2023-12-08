@@ -10,9 +10,6 @@ class TextDocument(InformationRessource):
     def get_next_token(self) -> str:
         for token in self.content:
             yield token
-
-    def get_tokens(self) -> list(str):
-        return self.content
     
     def compute_avtl(self) -> float:
         return sum(len(t) for t in self.content) / len(self.content)

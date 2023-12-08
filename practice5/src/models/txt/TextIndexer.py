@@ -31,11 +31,11 @@ class TextIndexer:
             return 0
         return self.posting_lists[term].get_tfd(doc_id)    
 
-    def _index_doc(self, doc:TextDocument) -> None:
+    def _index_text(self, doc:TextDocument) -> None:
         """
         Create the posting lists for the given document.
         """
-        tokens = doc.get_tokens()
+        tokens = doc.content
         id = doc.id
         tf = Counter(tokens)
         
@@ -50,12 +50,12 @@ class TextIndexer:
 
     def index(self, docs:list(TextDocument), use_parallel_computing=False) -> None:
         if not use_parallel_computing:
-            for doc in docs: self._index_doc(doc)
+            for doc in docs: self._index_text(doc)
             return
         
         print("Using pool to index documents.")
         num_processes = os.cpu_count()
-        indexing = lambda doc : self._index_doc(doc)
+        indexing = lambda doc : self._index_text(doc)
 
         with ProcessPoolExecutor(num_processes) as executor:
             results = executor.map(indexing, docs)

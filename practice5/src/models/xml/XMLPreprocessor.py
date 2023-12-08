@@ -51,7 +51,7 @@ class XMLPreprocessor(TextPreprocessor):
                         
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 
-    def pre_process(self, raw_collection:list[tuple[str, minidom.Document]]) -> list(XMLDocument):
+    def pre_process(self, raw_collection:list[tuple[str, minidom.Document]]) -> list[XMLDocument]:
         """
         Preprocess the raw collection and return a list of TextDocument objects.
         """

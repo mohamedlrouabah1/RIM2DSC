@@ -1,33 +1,18 @@
 import os
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
-from models.Document import Document
+from models.txt.TextDocument import TextDocument
 from models.PostingList import PostingList
 from models.PostingListUnit import PostingListUnit
 
 class TextIndexer:
 
-    def __init__(self,):
-        self.posting_lists: dict(PostingList) = {}
+    def __init__(self):
+       self.posting_lists: dict(PostingList) = {}
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self.posting_lists)
 
-    @DeprecationWarning
-    def __str__(self) -> str:
-        """Deprecated. Use Collection__str__ instead. Will be updated later."""
-        return f"""
-        {'-'*50}\n
-        Indexing the collection at {self.collection.path}\n"
-        Preprocessing time: {self.preprocessing_time_in_ns} ns\n
-        Indexing time: {self.indexing_time_in_ns} ns\n
-        Vocabulary size: {self.get_vocabulary_size()}\n
-        Vocabulary Size: {self.get_vocabulary_size} (unique terms)\n
-        Indexation time: {self.indexing_time_in_ns} ns\n
-        Preprocessing time: {self.preprocessing_time_in_ns} ns\n
-        {'-'*50}\n
-        """
-    
     def get_vocabulary_size(self) -> int:
         return len(self.posting_lists)
     
@@ -46,7 +31,7 @@ class TextIndexer:
             return 0
         return self.posting_lists[term].get_tfd(doc_id)    
 
-    def _index_doc(self, doc:Document) -> None:
+    def _index_doc(self, doc:TextDocument) -> None:
         """
         Create the posting lists for the given document.
         """
@@ -63,7 +48,7 @@ class TextIndexer:
                 self.posting_lists[term].add_posting(unit)
         return
 
-    def index(self, docs:list(Document), use_parallel_computing=False) -> None:
+    def index(self, docs:list(TextDocument), use_parallel_computing=False) -> None:
         if not use_parallel_computing:
             for doc in docs: self._index_doc(doc)
             return

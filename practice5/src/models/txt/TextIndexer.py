@@ -16,7 +16,7 @@ class TextIndexer:
     def get_vocabulary_size(self) -> int:
         return len(self.posting_lists)
     
-    def get_vocabulary(self) -> list(str):
+    def get_vocabulary(self) -> list[str]:
         return self.posting_lists.keys()
     
     def get_df(self, term:str) -> int:
@@ -48,7 +48,7 @@ class TextIndexer:
                 self.posting_lists[term].add_posting(unit)
         return
 
-    def index(self, docs:list(TextDocument), use_parallel_computing=False) -> None:
+    def index(self, docs:list[TextDocument], use_parallel_computing=False) -> None:
         if not use_parallel_computing:
             for doc in docs: self._index_text(doc)
             return

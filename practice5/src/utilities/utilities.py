@@ -1,11 +1,11 @@
 import os
 from sys import stderr
 from utilities.config import SAVE_FOLDER, COLLECTION_NAME, DATA_PRACTICE_5
-from models.Collection import Collection
-from models.Indexer import Indexer
-from models.TextPreprocessor import TextPreprocessor
+from models.txt.TextCollection import TextCollection
+from models.txt.TextIndexer import TextIndexer
+from models.txt.TextPreprocessor import TextPreprocessor
 
-def create_or_load_collection(args) -> Collection:
+def create_or_load_text_collection(args) -> TextCollection:
     """
     Check if the index based on the given arguments already exists.
     If it does, load it. Otherwise, create it.
@@ -41,8 +41,8 @@ def create_or_load_collection(args) -> Collection:
     # Finnally Do we need to compute the indexed Collection ?
     if args.generate_index or not is_existing_index:
         # pbar = tqdm(total=len(xml_files), desc="browse XML articles", unit="file")
-        index = Indexer()
-        collection = Collection(
+        index = TextIndexer()
+        collection = TextCollection(
             path=DATA_PRACTICE_5,
             indexer=index,
             preprocessor=text_preprocessor,
@@ -54,7 +54,7 @@ def create_or_load_collection(args) -> Collection:
         collection.compute_stats()
         collection.serialize(index_path)
     else:
-        collection = Collection.deserialize(index_path)
+        collection = TextCollection.deserialize(index_path)
         collection.preprocessor = text_preprocessor
     
     print(collection, file=stderr)

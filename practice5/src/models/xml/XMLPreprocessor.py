@@ -36,7 +36,7 @@ class XMLPreprocessor(TextPreprocessor):
 
     def _browse(self, node:minidom.Node, xpath:str, id:str) -> XMLElement:
         childs:dict('xpath','XMLElement') = {}
-        text_content:list(str) = []
+        text_content:list[str] = []
         xpath = self._update_xpath(xpath, node.tagName, childs)
 
         for child_node in tqdm(node.childNodes, desc=f"browse {xpath}", file=stderr):
@@ -51,7 +51,7 @@ class XMLPreprocessor(TextPreprocessor):
                         
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 
-    def pre_process(self, raw_collection) -> list(XMLDocument):
+    def pre_process(self, raw_collection:list(tuple(str, minidom.Document))) -> list(XMLDocument):
         """
         Preprocess the raw collection and return a list of TextDocument objects.
         """

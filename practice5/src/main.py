@@ -6,14 +6,14 @@ from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
 from utilities.config import NB_RANKING
 from utilities.parser import parse_command_line_arguments
-from utilities.utilities import create_or_load_collection, load_queries_from_csv
+from utilities.utilities import create_or_load_text_collection, load_queries_from_csv
 
 def main() -> None:
     # Process program's arguments
     args = parse_command_line_arguments()    
     
     # Create/Load the Collection
-    collection = create_or_load_collection(args)
+    collection = create_or_load_text_collection(args)
     if args.plot: collection.plot_statistics()
 
     # We create the ranking function

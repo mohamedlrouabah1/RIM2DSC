@@ -1,10 +1,13 @@
 from models.concepts.InformationRessource import InformationRessource
 class XMLElement(InformationRessource):
 
-    def __init__(self, id:str, xpath:str, attributes:dict, text_content:str, childs:dict('xpath','XMLElement')):
+    def __init__(self, id:str, xpath:str, attributes:dict, text_content:list[str], childs:dict('xpath','XMLElement')):
         super().__init__(f'{id}:{xpath}', text_content)
         self.attributes = attributes
         self.childs = childs
+    
+    def __len__(self) -> int:
+        return len(self.content) + sum(len(child) for child in self.childs)
 
     def get_doc_id(self) -> str:
         return self.id.split(':')[0]
@@ -15,3 +18,10 @@ class XMLElement(InformationRessource):
     def next_child(self) -> 'XMLElement':
         for child in self.childs:
             yield child
+
+    def get_text_content(self) -> list[str]:
+        tokens = self.content
+        if self.childs :
+            for child in self.childs:
+                tokens += child.get_text_content()
+        return tokens

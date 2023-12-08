@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from types import Any
+from typing import Any
 from models.Timer import Timer
 from models.concepts.InformationRessource import InformationRessource
 from models.weighting.WeightingFunction import WeightingFunction
 
 class CollectionOfRessources(ABC):
 
-    def __init__(self, path:str, ressourcesCollection:dict(InformationRessource), use_parallel_computing=False):
+    def __init__(self, path:str, ressourcesCollection:dict[str,InformationRessource], use_parallel_computing=False):
         self.id = id
         self.path = path
         self.collection = ressourcesCollection
@@ -33,9 +33,9 @@ class CollectionOfRessources(ABC):
         raise NotImplementedError("Should implement indexing()")
     
     @abstractmethod
-    def compute_RSV(self, query:str) -> dict(int):
+    def compute_RSV(self, query:str) -> dict[str, float]:
         raise NotImplementedError("Should implement query()")
     
     @abstractmethod
-    def compute_stats(self) -> dict(int):
+    def compute_stats(self) -> None:
         raise NotImplementedError("Should implement compute_stats()")

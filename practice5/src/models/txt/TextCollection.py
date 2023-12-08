@@ -6,8 +6,8 @@ from tqdm import tqdm
 
 from models.concepts.CollectionOfRessources import CollectionOfRessources
 from models.txt.TextDocument import TextDocument
-from models.Indexer import Indexer
-from models.TextPreprocessor import TextPreprocessor
+from models.txt.TextIndexer import TextIndexer
+from models.txt.TextPreprocessor import TextPreprocessor
 from models.Timer import Timer
 from models.weighting.WeightingFunction import WeightingFunction
 from utilities.config import GRAPH_FOLDER
@@ -23,11 +23,9 @@ class TextCollection(CollectionOfRessources):
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
         self.path = path
-        self.Timer = Timer()
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
         self.indexer = Indexer() if indexer is None else indexer
-        self.information_retriever = None
-        self.use_parallel_computing = use_parallel_computing
+
    
     def __str__(self) -> str:
         return f"""
@@ -45,9 +43,6 @@ class TextCollection(CollectionOfRessources):
         Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n
         {'-'}*50\n
         """
-    
-    def set_ranking_function(self, ranking_function:WeightingFunction) -> None:
-        self.information_retriever = ranking_function
     
     def get_avdl(self) -> float:
         return self.avdl
@@ -164,5 +159,5 @@ class TextCollection(CollectionOfRessources):
         if isinstance(index, cls):
             return index
         
-        print(f"Deserialized object from {path} is not an instance of the Index class.", file=sys.stderr)
+        print(f"Deserialized object from {path} is not an instance of the Index class.", file=stderr)
         return None

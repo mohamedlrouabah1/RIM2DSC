@@ -12,7 +12,7 @@ class CollectionOfRessources(ABC):
         self.collection = ressourcesCollection
         self.use_parallel_computing = use_parallel_computing
         self.Timer = Timer()
-        self.information_retriever = None
+        self.information_retriever:WeightingFunction = None
 
     def __len__(self):
         return len(self.collection)

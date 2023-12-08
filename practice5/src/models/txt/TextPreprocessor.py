@@ -24,10 +24,6 @@ copyreg.pickle(types.MethodType, _pickle_method)
 
 class TextPreprocessor:
     
-    @classmethod
-    def _identity(x):
-        return x
-    
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
         if exclude_stopwords:
             with open(STOPWORDS_DIR, 'r') as f:
@@ -40,19 +36,22 @@ class TextPreprocessor:
             self.lemmatizer = WordNetLemmatizer()
             self.lemmatizing = self.lemmatizer.lemmatize
         else:
-            self.lemmatizing = TextPreprocessor._identity
+            self.lemmatizing = self._identity
 
         if stemmer:
             self.stemmer = PorterStemmer()
             self.stemming = self.stemmer.stem
         else:
-            self.stemming = TextPreprocessor._identity
+            self.stemming = self._identity
 
         if collection_pattern:
             self.collection_pattern = collection_pattern
         else:
             self.collection_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
-    
+
+    def _identity(self, x):
+        return x
+       
     def _normalize(self, w:str) -> str:
         return self.stemming(self.lemmatizing(w))
     

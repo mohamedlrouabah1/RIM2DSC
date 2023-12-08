@@ -27,7 +27,7 @@ class XMLPreprocessor(TextPreprocessor):
         for xml_file in tqdm(xml_files, desc="loading --- fetching ---- articles", file=stderr):
             file_path = os.path.join(dir_collection, xml_file)
             id = xml_file.split('.')[0]
-            dom = minidom.parse(file_path).getElementsByTagName(START_TAG)
+            dom = minidom.parse(file_path)
             articles += [(id, dom)]
         return articles
     
@@ -51,7 +51,7 @@ class XMLPreprocessor(TextPreprocessor):
                         
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 
-    def pre_process(self, raw_collection:list[tuple[str, minidom.Document]]) -> list[XMLDocument]:
+    def pre_process(self, raw_collection:list[tuple[str, minidom.Document]], use_parallel_computing=False) -> list[XMLDocument]:
         """
         Preprocess the raw collection and return a list of TextDocument objects.
         """

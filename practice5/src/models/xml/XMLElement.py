@@ -1,7 +1,7 @@
 from models.concepts.InformationRessource import InformationRessource
 class XMLElement(InformationRessource):
 
-    def __init__(self, id:str, xpath:str, attributes:dict, text_content:list[str], childs:dict('xpath','XMLElement')):
+    def __init__(self, id:str, xpath:str, attributes:dict, text_content:list[str], childs:dict[str,'XMLElement']):
         super().__init__(f'{id}:{xpath}', text_content)
         self.attributes = attributes
         self.childs = childs

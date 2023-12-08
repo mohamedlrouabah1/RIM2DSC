@@ -43,7 +43,7 @@ class XMLCollection(CollectionOfRessources):
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
     
 
-    def compute_RSV(self, query:str) -> dict(str, float):
+    def compute_RSV(self, query:str) -> dict[str, float]:
         """
         compute the Relevant Status Value of a document for a query
         """

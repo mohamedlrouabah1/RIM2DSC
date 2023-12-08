@@ -31,7 +31,7 @@ class XMLPreprocessor(TextPreprocessor):
             articles += [(id, dom)]
         return articles
     
-    def load(self) -> list(tuple(str, minidom.Document)):
+    def load(self) -> list[tuple[str, minidom.Document]]:
         return self._fetch_articles(self.path)
 
     def _browse(self, node:minidom.Node, xpath:str, id:str) -> XMLElement:
@@ -51,7 +51,7 @@ class XMLPreprocessor(TextPreprocessor):
                         
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 
-    def pre_process(self, raw_collection:list(tuple(str, minidom.Document))) -> list(XMLDocument):
+    def pre_process(self, raw_collection:list[tuple[str, minidom.Document]]) -> list(XMLDocument):
         """
         Preprocess the raw collection and return a list of TextDocument objects.
         """

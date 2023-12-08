@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as  plt
 import os
 import pickle
 from sys import stderr
@@ -24,7 +24,7 @@ class TextCollection(CollectionOfRessources):
         self.vocabulary_size = 0
         self.path = path
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
-        self.indexer = Indexer() if indexer is None else indexer
+        self.indexer = TextIndexer() if indexer is None else indexer
 
    
     def __str__(self) -> str:

@@ -28,7 +28,7 @@ class XMLCollection(CollectionOfRessources):
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.", file=stderr)
         return raw_xml_collection
 
-    def preprocess(self, raw_collection) -> None:
+    def preprocess(self, raw_collection:list(tuple(str, minidom.Document))) -> None:
         print("Preprocessing collection...", file=stderr)
         self.Timer.start("preprocessing")
         self.documents = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)

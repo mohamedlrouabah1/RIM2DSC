@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import os
 import pickle
+from sys import stderr
 from tqdm import tqdm
 
 from models.concepts.CollectionOfRessources import CollectionOfRessources
-from models.Document import Document
+from models.txt.TextDocument import TextDocument
 from models.Indexer import Indexer
 from models.TextPreprocessor import TextPreprocessor
 from models.Timer import Timer
@@ -18,7 +19,7 @@ class TextCollection(CollectionOfRessources):
     """
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         super().__init__(path, {})
-        self.documents:list(Document) = []
+        self.documents:list(TextDocument) = []
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
         self.path = path
@@ -61,36 +62,36 @@ class TextCollection(CollectionOfRessources):
         return self.cf
 
     def load(self) -> str:
-        print(f"Loading collection from file {self.path} ...")
+        print(f"Loading collection from file {self.path} ...", file=stderr)
         self.Timer.start("load_collection")
         collection_string = self.preprocessor.load_and_lower_text_collection(self.path)
         self.Timer.stop()
-        print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.")
+        print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.", file=stderr)
         return collection_string
 
     def preprocess(self, raw_collection) -> None:
-        print("Preprocessing collection...")
+        print("Preprocessing collection...", file=stderr)
         self.Timer.start("preprocessing")
         doc_token_list = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
         self.Timer.stop()
-        print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.")
+        print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.", file=stderr)
 
         print("Instantiate Document objects...")
         self.Timer.start("instantiate_documents")
-        self.documents = [ Document(doc_id, doc_tokens) 
+        self.documents = [ TextDocument(doc_id, doc_tokens) 
                           for doc_id, doc_tokens in 
-                          tqdm(doc_token_list, desc="Instantiating documents...", colour="blue")
+                          tqdm(doc_token_list, desc="Instantiating documents...", colour="blue", file=stderr)
                           ]
         self.Timer.stop()
-        print(f"Documents instantiated in {self.Timer.get_time('instantiate_documents')} seconds.")
+        print(f"Documents instantiated in {self.Timer.get_time('instantiate_documents')} seconds.", file=stderr)
 
 
     def index(self) -> None:
-        print("Indexing collection...")
+        print("Indexing collection...", file=stderr)
         self.Timer.start("indexing")
         self.indexer.index(self.documents, self.use_parallel_computing)
         self.Timer.stop()
-        print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.")
+        print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
 
     def compute_RSV(self, query:str) -> dict(str, float):
         """
@@ -101,13 +102,13 @@ class TextCollection(CollectionOfRessources):
 
     def compute_stats(self) -> None:
         # Compute collection statistics
-        print("Computing collection statistics...")
+        print("Computing collection statistics...", file=stderr)
         self.Timer.start("compute_statistics")
         self.avdl = self._compute_avdl()
         self.avtl = self._compute_avtl()
         self.cf = self._compute_terms_collection_frequency()
         self.Timer.stop()
-        print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.")
+        print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.", file=stderr)
 
     def plot_stats(self) -> None: 
         labels = ["Avg Doc Length", "Avg Term Length", "Vocabulary Size", "Total Collection Frequency", "Preprocessing Time (seconds)", "Indexing Time (seconds)"]
@@ -120,7 +121,6 @@ class TextCollection(CollectionOfRessources):
         plt.yscale('log')
         plt.ylabel('Value (log scale)')
         plt.title(f'Metrics for the Collection: {self.path}')
-        # Define units or descriptors
         units = ["(words)", "(characters)", "(unique terms)", "(terms)", "(seconds)"]
 
         # Annotate with exact values and units
@@ -164,5 +164,5 @@ class TextCollection(CollectionOfRessources):
         if isinstance(index, cls):
             return index
         
-        print(f"Deserialized object from {path} is not an instance of the Index class.")
+        print(f"Deserialized object from {path} is not an instance of the Index class.", file=sys.stderr)
         return None

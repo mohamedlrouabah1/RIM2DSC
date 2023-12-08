@@ -20,7 +20,7 @@ class XMLCollection(CollectionOfRessources):
         self.indexer = XMLIndexer() if indexer is None else indexer
         self.information_retriever = None
 
-    def load(self) -> list(tuple(str, minidom.Document)):
+    def load(self) -> list[tuple[str, minidom.Document]]:
         print(f"Loading collection from file {self.path} ...", file=stderr)
         self.Timer.start("load_collection")
         raw_xml_collection = self.preprocessor.load(self.path)
@@ -28,7 +28,7 @@ class XMLCollection(CollectionOfRessources):
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.", file=stderr)
         return raw_xml_collection
 
-    def preprocess(self, raw_collection:list(tuple(str, minidom.Document))) -> None:
+    def preprocess(self, raw_collection:list[tuple[str, minidom.Document]]) -> None:
         print("Preprocessing collection...", file=stderr)
         self.Timer.start("preprocessing")
         self.documents = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
@@ -66,5 +66,5 @@ class XMLCollection(CollectionOfRessources):
     def _compute_avtl(self) -> float:
         return sum(doc.compute_avtl() for doc in self.documents) / len(self.documents)
     
-    def _compute_terms_collection_frequency(self) -> list(float):
+    def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]

@@ -21,7 +21,7 @@ class XMLPreprocessor(TextPreprocessor):
             
         return f'{xpath}/{tag_name}[{i}]'
     
-    def _fetch_articles(self, dir_collection:str) -> list(tuple(str, minidom.Document)):
+    def _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
         for xml_file in tqdm(xml_files, desc="loading --- fetching ---- articles", file=stderr):

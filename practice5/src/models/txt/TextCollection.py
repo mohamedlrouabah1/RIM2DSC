@@ -133,7 +133,7 @@ class TextCollection(CollectionOfRessources):
     def _compute_avtl(self) -> float:
         return sum(doc.compute_avtl() for doc in self.documents) / len(self.documents)
     
-    def _compute_terms_collection_frequency(self) -> list(float):
+    def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
      
     def __reduce__(self) -> tuple:

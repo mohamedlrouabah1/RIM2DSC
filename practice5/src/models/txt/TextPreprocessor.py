@@ -62,7 +62,7 @@ class TextPreprocessor:
     def _is_valid_token(self, w:str) -> bool:
         return w.isalpha() and w not in self.stopwords
 
-    def _doc_preprocessing(self, doc):
+    def _text_preprocessing(self, doc:str):
         return [
             self._normalize(token)
             for token in self._tokenize(doc)
@@ -71,7 +71,7 @@ class TextPreprocessor:
     
     def _preprocessing(self, doc_id, content):
         """Used for the parallel computing"""
-        return (doc_id, self._doc_preprocessing(content))
+        return (doc_id, self._text_preprocessing(content))
     
     def load_and_lower_text_collection(self, path) -> str:
         """
@@ -90,7 +90,7 @@ class TextPreprocessor:
         # use_parallel_computing = False # For now bc pbm with pickle instance of this class
         if not use_parallel_computing :
             return [
-                (doc_id, self._doc_preprocessing(content))
+                (doc_id, self._text_preprocessing(content))
                 for doc_id, content in tqdm(self.collection_pattern.findall(data), 
                                             desc="Preprocessing contents...", 
                                             colour="blue")

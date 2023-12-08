@@ -12,16 +12,13 @@ from models.Timer import Timer
 class XMLCollection(CollectionOfRessources):
 
     def __init__(self, path:str, indexer=None, preprocessor=None, use_parallel_computing=False):
-        super().__init__(path, {})
+        super().__init__(path, {}, use_parallel_computing)
         self.documents:list(XMLDocument) = []
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
-        self.path = path
-        self.Timer = Timer()
         self.preprocessor = XMLPreprocessor() if preprocessor is None else preprocessor
         self.indexer = XMLIndexer() if indexer is None else indexer
         self.information_retriever = None
-        self.use_parallel_computing = use_parallel_computing
 
     def load(self) -> list(tuple(str, minidom.Document)):
         print(f"Loading collection from file {self.path} ...", file=stderr)

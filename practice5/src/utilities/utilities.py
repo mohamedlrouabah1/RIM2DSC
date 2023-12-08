@@ -4,8 +4,12 @@ from utilities.config import SAVE_FOLDER, COLLECTION_NAME, DATA_PRACTICE_5
 from models.txt.TextCollection import TextCollection
 from models.txt.TextIndexer import TextIndexer
 from models.txt.TextPreprocessor import TextPreprocessor
+from models.xml.XMLCollection import XMLCollection
+from models.xml.XMLIndexer import XMLIndexer
+from models.xml.XMLPreprocessor import XMLPreprocessor
 
-def create_or_load_text_collection(args) -> TextCollection:
+
+def create_or_load_collection(args, type="xml") -> TextCollection:
     """
     Check if the index based on the given arguments already exists.
     If it does, load it. Otherwise, create it.
@@ -25,37 +29,63 @@ def create_or_load_text_collection(args) -> TextCollection:
 
     is_existing_index = os.path.isfile(index_path)
     if is_existing_index:
-        print(f"Index file {index_path} already exists.")
+        print(f"Index file {index_path} already exists.", file=stderr)
     else:
-        print(f"Index file {index_path} does not exist.")
+        print(f"Index file {index_path} does not exist.", file=stderr)
     
     # Second we create the TextPreProcessor object
-    text_preprocessor = TextPreprocessor(
-        exclude_stopwords=args.stopword,
-        exclude_digits=args.stopword,
-        tokenizer=args.tokenizer,
-        lemmer=args.lemmer,
-        stemmer=args.stemmer
-    )
+    if type == "xml":
+        preprocessor = XMLPreprocessor(
+            exclude_stopwords=args.stopword,
+            exclude_digits=args.stopword,
+            tokenizer=args.tokenizer,
+            lemmer=args.lemmer,
+            stemmer=args.stemmer
+        )
+    else:
+       preprocessor = TextPreprocessor(
+            exclude_stopwords=args.stopword,
+            exclude_digits=args.stopword,
+            tokenizer=args.tokenizer,
+            lemmer=args.lemmer,
+            stemmer=args.stemmer
+        )
 
     # Finnally Do we need to compute the indexed Collection ?
     if args.generate_index or not is_existing_index:
-        # pbar = tqdm(total=len(xml_files), desc="browse XML articles", unit="file")
-        index = TextIndexer()
-        collection = TextCollection(
-            path=DATA_PRACTICE_5,
-            indexer=index,
-            preprocessor=text_preprocessor,
-            use_parallel_computing=args.parallel_computing if args.parallel_computing else False
-        )
-        raw_collection = collection.load()
-        collection.preprocess(raw_collection)
-        collection.index()
-        collection.compute_stats()
-        collection.serialize(index_path)
+        if type == "xml":
+            index = XMLIndexer()
+            collection = XMLCollection(
+                path=DATA_PRACTICE_5,
+                indexer=index,
+                preprocessor=preprocessor,
+                use_parallel_computing=args.parallel_computing if args.parallel_computing else False
+            )
+            raw_collection = collection.load()
+            collection.preprocess(raw_collection)
+            collection.index()
+            collection.compute_stats()
+            collection.serialize(index_path)
+        else:
+            index = TextIndexer()
+            collection = TextCollection(
+                path=DATA_PRACTICE_5,
+                indexer=index,
+                preprocessor=preprocessor,
+                use_parallel_computing=args.parallel_computing if args.parallel_computing else False
+            )
+            raw_collection = collection.load()
+            collection.preprocess(raw_collection)
+            collection.index()
+            collection.compute_stats()
+            collection.serialize(index_path)
     else:
-        collection = TextCollection.deserialize(index_path)
-        collection.preprocessor = text_preprocessor
+        if type == "xml":
+            collection = XMLCollection.deserialize(index_path)
+            collection.preprocessor = preprocessor
+        else:
+            collection = TextCollection.deserialize(index_path)
+            collection.preprocessor =preprocessor
     
     print(collection, file=stderr)
 

@@ -26,7 +26,6 @@ class SMART_ltn(WeightingFunction):
         if df > 0 and self.N >= df:
             idf = self.compute_idf(df, self.N+2)
             tf_part = self.compute_tf_part(tf)
-            print(f"COMPUTE WEIGHT {self.N}, df: {df}, idf: {idf}, tf: {tf}, tf_part: {tf_part}", file=stderr)
             return tf_part * idf
         return 0
     

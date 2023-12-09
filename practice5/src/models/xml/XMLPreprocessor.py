@@ -13,6 +13,9 @@ class XMLPreprocessor(TextPreprocessor):
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
         super().__init__(exclude_stopwords, exclude_digits, tokenizer, lemmer, stemmer)
+        print("XMLIndexer constructor ...")
+        print(f"args: exclude_stopwords={exclude_stopwords}, exclude_digits={exclude_digits}, tokenizer={tokenizer}, lemmer={lemmer}, stemmer={stemmer}")
+        
     
     def _update_xpath(self, xpath:str, tag_name:str, existing_xpath:dict) -> str:
         i = 1

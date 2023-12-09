@@ -66,7 +66,6 @@ class BM25(WeightingFunction):
         The keys of the dictionary are the queries ids.
         """        
         scores = {}
-        print(f"Computing BM25 scores query {query} for {len(documents)} documents...", file=stderr)
         for doc in documents:
             score = 0
             for term in query:
@@ -74,9 +73,6 @@ class BM25(WeightingFunction):
                 tf = indexer.get_tf(term, doc.id)
                 dl = len(doc)
                 score += self.compute_weight(tf, df, dl)
-                print(f"doc: {doc.id}, term: {term}, df: {df}, tf: {tf}, dl: {dl}, score: {score}", file=stderr)
             scores[doc.id] = score
 
-        for id, score in scores.items():
-            print(f"doc: {id}, score: {score}", file=stderr)
         return scores

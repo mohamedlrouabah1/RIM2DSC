@@ -21,7 +21,6 @@ class SMART_ltc(WeightingFunction):
         # compute the denominator used to normalise ltn weights depending on document
         dens = {}
         vocab = indexer.posting_lists.values()
-        print(f"COMPUTE SMART_ltc : VOCAB SIZE: {len(vocab)}, nb docs {self.smart_ltn.N}", file=stderr)
         for posting_list in vocab:
             df = posting_list.document_frequency
             for doc_id, posting_unit in posting_list.postings.items():
@@ -33,6 +32,7 @@ class SMART_ltc(WeightingFunction):
                     
                     else:
                         dens[posting_unit.document_id] = self.smart_ltn.compute_weight(tf, df) ** 2
+       
         # Compute ltn for each document
         for doc in documents:
             deno, num = 0, 0
@@ -47,6 +47,5 @@ class SMART_ltc(WeightingFunction):
             deno = dens[doc.id] if doc.id in dens else 1
             deno = sqrt(deno) if deno != 0 else 1
             scores[doc.id] = num / deno
-            print(f"doc: {doc.id}, score: {scores[doc.id]}, num: {num}, deno: {deno}", file=stderr)
 
         return scores

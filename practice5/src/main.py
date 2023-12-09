@@ -1,10 +1,11 @@
+import sys
 import nltk
 from tqdm import tqdm
 from models.IRrun import IRrun
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
-from utilities.config import NB_RANKING
+from utilities.config import NB_RANKING, RECURSION_LIM
 from utilities.parser import parse_command_line_arguments
 from utilities.utilities import create_or_load_collection, load_queries_from_csv
 
@@ -81,12 +82,12 @@ def main() -> None:
                 score=score,
             )
 
-
     # Finnally we save the run filea
     run.save_run(verbose=True)
-
+    
 
 if __name__ == "__main__":
+    sys.setrecursionlimit(RECURSION_LIM)
     # Downloading nltk dependencies
     for dep in  tqdm(["wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
         nltk.download(dep, quiet=True)

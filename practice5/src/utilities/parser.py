@@ -34,7 +34,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
     
     parser.add_argument(
         "-l", "--lemmer",
-        action="store_true",
+        action="store_false",
         help="To use lemmatization for preprocessing."
         )
     

@@ -39,11 +39,11 @@ class TextPreprocessor:
         else:
             self.lemmatizing = self._identity
 
-        if stemmer:
+        if stemmer == "None":
+            self.stemming = self._identity
+        else:
             self.stemmer = PorterStemmer()
             self.stemming = self.stemmer.stem
-        else:
-            self.stemming = self._identity
 
         if collection_pattern:
             self.collection_pattern = collection_pattern

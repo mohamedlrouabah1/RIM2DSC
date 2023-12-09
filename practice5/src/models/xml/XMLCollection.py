@@ -1,5 +1,6 @@
 import xml.dom.minidom as minidom
 import pickle
+import copy
 
 from sys import stderr
 from typing import Any
@@ -12,7 +13,7 @@ from models.Timer import Timer
 
 class XMLCollection(TextCollection):
 
-    def __init__(self, path:str, indexer=None, preprocessor=None, use_parallel_computing=False):
+    def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         super().__init__(path, {}, use_parallel_computing)
         self.collection:list(XMLDocument) = []
         self.terms_frequency:dict(str, int) = {}
@@ -80,8 +81,9 @@ class XMLCollection(TextCollection):
 
     def serialize(self, path:str) -> bool:
         try:
+            c = copy.deepcopy(self)
             with open(path, 'wb') as f:
-                pickle.dump(self, f)
+                pickle.dump(c, f)
             return True
         except Exception as e:
             print(f"Error serializing indexed collection to {path}: {e}", file=stderr)
@@ -90,7 +92,7 @@ class XMLCollection(TextCollection):
     @classmethod
     def deserialize(cls, path:str) -> 'XMLCollection' :
         with open(path, 'rb') as f:
-            index = pickle.load(f)
+            index = pickle.Unpickler(f).load()
 
         if isinstance(index, cls):
             return index

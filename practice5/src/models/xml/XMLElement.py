@@ -25,3 +25,10 @@ class XMLElement(InformationRessource):
             for child in self.childs.values():
                 tokens += child.get_text_content()
         return tokens
+    
+    def get_xml_element_list(self) -> list['XMLElement']:
+        elements = [self]
+        if self.childs :
+            for child in self.childs.values():
+                elements += child.get_xml_element_list()
+        return elements

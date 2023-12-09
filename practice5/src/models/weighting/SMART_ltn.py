@@ -1,4 +1,5 @@
 from functools import lru_cache
+from sys import stderr
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
 
@@ -24,23 +25,25 @@ class SMART_ltn(WeightingFunction):
     @lru_cache(maxsize=None)
     def compute_weight(self, tf, df):
         if df > 0 and self.N >= df:
+            print(f"COMPUTE WEIGHT {self.N}")
             idf = self.compute_idf(df, self.N)
             tf_part = self.compute_tf_part(tf)
             return tf_part * idf
-        
         return 0
     
     def compute_scores(self, documents, query, indexer):
         """
         Return a dictionary of scores for each document for each query.
         The keys of the dictionary are the queries ids.
-        """        
+        """
+        print("SMART_ltn compute scores ...", file=stderr)       
         scores = {}
         for doc in documents:
             score = 0
             for term in query:
                 df = indexer.get_df(term)
                 tf = indexer.get_tf(term, doc.id)
+                print(f"term: {term}, df: {df}, tf: {tf}", file=stderr)
                 score += self.compute_weight(tf, df)
             scores[doc.id] = score
 

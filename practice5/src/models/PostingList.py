@@ -13,8 +13,21 @@ class PostingList:
     def __len__(self):
         return self.document_frequency
 
+    def __str__(self) -> str:
+        s = f"""
+        {'+'*50}\n
+        Term: {self.term}\n
+        Number of documents: {self.document_frequency}\n
+        Total frequency: {self.total_frequency}\n
+        """
+        for xpath, value in self.postings.items():
+            s += f"PostingListUnit {xpath} : {value.__str__()}\n"
+        s += f"{'+'*50}\n"
+
+        return s
+
     def add_posting(self, posting:PostingListUnit):
-        self.postings[posting.document_id] =posting
+        self.postings[posting.document_id] = posting
         self.document_frequency += 1
         self.total_frequency += posting.frequency
 

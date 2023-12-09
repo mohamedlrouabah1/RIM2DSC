@@ -42,12 +42,12 @@ class XMLPreprocessor(TextPreprocessor):
         for child_node in tqdm(node.childNodes, desc=f"browse {xpath}", file=stderr):
            if child_node.nodeType == minidom.Node.ELEMENT_NODE:
                child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
-               child_xml_element = self._browse(child_node, child_xpath, id)
+               child_xml_element = self._browse(child_node, xpath, id)
                childs[child_xpath] = child_xml_element
            
            elif child_node.nodeType == minidom.Node.TEXT_NODE:   
                if (raw_text := child_node.nodeValue.strip()):
-                   text_content += self._text_preprocessing(raw_text)
+                    text_content += self._text_preprocessing(raw_text)
                         
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 

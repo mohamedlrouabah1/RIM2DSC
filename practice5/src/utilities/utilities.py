@@ -20,7 +20,7 @@ def create_or_load_collection(args, type="xml") -> TextCollection:
     index_path += "stop_" if args.stopword else "nostop_" 
     index_path += "lem_" if args.lemmer else "nolem_"
 
-    if args.stemmer is None:
+    if args.stemmer == "None":
         index_path += "nostem_"
     else:
         index_path += "snow_" if args.stemmer == "snowball" else "porter_"  

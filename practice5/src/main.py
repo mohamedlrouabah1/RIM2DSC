@@ -60,7 +60,7 @@ def main() -> None:
 
         print(f"Ranking documents...")
         collection.Timer.start(f"query{id:02d}_ranking")
-        ranking = collection.RSV(query)
+        ranking = collection.compute_RSV(query)
         collection.Timer.stop()
         print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')}")
         print(delimiter)
@@ -84,8 +84,6 @@ def main() -> None:
 
     # Finnally we save the run filea
     run.save_run(verbose=True)
-
-
 
 
 if __name__ == "__main__":

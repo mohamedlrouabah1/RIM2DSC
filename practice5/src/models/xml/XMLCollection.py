@@ -4,23 +4,23 @@ import pickle
 from sys import stderr
 from typing import Any
 
-from models.concepts.CollectionOfRessources import CollectionOfRessources
+from models.txt.TextCollection import TextCollection  
 from models.xml.XMLDocument import XMLDocument
 from models.xml.XMLIndexer import XMLIndexer
 from models.xml.XMLPreprocessor import XMLPreprocessor
 from models.Timer import Timer
 
-class XMLCollection(CollectionOfRessources):
+class XMLCollection(TextCollection):
 
     def __init__(self, path:str, indexer=None, preprocessor=None, use_parallel_computing=False):
         super().__init__(path, {}, use_parallel_computing)
-        self.documents:list(XMLDocument) = []
+        self.collection:list(XMLDocument) = []
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
         self.preprocessor = XMLPreprocessor() if preprocessor is None else preprocessor
         self.indexer = XMLIndexer() if indexer is None else indexer
         self.information_retriever = None
-
+    
     def load(self) -> list[tuple[str, minidom.Document]]:
         print(f"Loading collection from file {self.path} ...", file=stderr)
         self.Timer.start("load_collection")
@@ -32,14 +32,14 @@ class XMLCollection(CollectionOfRessources):
     def preprocess(self, raw_collection:list[tuple[str, minidom.Document]]) -> None:
         print("Preprocessing collection...", file=stderr)
         self.Timer.start("preprocessing")
-        self.documents = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
+        self.collection = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
         self.Timer.stop()
-        print(f"Collection of {len(self.documents)} documents, preprocessed in {self.Timer.get_time('preprocessing')} seconds.", file=stderr)
+        print(f"Collection of {len(self.collection)} documents, preprocessed in {self.Timer.get_time('preprocessing')} seconds.", file=stderr)
 
     def index(self) -> None:
         print("Indexing collection...", file=stderr)
         self.Timer.start("indexing")
-        self.indexer.index(self.documents, self.use_parallel_computing)
+        self.indexer.index(self.collection, self.use_parallel_computing)
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
     
@@ -48,7 +48,7 @@ class XMLCollection(CollectionOfRessources):
         """
         compute the Relevant Status Value of a document for a query
         """
-        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
+        scores = self.information_retriever.compute_scores(self.collection, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
     def compute_stats(self) -> dict[int]:
@@ -62,21 +62,29 @@ class XMLCollection(CollectionOfRessources):
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.", file=stderr)
 
     def _compute_avdl(self) -> float:
-        return sum(len(d) for d in self.documents) / len(self.documents)
+        return sum(len(d) for d in self.collection) / len(self.collection)
     
     def _compute_avtl(self) -> float:
-        return sum(doc.compute_avtl() for doc in self.documents) / len(self.documents)
+        return sum(doc.compute_avtl() for doc in self.collection) / len(self.collection)
     
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
+
+    def compute_RSV(self, query:str) -> dict[str, float]:
+        """
+        compute the Relevant Status Value of a document for a query
+        """
+        scores = self.information_retriever.compute_scores(self.collection, query, self.indexer)
+        return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
+
     def serialize(self, path:str) -> bool:
         try:
             with open(path, 'wb') as f:
                 pickle.dump(self, f)
             return True
         except Exception as e:
-            print(f"Error serializing indexed collection to {path}: {e}")
+            print(f"Error serializing indexed collection to {path}: {e}", file=stderr)
             return False
 
     @classmethod

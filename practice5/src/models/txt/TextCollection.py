@@ -29,7 +29,7 @@ class TextCollection(CollectionOfRessources):
    
     def __str__(self) -> str:
         return f"""
-         {'-'*50}\n
+        {'-'*50}\n
         Collection: {self.path}\n
         Number of documents: {len(self.documents)}\n
         Average Document Length: {self.avdl} (words)\n
@@ -41,7 +41,7 @@ class TextCollection(CollectionOfRessources):
         Indexation time: {self.Timer.get_time('indexing')} seconds\n
         Total time: {self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')} seconds\n
         Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n
-        {'-'}*50\n
+        {'-'*50}\n
         """
     
     def get_avdl(self) -> float:

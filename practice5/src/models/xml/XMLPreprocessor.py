@@ -39,7 +39,7 @@ class XMLPreprocessor(TextPreprocessor):
         text_content:list[str] = []
         xpath = self._update_xpath(xpath, node.tagName, childs)
 
-        for child_node in tqdm(node.childNodes, desc=f"browse {xpath}", file=stderr):
+        for child_node in node.childNodes:
            if child_node.nodeType == minidom.Node.ELEMENT_NODE:
                child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
                child_xml_element = self._browse(child_node, xpath, id)

@@ -19,7 +19,7 @@ class TextCollection(CollectionOfRessources):
     """
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         super().__init__(path, {})
-        self.documents:list(TextDocument) = []
+        self.collection:list(TextDocument) = []
         self.terms_frequency:dict(str, int) = {}
         self.vocabulary_size = 0
         self.path = path
@@ -31,7 +31,7 @@ class TextCollection(CollectionOfRessources):
         return f"""
         {'-'*50}\n
         Collection: {self.path}\n
-        Number of documents: {len(self.documents)}\n
+        Number of documents: {len(self)}\n
         Average Document Length: {self.avdl} (words)\n
         Average Term Length: {self.avtl} (characters)\n
         Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n
@@ -73,7 +73,7 @@ class TextCollection(CollectionOfRessources):
 
         print("Instantiate Document objects...")
         self.Timer.start("instantiate_documents")
-        self.documents = [ TextDocument(doc_id, doc_tokens) 
+        self.collection = [ TextDocument(doc_id, doc_tokens) 
                           for doc_id, doc_tokens in 
                           tqdm(doc_token_list, desc="Instantiating documents...", colour="blue", file=stderr)
                           ]
@@ -84,7 +84,7 @@ class TextCollection(CollectionOfRessources):
     def index(self) -> None:
         print("Indexing collection...", file=stderr)
         self.Timer.start("indexing")
-        self.indexer.index(self.documents, self.use_parallel_computing)
+        self.indexer.index(self.collection, self.use_parallel_computing)
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
 
@@ -92,7 +92,7 @@ class TextCollection(CollectionOfRessources):
         """
         compute the Relevant Status Value of a document for a query
         """
-        scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
+        scores = self.information_retriever.compute_scores(self.collection, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
     def compute_stats(self) -> None:
@@ -128,10 +128,10 @@ class TextCollection(CollectionOfRessources):
         plt.show()
 
     def _compute_avdl(self) -> float:
-        return sum(len(d) for d in self.documents) / len(self.documents)
+        return sum(len(d) for d in self.collection) / len(self.collection)
     
     def _compute_avtl(self) -> float:
-        return sum(doc.compute_avtl() for doc in self.documents) / len(self.documents)
+        return sum(doc.compute_avtl() for doc in self.collection) / len(self.collection)
     
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]

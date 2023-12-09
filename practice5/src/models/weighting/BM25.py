@@ -1,9 +1,7 @@
+from sys import stderr
 from functools import lru_cache
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
-
-# import numpy as np
-# from scipy.optimize import minimize
 
 class BM25(WeightingFunction):
 
@@ -68,6 +66,7 @@ class BM25(WeightingFunction):
         The keys of the dictionary are the queries ids.
         """        
         scores = {}
+        print(f"Computing BM25 scores query {query} for {len(documents)} documents...", file=stderr)
         for doc in documents:
             score = 0
             for term in query:
@@ -75,26 +74,9 @@ class BM25(WeightingFunction):
                 tf = indexer.get_tf(term, doc.id)
                 dl = len(doc)
                 score += self.compute_weight(tf, df, dl)
+                print(f"doc: {doc.id}, term: {term}, df: {df}, tf: {tf}, dl: {dl}, score: {score}", file=stderr)
             scores[doc.id] = score
 
+        for id, score in scores.items():
+            print(f"doc: {id}, score: {score}", file=stderr)
         return scores
-           
-
-
-if __name__ == "__main__":
-    pass
-    # # Define your objective function
-    # def objective_function(params):
-    #     b, k1 = params
-    #     # Calculate the objective function (e.g., MAP) using b and k1
-    #     # Return the negative of the objective function to minimize it
-    #     return -your_objective_function(b, k1)
-
-    # # Initial parameter values
-    # initial_params = [initial_b, initial_k1]
-
-    # # Perform optimization
-    # result = minimize(objective_function, initial_params, method='L-BFGS-B')
-
-    # Updated parameter values
-# optimal_b, optimal_k1 = result.x

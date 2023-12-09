@@ -61,10 +61,10 @@ class TextPreprocessor:
     def _is_valid_token(self, w:str) -> bool:
         return w.isalpha() and w not in self.stopwords
 
-    def _text_preprocessing(self, doc:str):
+    def _text_preprocessing(self, text:str):
         return [
             self._normalize(token)
-            for token in self._tokenize(doc)
+            for token in self._tokenize(text)
             if self._is_valid_token(token)
         ]
     

@@ -1,7 +1,8 @@
+import xml.dom.minidom as minidom
+import pickle
+
 from sys import stderr
 from typing import Any
-
-import xml.dom.minidom as minidom
 
 from models.concepts.CollectionOfRessources import CollectionOfRessources
 from models.xml.XMLDocument import XMLDocument
@@ -68,3 +69,23 @@ class XMLCollection(CollectionOfRessources):
     
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
+    
+    def serialize(self, path:str) -> bool:
+        try:
+            with open(path, 'wb') as f:
+                pickle.dump(self, f)
+            return True
+        except Exception as e:
+            print(f"Error serializing indexed collection to {path}: {e}")
+            return False
+
+    @classmethod
+    def deserialize(cls, path:str) -> 'XMLCollection' :
+        with open(path, 'rb') as f:
+            index = pickle.load(f)
+
+        if isinstance(index, cls):
+            return index
+        
+        print(f"Deserialized object from {path} is not an instance of the Index class.", file=stderr)
+        return None

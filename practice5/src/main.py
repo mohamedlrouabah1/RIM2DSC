@@ -52,7 +52,7 @@ def main() -> None:
         id = int(id)
         print(f"Query: {query}")
         collection.Timer.start(f"query{id:02d}_preprocessing")
-        query = collection.preprocessor.doc_preprocessing(query)
+        query = collection.preprocessor._text_preprocessing(query)
         collection.Timer.stop()
         print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')}")
         print(f"Query preprocessed: {query}")

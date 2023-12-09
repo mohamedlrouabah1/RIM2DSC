@@ -55,9 +55,11 @@ class XMLPreprocessor(TextPreprocessor):
         """
         Preprocess the raw collection and return a list of TextDocument objects.
         """
+        xml_documents = []
         for doc_id, dom in tqdm(raw_collection, desc="browse ---- xml_files", file=stderr):
             xml_elements = self._browse(
                 dom.getElementsByTagName(START_TAG)[0], "", doc_id
                 )
+            xml_documents += [XMLDocument(doc_id, xml_elements)]
 
-        return
+        return xml_documents

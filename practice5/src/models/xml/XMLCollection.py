@@ -33,7 +33,7 @@ class XMLCollection(CollectionOfRessources):
         self.Timer.start("preprocessing")
         self.documents = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
         self.Timer.stop()
-        print(f"Collection preprocessed in {self.Timer.get_time('preprocessing')} seconds.", file=stderr)
+        print(f"Collection of {len(self.documents)} documents, preprocessed in {self.Timer.get_time('preprocessing')} seconds.", file=stderr)
 
     def index(self) -> None:
         print("Indexing collection...", file=stderr)

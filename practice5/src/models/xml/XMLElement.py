@@ -22,6 +22,6 @@ class XMLElement(InformationRessource):
     def get_text_content(self) -> list[str]:
         tokens = self.content
         if self.childs :
-            for child in self.childs:
+            for child in self.childs.values():
                 tokens += child.get_text_content()
         return tokens

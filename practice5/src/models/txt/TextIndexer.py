@@ -1,6 +1,8 @@
 import os
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
+
+from models.concepts.InformationRessource import InformationRessource
 from models.txt.TextDocument import TextDocument
 from models.PostingList import PostingList
 from models.PostingListUnit import PostingListUnit
@@ -31,7 +33,7 @@ class TextIndexer:
             return 0
         return self.posting_lists[term].get_tfd(doc_id)    
 
-    def _index_text(self, doc:TextDocument) -> None:
+    def _index_text(self, doc:InformationRessource) -> None:
         """
         Create the posting lists for the given document.
         """

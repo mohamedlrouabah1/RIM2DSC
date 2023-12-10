@@ -4,7 +4,6 @@
 # Personnal directories to be skipped
 rendus/*.zip
 rendus/*
-data/*
 uml_diagrams/*.bkp
 saves_tp*/*
 **/results/

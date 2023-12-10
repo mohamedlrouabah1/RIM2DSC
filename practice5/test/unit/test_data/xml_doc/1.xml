@@ -1,0 +1,32 @@
+<article>
+    Ceci est un document de test.
+    <p>
+        Ceci est un <em>paragraphe</em>.
+    </p>
+    <p>
+        Ceci est un <b>autre paragraphe</b>.
+    </p>
+    <p>
+        Ceci est un <em>paragraphe</em> avec un <a href="http://www.google.fr">lien</a>.
+    </p>
+    <section>
+        Une section
+        <div> 
+            imbrication 1 
+            <div></div>
+            <div>
+                imbrication 2
+                 <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <p>
+                    imbrication 3
+                </p>
+                encore du texte...
+            </div>
+        </div>
+        Fin de la section.
+    </section>
+    fin
+</article>

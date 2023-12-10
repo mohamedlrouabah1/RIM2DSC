@@ -24,7 +24,7 @@ copyreg.pickle(types.MethodType, _pickle_method)
 
 class TextPreprocessor:
     
-    def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
+    def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         if exclude_stopwords:
             with open(STOPWORDS_DIR, 'r') as f:
                 self.stopwords = set(f.read().splitlines() + list(punctuation)) 

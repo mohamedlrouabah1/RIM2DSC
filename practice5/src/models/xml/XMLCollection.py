@@ -44,14 +44,6 @@ class XMLCollection(TextCollection):
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
     
-
-    def compute_RSV(self, query:str) -> dict[str, float]:
-        """
-        compute the Relevant Status Value of a document for a query
-        """
-        scores = self.information_retriever.compute_scores(self.collection, query, self.indexer)
-        return sorted(scores.items(), key=lambda x: x[1], reverse=True)
-    
     def compute_stats(self) -> dict[int]:
          # Compute collection statistics
         print("Computing collection statistics...", file=stderr)
@@ -78,7 +70,7 @@ class XMLCollection(TextCollection):
         if type == "xml":
             collection = self.collection
             for doc_xml in self.collection:
-                collection += doc_xml.get_xml_element_list()
+                collection  += doc_xml.get_xml_element_list()
         else:
             collection = self.collection
         scores = self.information_retriever.compute_scores(collection, query, self.indexer)

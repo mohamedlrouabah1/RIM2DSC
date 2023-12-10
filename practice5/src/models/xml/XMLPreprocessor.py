@@ -11,7 +11,7 @@ from models.xml.XMLElement import XMLElement
 
 class XMLPreprocessor(TextPreprocessor):
 
-    def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer=None, collection_pattern=None):
+    def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         super().__init__(exclude_stopwords, exclude_digits, tokenizer, lemmer, stemmer)
         print("XMLIndexer constructor ...")
         print(f"args: exclude_stopwords={exclude_stopwords}, exclude_digits={exclude_digits}, tokenizer={tokenizer}, lemmer={lemmer}, stemmer={stemmer}")
@@ -40,12 +40,11 @@ class XMLPreprocessor(TextPreprocessor):
     def _browse(self, node:minidom.Node, xpath:str, id:str) -> XMLElement:
         childs:dict('xpath','XMLElement') = {}
         text_content:list[str] = []
-        xpath = self._update_xpath(xpath, node.tagName, childs)
 
         for child_node in node.childNodes:
            if child_node.nodeType == minidom.Node.ELEMENT_NODE:
                child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
-               child_xml_element = self._browse(child_node, xpath, id)
+               child_xml_element = self._browse(child_node, child_xpath, id)
                childs[child_xpath] = child_xml_element
            
            elif child_node.nodeType == minidom.Node.TEXT_NODE:   
@@ -60,8 +59,10 @@ class XMLPreprocessor(TextPreprocessor):
         """
         xml_documents = []
         for doc_id, dom in tqdm(raw_collection, desc="browse ---- xml_files", file=stderr):
+            start_node = dom.getElementsByTagName(START_TAG)[0]
+            xpath = self._update_xpath("", start_node.tagName, {})
             xml_elements = self._browse(
-                dom.getElementsByTagName(START_TAG)[0], "", doc_id
+                start_node, xpath, doc_id
                 )
             xml_documents += [XMLDocument(doc_id, xml_elements)]
 

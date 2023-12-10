@@ -1,5 +1,5 @@
-from models.Document import Document
-from models.Collection import Collection
+from models.txt.TextDocument import TextDocument
+from models.txt.TextCollection import TextCollection
 
 class TD3TestData:
     def __init__(self):
@@ -75,10 +75,10 @@ class TD3TestData:
 
 
     def get_test_collection(self):
-        collection = Collection()
+        collection = TextCollection()
         collection.documents = [
-            Document(1, "c d d d e e e e a d e"),
-            Document(2, "a b b b b c")
+            TextDocument(1, "c d d d e e e e a d e"),
+            TextDocument(2, "a b b b b c")
         ]
         collection.compute_index(save=False)
         collection.compute_statistics()

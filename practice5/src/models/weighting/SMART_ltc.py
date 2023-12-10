@@ -49,3 +49,19 @@ class SMART_ltc(WeightingFunction):
             scores[doc.id] = num / deno
 
         return scores
+
+    def _compute_weight(self, ltn_list, tf_list, index):
+        """
+        Param:
+            df_list: list of document frequency of each term in the query
+            tf_list: list of term frequency of each term in the query
+            index: list of index of the terms in the query
+        """
+        den, num = 0, 0
+        for i, (ltn, tf) in enumerate(zip(tf_list, ltn_list)):
+            den += ltn ** 2
+            if i in index:
+                print(f"i: {i}, w_t_d: {ltn}")
+                num += ltn
+        
+        return num / sqrt(den)

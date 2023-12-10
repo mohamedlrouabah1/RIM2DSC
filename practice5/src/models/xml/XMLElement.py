@@ -28,6 +28,7 @@ class XMLElement(InformationRessource):
     
     def get_xml_element_list(self) -> list['XMLElement']:
         elements = [self]
+        print(f"elements: {self.id}")
         if self.childs :
             for child in self.childs.values():
                 elements += child.get_xml_element_list()

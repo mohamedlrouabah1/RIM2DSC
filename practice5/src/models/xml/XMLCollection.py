@@ -4,6 +4,7 @@ import copy
 
 from sys import stderr
 from typing import Any
+from tqdm import tqdm
 
 from models.txt.TextCollection import TextCollection  
 from models.xml.XMLDocument import XMLDocument
@@ -48,8 +49,11 @@ class XMLCollection(TextCollection):
          # Compute collection statistics
         print("Computing collection statistics...", file=stderr)
         self.Timer.start("compute_statistics")
+        print("computing avdl ...", file=stderr)
         self.avdl = self._compute_avdl()
+        print("computing avtl ...", file=stderr)
         self.avtl = self._compute_avtl()
+        print("computing terms collection frequency ...", file=stderr)
         self.cf = self._compute_terms_collection_frequency()
         self.Timer.stop()
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.", file=stderr)
@@ -58,7 +62,7 @@ class XMLCollection(TextCollection):
         return sum(len(d) for d in self.collection) / len(self.collection)
     
     def _compute_avtl(self) -> float:
-        return sum(doc.compute_avtl() for doc in self.collection) / len(self.collection)
+        return sum(doc.compute_avtl() for doc in tqdm(self.collection, desc="Computing avtl ...")) / len(self.collection)
     
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
@@ -69,9 +73,7 @@ class XMLCollection(TextCollection):
         """
         if type == "xml":
             collection = copy.deepcopy(self.collection)
-            print(f"collection size: {len(collection)}")
-            for doc_xml in self.collection:
-                print(f"{'*'*200}\ndoc_xml: {doc_xml.id}\nquery: {query}")
+            for doc_xml in tqdm(self.collection, desc="Extracting XML elements from documents ...."):
                 collection  += doc_xml.get_xml_element_list()
         else:
             collection = self.collection

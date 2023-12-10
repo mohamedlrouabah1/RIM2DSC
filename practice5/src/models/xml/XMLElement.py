@@ -24,13 +24,12 @@ class XMLElement(InformationRessource):
         if self.childs :
             for child in self.childs.values():
                 tokens += child.get_text_content()
+        print(f"XMLElement, get_text_content: {self.id} nb tokens: {len(tokens)}")
         return tokens
     
     def get_xml_element_list(self) -> list['XMLElement']:
         elements = [self]
-        print(f"elements: {self.id} nb childs: {len(self.childs)}")
-        if self.childs :
+        if len(self.childs) > 0 :
             for child in self.childs.values():
-                print(f"\tchild: {child.id}")
-                #elements += child.get_xml_element_list()
+                elements += child.get_xml_element_list()
         return elements

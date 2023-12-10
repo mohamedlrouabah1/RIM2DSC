@@ -36,7 +36,7 @@ class TextIndexer:
     def get_df(self, term:str) -> int:
         """ Return the number of documents in which the term appears."""
         if term not in self.posting_lists:
-            print(f"Term {term} not in vocabulary.", file=stderr)
+            #print(f"Term {term} not in vocabulary.", file=stderr)
             return 0  
         return len(self.posting_lists[term])
     

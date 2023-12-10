@@ -58,7 +58,7 @@ class XMLPreprocessor(TextPreprocessor):
         Preprocess the raw collection and return a list of TextDocument objects.
         """
         xml_documents = []
-        for doc_id, dom in tqdm(raw_collection, desc="browse ---- xml_files", file=stderr):
+        for doc_id, dom in raw_collection:
             start_node = dom.getElementsByTagName(START_TAG)[0]
             xpath = self._update_xpath("", start_node.tagName, {})
             xml_elements = self._browse(

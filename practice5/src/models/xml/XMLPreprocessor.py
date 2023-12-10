@@ -1,5 +1,6 @@
 import xml.dom.minidom as minidom
 import os
+from tqdm import tqdm
 from sys import stderr
 from string import punctuation
 
@@ -26,7 +27,7 @@ class XMLPreprocessor(TextPreprocessor):
     def _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
-        for xml_file in xml_files:
+        for xml_file in tqdm(xml_files, desc="loading xml files ..."):
             file_path = os.path.join(dir_collection, xml_file)
             id = xml_file.split('.')[0]
             dom = minidom.parse(file_path)
@@ -57,7 +58,7 @@ class XMLPreprocessor(TextPreprocessor):
         Preprocess the raw collection and return a list of TextDocument objects.
         """
         xml_documents = []
-        for doc_id, dom in raw_collection:
+        for doc_id, dom in tqdm(raw_collection, desc="preprocessing xml documents ..."):
             start_node = dom.getElementsByTagName(START_TAG)[0]
             xpath = self._update_xpath("", start_node.tagName, {})
             xml_elements = self._browse(

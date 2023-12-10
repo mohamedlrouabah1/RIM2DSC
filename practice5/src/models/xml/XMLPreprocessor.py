@@ -1,6 +1,5 @@
 import xml.dom.minidom as minidom
 import os
-from tqdm import tqdm
 from sys import stderr
 from string import punctuation
 

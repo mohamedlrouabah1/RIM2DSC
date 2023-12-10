@@ -68,11 +68,14 @@ class XMLCollection(TextCollection):
         compute the Relevant Status Value of a document for a query
         """
         if type == "xml":
-            collection = self.collection
+            collection = copy.deepcopy(self.collection)
+            print(f"collection size: {len(collection)}")
             for doc_xml in self.collection:
+                print(f"{'*'*200}\ndoc_xml: {doc_xml.id}\nquery: {query}")
                 collection  += doc_xml.get_xml_element_list()
         else:
             collection = self.collection
+        print(f"Computing RSV for {len(collection)} xpath...")
         scores = self.information_retriever.compute_scores(collection, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     

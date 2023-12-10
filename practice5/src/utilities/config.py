@@ -19,4 +19,4 @@ START_TAG='article'
 RECURSION_LIM=900000
 
 # TODO: remove it once the memory issue is solved
-MAX_FILES=5000
+MAX_FILES=2000

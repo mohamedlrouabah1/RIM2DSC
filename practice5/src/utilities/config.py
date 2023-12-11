@@ -9,8 +9,8 @@ GRAPH_FOLDER = "../graph/"
 
 COLLECTION_NAME = "XML_Only_Ascii_Coll_NoSem"
 # DATA_PRACTICE_5="../../data/XML-Coll-withSem/"
-DATA_PRACTICE_5="../../data/small-dataset/"
-# DATA_PRACTICE_5="../../data/Practice_05_data/XML-Coll-withSem/"
+# DATA_PRACTICE_5="../../data/small-dataset/"
+DATA_PRACTICE_5="../../data/Practice_05_data/XML-Coll-withSem/"
 # size of the ranking saved for a run
 NB_RANKING = 1500
 

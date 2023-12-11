@@ -61,11 +61,6 @@ def create_or_load_collection(args, type="xml") -> TextCollection:
                 preprocessor=preprocessor,
                 use_parallel_computing=args.parallel_computing if args.parallel_computing else False
             )
-            raw_collection = collection.load()
-            collection.preprocess(raw_collection)
-            collection.index()
-            collection.compute_stats()
-            collection.serialize(index_path)
         else:
             index = TextIndexer()
             collection = TextCollection(
@@ -74,19 +69,19 @@ def create_or_load_collection(args, type="xml") -> TextCollection:
                 preprocessor=preprocessor,
                 use_parallel_computing=args.parallel_computing if args.parallel_computing else False
             )
-            raw_collection = collection.load()
-            collection.preprocess(raw_collection)
-            collection.index()
-            collection.compute_stats()
-            collection.serialize(index_path)
+        raw_collection = collection.load()
+        collection.preprocess(raw_collection)
+        collection.index()
+        collection.compute_stats()
+        collection.serialize(index_path)
     else:
         if type == "xml":
             print(f"desealize {index_path}", file=stderr)
             collection = XMLCollection.deserialize(index_path)
-            collection.preprocessor = preprocessor
         else:
             collection = TextCollection.deserialize(index_path)
-            collection.preprocessor =preprocessor
+        
+        collection.preprocessor =preprocessor
     
     print(collection, file=stderr)
 

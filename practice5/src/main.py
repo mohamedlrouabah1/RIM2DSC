@@ -18,6 +18,7 @@ def main() -> None:
     if args.plot: collection.plot_statistics()
 
     # We create the ranking function
+    print("Creating ranking function...", file=sys.stderr)
     params=[]
     if args.ranking == "smart_ltn":
         ranking_function = SMART_ltn(N=len(collection))
@@ -34,10 +35,12 @@ def main() -> None:
 
 
     # Now we can use the index and the preprocessor to do the queries
+    print("Loading queries...", file=sys.stderr)
     queries = load_queries_from_csv(args.queries_file_path)
     
 
     # To create run result files
+    print("Instanciate IRun class ...", file=sys.stderr)
     run = IRrun(
         weighting_function=args.ranking,
         stop=args.stopword,

@@ -15,8 +15,6 @@ class XMLDocument(InformationRessource):
         return self.content.get_xml_element_list()
     
     def compute_avtl(self) -> float:
-        print("XMLDocument compute_avtl ...")
         tokens = self.get_text_content()
-        print(f"XMLDocument compute_avtl: {self.id} nb tokens: {len(tokens)}")
         num = sum(len(t) for t in tokens)
         return num / len(tokens)

@@ -28,11 +28,11 @@ class XMLPreprocessor(TextPreprocessor):
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
         for i, xml_file in tqdm(enumerate(xml_files), desc="loading xml files ..."):
-            if i < MAX_FILES:
-                file_path = os.path.join(dir_collection, xml_file)
-                id = xml_file.split('.')[0]
-                dom = minidom.parse(file_path)
-                articles += [(id, dom)]
+            # if i < MAX_FILES:
+            file_path = os.path.join(dir_collection, xml_file)
+            id = xml_file.split('.')[0]
+            dom = minidom.parse(file_path)
+            articles += [(id, dom)]
         return articles
     
     def load(self, path) -> list[tuple[str, minidom.Document]]:

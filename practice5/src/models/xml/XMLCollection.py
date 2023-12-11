@@ -72,9 +72,11 @@ class XMLCollection(TextCollection):
         compute the Relevant Status Value of a document for a query
         """
         if type == "xml":
-            collection = copy.deepcopy(self.collection)
+            xml_elements = []
             for doc_xml in tqdm(self.collection, desc="Extracting XML elements from documents ...."):
-                collection  += doc_xml.get_xml_element_list()
+                xml_elements  += doc_xml.get_xml_element_list()
+            
+            collection = self.collection + xml_elements
         else:
             collection = self.collection
         print(f"Computing RSV for {len(collection)} xpath...")
@@ -84,9 +86,10 @@ class XMLCollection(TextCollection):
 
     def serialize(self, path:str) -> bool:
         try:
-            c = copy.deepcopy(self)
+            c = self #copy.deepcopy(self)
             with open(path, 'wb') as f:
                 pickle.dump(c, f)
+            print("Indexed collection serialized to", path, file=stderr)
             return True
         except Exception as e:
             print(f"Error serializing indexed collection to {path}: {e}", file=stderr)

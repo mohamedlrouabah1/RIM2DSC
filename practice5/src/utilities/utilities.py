@@ -73,7 +73,7 @@ def create_or_load_collection(args, type="xml") -> TextCollection:
         collection.preprocess(raw_collection)
         collection.index()
         collection.compute_stats()
-        collection.serialize(index_path)
+        #collection.serialize(index_path)
     else:
         if type == "xml":
             print(f"desealize {index_path}", file=stderr)

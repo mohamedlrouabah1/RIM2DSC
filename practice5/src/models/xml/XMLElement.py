@@ -38,7 +38,9 @@ class XMLElement(InformationRessource):
         if self.childs :
             for child in self.childs.values():
                 tokens += child.get_text_content()
-        return tokens + self.content
+
+        tokens += self.content
+        return tokens
     
     def get_xml_element_list(self) -> list['XMLElement']:
         elements = [self]

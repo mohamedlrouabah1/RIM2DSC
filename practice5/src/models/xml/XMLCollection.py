@@ -1,6 +1,5 @@
 import xml.dom.minidom as minidom
 import pickle
-import copy
 
 from sys import stderr
 from typing import Any
@@ -72,11 +71,11 @@ class XMLCollection(TextCollection):
         compute the Relevant Status Value of a document for a query
         """
         if type == "xml":
-            xml_elements = []
+            collection = []
             for doc_xml in tqdm(self.collection, desc="Extracting XML elements from documents ...."):
-                xml_elements  += doc_xml.get_xml_element_list()
+                collection  += doc_xml.get_xml_element_list()
             
-            collection = self.collection + xml_elements
+            collection += self.collection
         else:
             collection = self.collection
         print(f"Computing RSV for {len(collection)} xpath...")
@@ -86,6 +85,7 @@ class XMLCollection(TextCollection):
 
     def serialize(self, path:str) -> bool:
         try:
+            print(f"Serializing indexed collection to {path} ...", file=stderr)
             c = self #copy.deepcopy(self)
             with open(path, 'wb') as f:
                 pickle.dump(c, f)

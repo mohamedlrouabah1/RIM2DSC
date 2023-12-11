@@ -5,6 +5,20 @@ class XMLElement(InformationRessource):
         super().__init__(f'{id}:{xpath}', text_content)
         self.attributes = attributes
         self.childs = childs
+
+    def __str__(self) -> str:
+        s = f"""
+        {'+'*50}\n
+        ID: {self.id}\n
+        Attributes: {self.attributes}\n
+        Number of childs: {len(self.childs)}\n
+        Content: {self.content}\n
+        """
+        for xpath, child in self.childs.items():
+            s += f"Child {xpath} : {child.__str__()}\n"
+        s += f"{'+'*50}\n"
+
+        return s
     
     def __len__(self) -> int:
         return len(self.content) + sum(len(child) for child in self.childs)
@@ -20,11 +34,11 @@ class XMLElement(InformationRessource):
             yield child
 
     def get_text_content(self) -> list[str]:
-        tokens = self.content
+        tokens = []
         if self.childs :
             for child in self.childs.values():
                 tokens += child.get_text_content()
-        return tokens
+        return tokens + self.content
     
     def get_xml_element_list(self) -> list['XMLElement']:
         elements = [self]

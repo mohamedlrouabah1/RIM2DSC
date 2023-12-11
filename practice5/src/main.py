@@ -87,6 +87,13 @@ def main() -> None:
 
     # Finnally we save the run filea
     run.save_run(verbose=True)
+
+    for i in range(5):
+        print('*'*50)
+    print(collection.indexer)
+    for i in range(5):
+        print('*'*50)
+    print(collection.collection[0])
     
 
 if __name__ == "__main__":

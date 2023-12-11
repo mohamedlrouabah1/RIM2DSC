@@ -17,7 +17,7 @@ class InformationRessource(ABC):
         return len(self.content)
     
     def __str__(self) -> str:
-        return f"Document {self.id} ({len(self.content)} pieces of information."
+        return f"Document {self.id} {len(self.content)} pieces of information."
     
     def __repr__(self) -> str:
         s = ">"*50 + "\n"

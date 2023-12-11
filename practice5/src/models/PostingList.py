@@ -9,6 +9,7 @@ class PostingList:
         self.postings: dict(PostingListUnit) = {}
         self.document_frequency = 0
         self.total_frequency = 0
+        self.doc_ids = set()
 
     def __len__(self):
         return self.document_frequency
@@ -27,9 +28,14 @@ class PostingList:
         return s
 
     def add_posting(self, posting:PostingListUnit):
+        # If it is the first time we index an xml element of this document, we add it to the list
+        id = posting.document_id.split(':')[0]
+        if id not in self.doc_ids:
+            self.doc_ids.add(id)
+            self.document_frequency += 1
+            self.total_frequency += posting.frequency
+        
         self.postings[posting.document_id] = posting
-        self.document_frequency += 1
-        self.total_frequency += posting.frequency
 
     def get_tfd(self, doc_id:int):
         if self.postings.get(doc_id) is None:

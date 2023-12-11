@@ -8,6 +8,9 @@ class XMLDocument(InformationRessource):
     def __len__(self) -> int:
         return len(self.content)
     
+    def __str__(self) -> str:
+        return f"XMLDocument {self.id} :\n {self.content.__str__()}"
+    
     def get_text_content(self) -> list[str]:
         return self.content.get_text_content()
     

@@ -1,4 +1,5 @@
 import os
+from sys import stderr
 
 class IRrun:
     GROUP_NAME="MohammedWilliam"
@@ -37,8 +38,12 @@ class IRrun:
         return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{IRrun.DEFAULT_GRANULARITY if not granularity else granularity}_{stop}_{stem}_{'_'.join(params)}.txt"
     
 
-    def add_result_line(self, query_id, doc_id, rank, score, xml_path="/article[1]"):
-        result_line = f"{query_id} Q0 {doc_id} {rank} {score} {IRrun.GROUP_NAME}{self.id} {xml_path}\n"
+    def add_result_line(self, query_id, doc_id, rank, score, xpath=""):
+        if ":" in doc_id:
+            doc_id, xpath = doc_id.split(':')
+            xpath.replace('/', '_')
+
+        result_line = f"{query_id} Q0 {doc_id.split(':')[0]} {rank} {score} {IRrun.GROUP_NAME}{self.id} {xpath}\n"
         self.run_as_str += result_line
         return result_line
     

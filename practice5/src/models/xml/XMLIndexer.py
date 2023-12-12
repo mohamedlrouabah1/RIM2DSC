@@ -21,8 +21,5 @@ class XMLIndexer(TextIndexer):
 
 
     def index(self, xml_documents:list[XMLDocument], use_parallel_computing=False) -> None:
-        for xml_doc in tqdm(xml_documents, desc=f"Indexing {len(xml_documents)} XML documents", file=stderr):
+        for xml_doc in tqdm(xml_documents, desc=f"Indexing XML documents", file=stderr):
             self._index_fields(xml_doc.content)
-            # Also index only the document as a text element
-            # TODO: remove this line once the xml element retrieval works
-            # self._index_text(xml_doc, content=xml_doc.content.get_text_content())

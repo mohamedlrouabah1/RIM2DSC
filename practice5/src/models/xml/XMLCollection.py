@@ -1,5 +1,6 @@
 import xml.dom.minidom as minidom
 import pickle
+import hickle as hkl
 
 from sys import stderr
 from typing import Any
@@ -55,6 +56,8 @@ class XMLCollection(TextCollection):
         print("computing terms collection frequency ...", file=stderr)
         self.cf = self._compute_terms_collection_frequency()
         self.Timer.stop()
+        print("computing nb distinct terms ...", file=stderr)
+        self._compute_nb_distinct_terms()
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.", file=stderr)
 
     def _compute_avdl(self) -> float:
@@ -65,6 +68,18 @@ class XMLCollection(TextCollection):
     
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
+    
+    def _compute_nb_distinct_terms(self) -> None:
+        tot = 0
+        for doc in tqdm(self.collection, desc="Computing nb distinct terms ..."):
+            tokens = doc.get_text_content()
+            nb_distinct_terms = len(set(tokens))
+            tot += nb_distinct_terms
+            doc.nb_distinct_terms = nb_distinct_terms
+        
+        self.indexer.average_nb_distinct_terms = tot / len(self.collection)
+        print(f"Average nb distinct terms: {self.indexer.average_nb_distinct_terms}, (XMLCollection._compute_nb_distinct_terms)", file=stderr)
+
 
     def compute_RSV(self, query:str, type="xml") -> dict[str, float]:
         """
@@ -78,6 +93,7 @@ class XMLCollection(TextCollection):
             collection += self.collection
         else:
             collection = self.collection
+
         print(f"Computing RSV for {len(collection)} xpath...")
         scores = self.information_retriever.compute_scores(collection, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
@@ -86,11 +102,12 @@ class XMLCollection(TextCollection):
     def serialize(self, path:str) -> bool:
         try:
             print(f"Serializing indexed collection to {path} ...", file=stderr)
-            c = self #copy.deepcopy(self)
+            # hkl.dump(self, path, mode="w", compression="gzip")
             with open(path, 'wb') as f:
-                pickle.dump(c, f)
+                pickle.dump(self, f)
             print("Indexed collection serialized to", path, file=stderr)
             return True
+        
         except Exception as e:
             print(f"Error serializing indexed collection to {path}: {e}", file=stderr)
             return False
@@ -98,10 +115,11 @@ class XMLCollection(TextCollection):
     @classmethod
     def deserialize(cls, path:str) -> 'XMLCollection' :
         with open(path, 'rb') as f:
-            index = pickle.Unpickler(f).load()
+            xml_collection = pickle.Unpickler(f).load()
+        # xml_collection = hkl.load(path)
 
-        if isinstance(index, cls):
-            return index
-        
-        print(f"Deserialized object from {path} is not an instance of the Index class.", file=stderr)
-        return None
+        if not isinstance(xml_collection, cls):
+            print(f"Deserialized object from {path} is not an instance of the xml_collection class.", file=stderr)
+            return None
+
+        return xml_collection

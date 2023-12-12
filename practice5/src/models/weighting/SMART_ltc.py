@@ -1,3 +1,4 @@
+from sys import stderr
 from functools import lru_cache
 from math import log10, sqrt
 from models.weighting.SMART_ltn import SMART_ltn
@@ -9,7 +10,7 @@ class SMART_ltc(WeightingFunction):
         if  'smart_ltn' in kargs:
             self.smart_ltn = kargs['smart_ltn']
         else:
-            self.smart_ltn = SMART_ltn(N)    
+            self.smart_ltn = SMART_ltn(N)
 
     def compute_scores(self, documents, query, indexer):
         """
@@ -22,15 +23,17 @@ class SMART_ltc(WeightingFunction):
         vocab = indexer.posting_lists.values()
         for posting_list in vocab:
             df = posting_list.document_frequency
-            for posting_unit in posting_list.postings.values():
-                tf = posting_unit.frequency
-                if posting_unit.document_id in dens:
-                    dens[posting_unit.document_id] += self.smart_ltn.compute_weight(tf, df) ** 2
-                
-                else:
-                    dens[posting_unit.document_id] = self.smart_ltn.compute_weight(tf, df) ** 2
-            
-
+            for doc_id, posting_unit in posting_list.postings.items():
+                # NB : here we only considering the root node of the doc
+                doc_id, xpath = doc_id.split(':')
+                if xpath == '/article[1]':
+                    tf = posting_unit.frequency
+                    if doc_id in dens:
+                        dens[doc_id] += self.smart_ltn.compute_weight(tf, df) ** 2
+                    
+                    else:
+                        dens[doc_id] = self.smart_ltn.compute_weight(tf, df) ** 2
+       
         # Compute ltn for each document
         for doc in documents:
             deno, num = 0, 0
@@ -42,12 +45,16 @@ class SMART_ltc(WeightingFunction):
                 num += w_t_d
 
             # ltn score normalized
-            deno = dens[doc.id] if doc.id in dens else 1
+            if doc.id.find(':') != -1:
+                doc_id, _ = doc.id.split(':')
+            else:
+                doc_id = doc.id
+            deno = dens[doc_id] if doc_id in dens else 1
             deno = sqrt(deno) if deno != 0 else 1
             scores[doc.id] = num / deno
 
         return scores
-        
+
     def _compute_weight(self, ltn_list, tf_list, index):
         """
         Param:

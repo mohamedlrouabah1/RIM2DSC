@@ -4,13 +4,21 @@
 # Personnal directories to be skipped
 rendus/*.zip
 rendus/*
-data/*
 uml_diagrams/*.bkp
-saves/*
+saves_tp*/*
 **/results/
+**/saves/
+out.txt
+**/results*/
+**/saves*/
 
 # python generated files
 **/__pycache__/
-**/practice3/information_retrieval.egg-info/
 **/.pytest_cache/
 **/build/
+.pytest_cache/
+**/*.spec
+**/information_retrieval.egg-info/
+
+# diagramio backup file
+**/.$*

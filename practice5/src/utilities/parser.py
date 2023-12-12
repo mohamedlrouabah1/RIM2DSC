@@ -34,7 +34,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
     
     parser.add_argument(
         "-l", "--lemmer",
-        action="store_true",
+        action="store_false",
         help="To use lemmatization for preprocessing."
         )
     
@@ -61,7 +61,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
 
     parser.add_argument(
         "-r", "--ranking",
-        choices=["bm25", "smart_ltn", "smart_ltc"],
+        choices=["bm25", "smart_ltn", "smart_ltc", "smart_lnu"],
         default="bm25",
         help="Ranking algorithm to use."
         )
@@ -78,6 +78,13 @@ def parse_command_line_arguments() -> argparse.Namespace:
         type=float,
         default=1.2,
         help="BM25 parameter k1. It has no effect on other ranking algorithms."
+        )
+    
+    parser.add_argument(
+        "-sl", "--slope",
+        type=float,
+        default=0.35,
+        help="Slope parameter for SMART_lnu. It has no effect on other ranking algorithms."
         )
     
     parser.add_argument(

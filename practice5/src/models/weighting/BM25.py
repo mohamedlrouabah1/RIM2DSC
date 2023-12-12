@@ -1,9 +1,7 @@
+from sys import stderr
 from functools import lru_cache
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
-
-# import numpy as np
-# from scipy.optimize import minimize
 
 class BM25(WeightingFunction):
 
@@ -26,7 +24,7 @@ class BM25(WeightingFunction):
         self.k1_times_b_times_inv_avdl = self.k1 * self.b / self.avdl
         self.N_plus_0_5 = self.N + 0.5
 
-    @lru_cache(maxsize=None)
+    #@lru_cache(maxsize=None)
     def compute_idf_part(self, df):
         """
         Params:
@@ -36,15 +34,15 @@ class BM25(WeightingFunction):
         # can be faster and more accurate bc of the floating point arithmetic
         return log10((self.N_plus_0_5 - df )) - log10((df + 0.5)) # if df > 0 else 0, not needed bc df is always > 0
     
-    @lru_cache(maxsize=None)
+    #@lru_cache(maxsize=None)
     def compute_tf_weight_tf_part(self, tf):
         return (tf * self.k1_plus_1, self.k1_times_1_minus_b + tf)
     
-    @lru_cache(maxsize=None)
+    #@lru_cache(maxsize=None)
     def compute_tf_weight_dl_part(self, dl):
         return self.k1_times_b_times_inv_avdl * dl
     
-    @lru_cache(maxsize=None)
+    #@lru_cache(maxsize=None)
     def compute_weight(self, tf, df, dl):
         """
         tf: term frequency in the document
@@ -78,23 +76,3 @@ class BM25(WeightingFunction):
             scores[doc.id] = score
 
         return scores
-           
-
-
-if __name__ == "__main__":
-    pass
-    # # Define your objective function
-    # def objective_function(params):
-    #     b, k1 = params
-    #     # Calculate the objective function (e.g., MAP) using b and k1
-    #     # Return the negative of the objective function to minimize it
-    #     return -your_objective_function(b, k1)
-
-    # # Initial parameter values
-    # initial_params = [initial_b, initial_k1]
-
-    # # Perform optimization
-    # result = minimize(objective_function, initial_params, method='L-BFGS-B')
-
-    # Updated parameter values
-# optimal_b, optimal_k1 = result.x

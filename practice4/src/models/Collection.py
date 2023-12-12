@@ -73,12 +73,6 @@ class Collection:
         self.Timer.stop()
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.")
 
-
-
-    def __len__(self):
-        """ Return the number of documents in the collection """
-        return len(self.documents)
-
     def compute_avdl(self):
         return sum(len(d) for d in self.documents) / len(self.documents)
     
@@ -106,26 +100,6 @@ class Collection:
 
     def search(self, query, k=10):
         return self.information_retriever.search(query, k)
-    
-    def __str__(self) -> str:
-        s = "-"*50 + "\n"
-        s += f"Collection: {self.path}\n"
-        s += f"Number of documents: {len(self.documents)}\n"
-        s += f"Average Document Length: {self.avdl} (words)\n"
-        s += f"Average Term Length: {self.avtl} (characters)\n"
-        s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"
-        s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
-        s += f"Loading time: {self.Timer.get_time('load_collection')} seconds\n"
-        s += f"Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n"
-        s += f"Indexation time: {self.Timer.get_time('indexing')} seconds\n"
-        s += f"Total time: {self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')} seconds\n"
-        s += f"Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n"
-        s += "-"*50 + "\n"
-        return s
-
-    def __repr__(self) -> str:
-        pass
-
 
     def plot_statistics(self): 
         labels = ["Avg Doc Length", "Avg Term Length", "Vocabulary Size", "Total Collection Frequency", "Preprocessing Time (seconds)", "Indexing Time (seconds)"]
@@ -158,6 +132,19 @@ class Collection:
         scores = self.information_retriever.compute_scores(self.documents, query, self.indexer)
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)
     
+    def set_ranking_function(self, ranking_function):
+        self.information_retriever = ranking_function
+
+
+
+    ##### Python methods override #####
+
+    def __len__(self):
+        """ Return the number of documents in the collection """
+        return len(self.documents)
+    
+    def __repr__(self) -> str:
+        pass
 
     def __reduce__(self):
         # Exclude the 'doc_preprocessing' and 'pre_process' methods from pickling
@@ -186,5 +173,19 @@ class Collection:
         print(f"Deserialized object from {path} is not an instance of the Index class.")
         return None
     
-    def set_ranking_function(self, ranking_function):
-        self.information_retriever = ranking_function
+
+    def __str__(self) -> str:
+        s = "-"*50 + "\n"
+        s += f"Collection: {self.path}\n"
+        s += f"Number of documents: {len(self.documents)}\n"
+        s += f"Average Document Length: {self.avdl} (words)\n"
+        s += f"Average Term Length: {self.avtl} (characters)\n"
+        s += f"Vocabulary Size: {self.get_vocabulary_size()} (unique terms)\n"
+        s += f"Total Collection Frequency: {sum(self.cf)} (terms)\n"
+        s += f"Loading time: {self.Timer.get_time('load_collection')} seconds\n"
+        s += f"Preprocessing time: {self.Timer.get_time('preprocessing')} seconds\n"
+        s += f"Indexation time: {self.Timer.get_time('indexing')} seconds\n"
+        s += f"Total time: {self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')} seconds\n"
+        s += f"Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n"
+        s += "-"*50 + "\n"
+        return s

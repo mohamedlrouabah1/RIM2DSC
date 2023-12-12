@@ -1,8 +1,8 @@
 from pytest import approx
 from models.weighting.BM25 import BM25
-from models.Document import Document
-from models.Indexer import Indexer
-from models.Collection import Collection
+from models.txt.TextDocument import TextDocument
+from models.txt.TextIndexer import TextIndexer
+from models.txt.TextCollection import TextCollection
 from unit.test_data.TD3TestData import TD3TestData
 
 

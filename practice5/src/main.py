@@ -88,8 +88,6 @@ def main() -> None:
     # Finnally we save the run file
     run.save_run(verbose=True)
     
-    print(collection.indexer)
-
 if __name__ == "__main__":
     sys.setrecursionlimit(RECURSION_LIM)
     # Downloading nltk dependencies

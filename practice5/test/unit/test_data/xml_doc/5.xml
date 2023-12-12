@@ -1,0 +1,28 @@
+<article>
+    <section>
+        <div>Commencement</div>
+        <div>
+            <p>Un début intéressant pour ce document.</p>
+            <div>
+                <p>Une section complexe.</p>
+                <p>Avec des sous-sections.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div>Milieu du document</div>
+        <div>
+            <p>Contenu au milieu du document.</p>
+            <div>
+                <p>Une autre section imbriquée.</p>
+                <p>Texte additionnel.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div>Conclusion</div>
+        <div>
+            <p>Résumé final du document.</p>
+        </div>
+    </section>
+</article>

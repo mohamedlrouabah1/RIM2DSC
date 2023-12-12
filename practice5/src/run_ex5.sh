@@ -20,5 +20,3 @@ do
     python3 main.py -r bm25 --stopword --k1 "$k" "${queries_file}"
 done
 echo "done\n"
-
-

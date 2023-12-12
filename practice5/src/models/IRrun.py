@@ -38,7 +38,7 @@ class IRrun:
         return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{IRrun.DEFAULT_GRANULARITY if not granularity else granularity}_{stop}_{stem}_{'_'.join(params)}.txt"
     
 
-    def add_result_line(self, query_id, doc_id, rank, score, xpath=""):
+    def add_result_line(self, query_id, doc_id, rank, score, xpath="/"):
         if ":" in doc_id:
             doc_id, xpath = doc_id.split(':')
             xpath.replace('/', '_')

@@ -24,14 +24,15 @@ class SMART_ltc(WeightingFunction):
         for posting_list in vocab:
             df = posting_list.document_frequency
             for doc_id, posting_unit in posting_list.postings.items():
-                # NB : here we exclude the id corresponding to an XLMElement
-                if doc_id.find(":") == -1:
+                # NB : here we only considering the root node of the doc
+                doc_id, xpath = doc_id.split(':')
+                if xpath == '/article[1]':
                     tf = posting_unit.frequency
-                    if posting_unit.document_id in dens:
-                        dens[posting_unit.document_id] += self.smart_ltn.compute_weight(tf, df) ** 2
+                    if doc_id in dens:
+                        dens[doc_id] += self.smart_ltn.compute_weight(tf, df) ** 2
                     
                     else:
-                        dens[posting_unit.document_id] = self.smart_ltn.compute_weight(tf, df) ** 2
+                        dens[doc_id] = self.smart_ltn.compute_weight(tf, df) ** 2
        
         # Compute ltn for each document
         for doc in documents:
@@ -44,7 +45,11 @@ class SMART_ltc(WeightingFunction):
                 num += w_t_d
 
             # ltn score normalized
-            deno = dens[doc.id] if doc.id in dens else 1
+            if doc.id.find(':') != -1:
+                doc_id, _ = doc.id.split(':')
+            else:
+                doc_id = doc.id
+            deno = dens[doc_id] if doc_id in dens else 1
             deno = sqrt(deno) if deno != 0 else 1
             scores[doc.id] = num / deno
 

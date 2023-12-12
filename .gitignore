@@ -9,6 +9,7 @@ saves_tp*/*
 **/results/
 **/saves/
 out.txt
+**/results*/
 
 # python generated files
 **/__pycache__/

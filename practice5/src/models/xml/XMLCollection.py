@@ -51,6 +51,7 @@ class XMLCollection(TextCollection):
         self.Timer.start("compute_statistics")
         print("computing avdl ...", file=stderr)
         self.avdl = self._compute_avdl()
+        self.indexer.avdl = self.avdl
         print("computing avtl ...", file=stderr)
         self.avtl = self._compute_avtl()
         print("computing terms collection frequency ...", file=stderr)
@@ -71,11 +72,12 @@ class XMLCollection(TextCollection):
     
     def _compute_nb_distinct_terms(self) -> None:
         tot = 0
+        self.indexer.nb_distinct_terms = {}
         for doc in tqdm(self.collection, desc="Computing nb distinct terms ..."):
             tokens = doc.get_text_content()
             nb_distinct_terms = len(set(tokens))
             tot += nb_distinct_terms
-            doc.nb_distinct_terms = nb_distinct_terms
+            self.indexer.nb_distinct_terms[doc.id] = nb_distinct_terms
         
         self.indexer.average_nb_distinct_terms = tot / len(self.collection)
         print(f"Average nb distinct terms: {self.indexer.average_nb_distinct_terms}, (XMLCollection._compute_nb_distinct_terms)", file=stderr)

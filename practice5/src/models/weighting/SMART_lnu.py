@@ -11,21 +11,26 @@ class SMART_lnu(WeightingFunction):
         self.N = N
         self.slope = slope
 
-    def _compute_weight(self, tf, dl_on_avdl, nt_d, den_part1):
-        num = 1 + log10(tf)
-        num /= 1 + log10(dl_on_avdl)
+    def _compute_weight(self, tf, dl_on_avdl, nt_d, den_part1) -> float:
+        num = 1 + log10(tf) if tf > 0 else 0
+        num /= 1 + log10(dl_on_avdl) if dl_on_avdl > 0 else 1
         den = den_part1 + self.slope * nt_d
 
+        return num / den
 
     def compute_scores(self, documents, query, indexer):
-        avdl = indexer.get_avdl()
+        scores = {}
+        avdl = indexer.avdl
         pivot = indexer.average_nb_distinct_terms
         den_part1 = (1 - self.slope) * pivot
         for doc in documents:
-            doc.score = 0
-            dl_on_avdl = doc.get_length() / avdl
-            nt_d = doc.nb_distinct_terms
+            score = 0
+            dl_on_avdl = len(doc) / avdl
+            nt_d = indexer.nb_distinct_terms[doc.id.split(':')[0]]
             for term in query:
                 df = indexer.get_df(term)
                 tf = indexer.get_tf(term, doc.id)
-                doc.score += self._compute_weight(tf, dl_on_avdl, nt_d, den_part1)
+                score += self._compute_weight(tf, dl_on_avdl, nt_d, den_part1)
+            scores[doc.id] = score
+
+        return scores

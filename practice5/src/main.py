@@ -5,6 +5,7 @@ from models.IRrun import IRrun
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
+from models.weighting.SMART_lnu import SMART_lnu
 from utilities.config import NB_RANKING, RECURSION_LIM
 from utilities.parser import parse_command_line_arguments
 from utilities.utilities import create_or_load_collection, load_queries_from_csv
@@ -24,6 +25,8 @@ def main() -> None:
         ranking_function = SMART_ltn(N=len(collection))
     elif args.ranking == "smart_ltc":
         ranking_function = SMART_ltc(N=len(collection))
+    elif args.ranking == "smart_lnu":
+        ranking_function = SMART_lnu(N=len(collection), slope=args.slope)
     else:
         ranking_function = BM25(
             N=len(collection),
@@ -69,14 +72,39 @@ def main() -> None:
         print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')}")
         print(delimiter)
 
+        # we filter overlapping results
+        nb_scores = 0
+        run_lines = []
+        run_lines.append(ranking[0])
+        j = 1
+        while nb_scores < NB_RANKING  and j < len(ranking):
+            line_id, line_xpath = run_lines[nb_scores][0].split(':')
+            doc_id, xpath = ranking[j][0].split(':')
+
+            # does it overlap with the previous score ?
+            if line_id == doc_id  and xpath.find(line_xpath) != -1:
+                run_lines[nb_scores] = ranking[j]
+
+            else:
+                nb_scores += 1
+                if nb_scores < NB_RANKING:
+                    run_lines.append(ranking[j])
+
+            j+=1
+                
+        if j < NB_RANKING:
+            print(f"Only {j} results for query {id} instead of {NB_RANKING}")
+
+
         print(f"Ranking results:")
-        for i, (doc_id, score) in enumerate(ranking[:top_n]):
+        for i, (doc_id, score) in enumerate(run_lines[:top_n]):
             print(f"#{i+1} - Document {doc_id} with score {score}")
         print(delimiter)
         print("\n\n")
 
+
         # We add the results to the run file
-        for i, (doc_id, score) in enumerate(ranking[:NB_RANKING]):
+        for i, (doc_id, score) in enumerate(run_lines):
             # xml_path = Document.get_xml_path()
             run.add_result_line(
                 query_id=id,

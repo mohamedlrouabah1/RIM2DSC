@@ -22,6 +22,9 @@ Pour donner un ordre de grandeur, le programme affiche une utilisation de 8 900 
 gestionnaire des tâches de windows. (sur 16Go)
 
 
+On a aussi tester de faire des run en prennant en compte une liste réduite de tags xml :
+["article", "title", "bdy", "p"].
+
 
 Les statistiques de la collection sont les mêmes que précédements et sont remis ici au besoin
 

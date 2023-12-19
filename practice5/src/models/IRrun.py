@@ -1,5 +1,6 @@
 import os
 from sys import stderr
+from models.xml.XMLDocument import XMLDocument
 
 class IRrun:
     GROUP_NAME="MohammedWilliam"
@@ -35,7 +36,7 @@ class IRrun:
         granularity = granularity.replace("/", "")
         stop = f"stop{IRrun.STOPLIST_SIZE}" if stop else "nostop"
         stem = stem if stem else "nostem"
-        return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{IRrun.DEFAULT_GRANULARITY if not granularity else granularity}_{stop}_{stem}_{'_'.join(params)}.txt"
+        return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{'_'.join(XMLDocument.granularity)}_{stop}_{stem}_{'_'.join(params)}.txt"
     
 
     def add_result_line(self, query_id, doc_id, rank, score, xpath="/"):

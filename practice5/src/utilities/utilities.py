@@ -9,7 +9,7 @@ from models.xml.XMLIndexer import XMLIndexer
 from models.xml.XMLPreprocessor import XMLPreprocessor
 
 
-def create_or_load_collection(args, type="xml") -> TextCollection:
+def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
     """
     Check if the index based on the given arguments already exists.
     If it does, load it. Otherwise, create it.
@@ -73,11 +73,14 @@ def create_or_load_collection(args, type="xml") -> TextCollection:
         collection.preprocess(raw_collection)
         collection.index()
         collection.compute_stats()
-        collection.serialize(index_path)
+        if save:
+            collection.serialize(index_path)
+    
+        collection.index_path = index_path
 
     else:
         if type == "xml":
-            print(f"desealize {index_path}", file=stderr)
+            print(f"deserialize {index_path}", file=stderr)
             collection = XMLCollection.deserialize(index_path)
         else:
             collection = TextCollection.deserialize(index_path)

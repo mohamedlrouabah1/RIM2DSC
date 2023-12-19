@@ -4,7 +4,7 @@ from sys import stderr
 class IRrun:
     GROUP_NAME="MohammedWilliam"
     ID_FILE_PATH="../../last_id.txt"
-    DEFAULT_GRANULARITY="/article[1]"
+    DEFAULT_GRANULARITY="element" # TODO : list of tag to take into account ex :['title', 'bdy', ]
     STOPLIST_SIZE = 671 # nltk : 179, punctuations : 32, both : 211
 
     def __init__(self, weighting_function,stop, stem, params, granularity=None) -> None:

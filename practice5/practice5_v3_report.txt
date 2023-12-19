@@ -1,19 +1,29 @@
-# Rapport RI - TP5 - v3
+# Rapport RI - TP5 - v4
 
-## Avancement :
 
-- conception et modification de classes pour les runs XML
-- fichiers de tests sur une collection XML créée
-- fonction SMART_lnu
-- script de validation du format des fichiers de runs
-- run de "test" sur une sous partie de la collection (2K) 
-  pour plus de rapidité et prendre moins de RAM
-- Puis run sur la collection entière avec les fonctions de poids 
-  (ltn, ltc, lnu varie slope, BM25 varie k1 ou b) avec ou sans 
-  stopwords/Porter stemmer.
-- Pour automatiser les run utilisation d'un script python au lieu d'un script bash
-  pour éviter de recharger les index à chaque run.
+## Correction apportées à la version 3 :
 
+Correction de l'entrelacement des résultats :
+- trie par doc_id et supression des éléments qui englobe d'autres éléments retournés
+- puis trie par score décroissant
+- ajoute les score par ordre décroissant que si on n'a pas déjà ajouté un élément du
+  même document.
+
+
+On avait aussi des temps de tratement de 30s à 1m par query dans la dernière version
+car on avait désactivé le cache des fonctions de weighting afin de ne pas surcharché la RAM.
+Mais nous avons réactivé ce cache (de 256Mo pour chaque fonction de calcule intermédiraire
+qui sont au nombre de 2 à 4), car les optimisation faites dans la version précédentes on
+permis de réseooudre ce problème de RAM et on peut donc se permettre de réactiver le cache.
+
+Maintenant le temps de traitement d'une query est oscille autour de 26s.
+
+Pour donner un ordre de grandeur, le programme affiche une utilisation de 8 900 Mo dans le
+gestionnaire des tâches de windows. (sur 16Go)
+
+
+
+Les statistiques de la collection sont les mêmes que précédements et sont remis ici au besoin
 
 ## Quelques chiffres :
 
@@ -21,10 +31,7 @@
 - temps moyen du preprocessing : 7min
 - temps moyen de l'indexing : 4min (2 min si on utilise une stop-liste)
 - taille moyenne des index sauvegardé (avec qq stats) : 3,3Go
-- temps de ranking de 30s à 1m celon la taille et les termes de la requête
-  (cela est du au calcul dynamique de certainne valeurs 
-  qui requiert de parcourir l'arbre xml, le choix à été fait de ne pas stocker ces valeurs
-  pour ne pas surcharger la RAM)
+- temps de ranking de 26s
 - chargement d'un index sauvegarder ~10min (dû à la taille du fichier et au module python 
   (pickle) utilisé, on envisage des alternatives comme hickle ou cPickle)
 
@@ -60,9 +67,17 @@ index_nltk_nostop_lem_porter_XML_Only_Ascii_Coll_NoSem.pkl
         --------------------------------------------------
 
 
-## QQ commentaires sur les résultats des runs :
 
-Après comparaison sur 2-3 runs avec les résultats du TP4 on retrouve dans le top 10
-des éléments qui viennent de document classés dans le top 10 du TP4.
-Les scores que l'on obtient avec nos fonctions de poids restent cohérents par
-rapport à ceux du TP4.
+## Avancement Practice 5 v3 :
+
+- conception et modification de classes pour les runs XML
+- fichiers de tests sur une collection XML créée
+- fonction SMART_lnu
+- script de validation du format des fichiers de runs
+- run de "test" sur une sous partie de la collection (2K) 
+  pour plus de rapidité et prendre moins de RAM
+- Puis run sur la collection entière avec les fonctions de poids 
+  (ltn, ltc, lnu varie slope, BM25 varie k1 ou b) avec ou sans 
+  stopwords/Porter stemmer.
+- Pour automatiser les run utilisation d'un script python au lieu d'un script bash
+  pour éviter de recharger les index à chaque run.

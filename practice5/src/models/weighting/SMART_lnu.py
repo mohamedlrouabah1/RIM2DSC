@@ -13,7 +13,16 @@ class SMART_lnu(WeightingFunction):
 
     def _compute_weight(self, tf, dl_on_avdl, nt_d, den_part1) -> float:
         num = 1 + log10(tf) if tf > 0 else 0
-        num /= 1 + log10(dl_on_avdl) if dl_on_avdl > 0 else 1
+
+        if dl_on_avdl > 0:
+            tmp = log10(dl_on_avdl) # log10(0.1) = -1
+            if tmp > 0:
+                num /= (1 + log10(dl_on_avdl))
+            else:
+                num = 0
+        else:
+            num = 0
+
         den = den_part1 + self.slope * nt_d
 
         return num / den

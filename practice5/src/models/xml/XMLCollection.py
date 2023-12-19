@@ -86,19 +86,19 @@ class XMLCollection(TextCollection):
     def compute_RSV(self, query:str, type="xml") -> dict[str, float]:
         """
         compute the Relevant Status Value of a document for a query
+        Return the result sorted by doc id then score, in reverse order)
         """
         if type == "xml":
             collection = []
             for doc_xml in tqdm(self.collection, desc="Extracting XML elements from documents ...."):
                 collection  += doc_xml.get_xml_element_list()
             
-            collection += self.collection
         else:
             collection = self.collection
 
         print(f"Computing RSV for {len(collection)} xpath...")
         scores = self.information_retriever.compute_scores(collection, query, self.indexer)
-        return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        return sorted(scores.items(), key=lambda x: (x[0], x[1]), reverse=False)
     
 
     def serialize(self, path:str) -> bool:

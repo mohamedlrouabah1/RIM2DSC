@@ -27,7 +27,7 @@ class XMLPreprocessor(TextPreprocessor):
     def _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
-        for i, xml_file in tqdm(enumerate(xml_files), desc="loading xml files ..."):
+        for xml_file in tqdm(xml_files, desc="loading xml files ..."):
             # if i < MAX_FILES:
             file_path = os.path.join(dir_collection, xml_file)
             id = xml_file.split('.')[0]
@@ -39,15 +39,43 @@ class XMLPreprocessor(TextPreprocessor):
     def load(self, path) -> list[tuple[str, minidom.Document]]:
         return self._fetch_articles(path)
 
+    def _extract_text(self, node):
+        """
+        Extract recursively the text content of all children tags of a tag.
+        Args:
+        - node: a minidom.Node object.
+
+        Returns:
+        -the extracted text content as a raw string.
+        """
+        text = ""
+
+        if node.nodeType == minidom.Node.ELEMENT_NODE:
+            for child_node in node.childNodes:
+                text += self._extract_text(child_node)
+
+        elif node.nodeType == minidom.Node.TEXT_NODE:
+            text += node.nodeValue.strip()
+
+        return text
+
     def _browse(self, node:minidom.Node, xpath:str, id:str) -> XMLElement:
         childs:dict('xpath','XMLElement') = {}
         text_content:list[str] = []
 
         for child_node in node.childNodes:
            if child_node.nodeType == minidom.Node.ELEMENT_NODE:
-               child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
-               child_xml_element = self._browse(child_node, child_xpath, id)
-               childs[child_xpath] = child_xml_element
+                # Does it belong to the granularity list
+                if ("element" in XMLDocument.granularity) or (child_node.tagName in XMLDocument.granularity):
+                    child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
+                    child_xml_element = self._browse(child_node, child_xpath, id)
+                    childs[child_xpath] = child_xml_element
+                
+                else:
+                    # we extract the text content from the tree
+                    raw_str = self._extract_text(child_node)
+                    if (raw_str := raw_str.strip()):
+                        text_content += self._text_preprocessing(raw_str)
            
            elif child_node.nodeType == minidom.Node.TEXT_NODE:   
                if (raw_text := child_node.nodeValue.strip()):

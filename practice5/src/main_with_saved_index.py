@@ -18,7 +18,7 @@ def main():
     save_dir = [f for f in os.listdir(DIR_SAVE) if f.lower().endswith('.pkl')]
     for pickle_file in tqdm(save_dir, desc="Iteraring saved collections ..."):
         file_path = os.path.join(DIR_SAVE, pickle_file)
-        print(f"desealize {pickle_file}", file=stderr)
+        print(f"desearialize {pickle_file}", file=stderr)
         collection = XMLCollection.deserialize(file_path)
         
         print("Loading queries...", file=stderr)
@@ -91,8 +91,10 @@ def rank(collection:XMLCollection, queries:list,file_name, a_ranking, a_params) 
         # we filter overlapping results
         nb_scores = 0
         run_lines = []
+        doc_already_return = set()
         run_lines.append(ranking[0])
-        j = 1
+        j = 1 
+        doc_already_return.add(ranking[0][0].split(':')[0])
         while nb_scores < NB_RANKING  and j < len(ranking):
             line_id, line_xpath = run_lines[nb_scores][0].split(':')
             doc_id, xpath = ranking[j][0].split(':')
@@ -101,10 +103,15 @@ def rank(collection:XMLCollection, queries:list,file_name, a_ranking, a_params) 
             if line_id == doc_id  and xpath.find(line_xpath) != -1:
                 run_lines[nb_scores] = ranking[j]
 
-            else:
+            # TODO : allow to return multiple elements from the same document
+            # by improving conditions in this loop.
+            
+            # does it not intertwine with a previous result return from the document ?
+            elif doc_id != line_id  and  doc_id not in doc_already_return:
                 nb_scores += 1
                 if nb_scores < NB_RANKING:
                     run_lines.append(ranking[j])
+                    doc_already_return.add(doc_id)
 
             j+=1
                 

@@ -58,7 +58,7 @@ class BM25(WeightingFunction):
             tf_weight = 0
         return tf_weight * idf
     
-    def compute_scores(self, documents, query, indexer):
+    def compute_scores(self, documents, query, indexer) -> dict[str, float]:
         """
         Return a dictionary of scores for each document for each query.
         The keys of the dictionary are the queries ids.

@@ -90,11 +90,12 @@ class IRrun:
         """
         stop = f"stop{IRrun.STOPLIST_SIZE}" if stop else "nostop"
         stem = stem if stem else "nostem"
+        params = '_'.join(params)
         if weighting_function in ["bm25fw", "bm25fr"]:
-            granularity = "article"
+            for tag, alpha in XMLDocument.granularity_weights.items():
+                params += f"_alpha{tag}{alpha}"
         else:
             granularity = '_'.join(XMLDocument.granularity)
-        params = '_'.join(params)
 
         return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{granularity}_{stop}_{stem}_{params}.txt"
 

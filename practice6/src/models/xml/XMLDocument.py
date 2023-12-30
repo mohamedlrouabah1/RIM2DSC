@@ -5,7 +5,8 @@ class XMLDocument(InformationRessource):
     """ 
     granularity set to ["element"] in order to browse all tags
     """
-    granularity = ["element"]
+    granularity = ["element"] # exemple
+    granularity_weights = {"element" : 1} # exemple
 
     @classmethod
     def set_granularity(cls, granularity:str):

@@ -7,6 +7,7 @@ from models.txt.TextPreprocessor import TextPreprocessor
 from models.xml.XMLCollection import XMLCollection
 from models.xml.XMLIndexer import XMLIndexer
 from models.xml.XMLPreprocessor import XMLPreprocessor
+from models.IRrun import IRrun
 
 
 def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
@@ -106,3 +107,16 @@ def load_queries_from_csv(path:str) -> list:
         print(f"File {path} not found.", file=stderr)
 
     return queries
+
+
+def launch_run(collection:XMLCollection, queries:list, file_name, a_ranking, a_params) -> None:
+    # get info from collection save file name
+    tmp = file_name.split('_')
+    a_stopword = tmp[2]
+    a_stemmer = tmp[5]
+    
+    # To create run result files
+    print("Instanciate IRun class ...", file=stderr)
+    run = IRrun(a_ranking, a_stopword, a_stemmer, a_params)
+    run.ranking(collection, queries)
+    run.save_run(verbose=True)

@@ -30,9 +30,7 @@ class BM25(WeightingFunction):
         Params:
             df: int, document frequency of the term
         """
-        # i.e substracting logarithms instead of taking the logarithm of the division
-        # can be faster and more accurate bc of the floating point arithmetic
-        return log10((self.N_plus_0_5 - df )) - log10((df + 0.5)) # if df > 0 else 0, not needed bc df is always > 0
+        return log10((self.N_plus_0_5 - df ) / (df + 0.5))
     
     @lru_cache(maxsize=1024)
     def compute_tf_weight_tf_part(self, tf):

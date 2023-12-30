@@ -61,7 +61,7 @@ def parse_command_line_arguments() -> argparse.Namespace:
 
     parser.add_argument(
         "-r", "--ranking",
-        choices=["bm25", "smart_ltn", "smart_ltc", "smart_lnu"],
+        choices=["bm25", "bm25fw", "bm25fr", "smart_ltn", "smart_ltc", "smart_lnu"],
         default="bm25",
         help="Ranking algorithm to use."
         )

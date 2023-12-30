@@ -1,33 +1,24 @@
 # Rapport RI - TP6
 
 
-## Correction apportées à la version 3 :
+## Correction apportées à la version précédente :
 
-Correction de l'entrelacement des résultats :
-- trie par doc_id et supression des éléments qui englobe d'autres éléments retournés
-- puis trie par score décroissant
-- ajoute les score par ordre décroissant que si on n'a pas déjà ajouté un élément du
+Rappel du processus de tri des résultats du TP5 :
+1. trie par doc_id et supression des éléments qui englobe d'autres éléments retournés
+2. puis trie par score décroissant
+3. ajoute les score par ordre décroissant que si on n'a pas déjà ajouté un élément du
   même document.
 
+L'étape 3 peut nous amener à enlever des éléments révélant de document mais ayant des score
+inférieur à d'autres éléments du même document. (ce qui fait que l'on retourne beaucoup d'article[1])
+On va donc changer cette étape comme suit :
+3.1. Prend les 1500 premier scores trié par ordre de score décroissant
+3.2. Trie ces 1500 scores par doc_id (enlever les intertwinned elements)
+3.3. Modifie les scores par '1500-rank' pour avoir un score décroissant conformément au format de run
 
-On avait aussi des temps de tratement de 30s à 1m par query dans la dernière version
-car on avait désactivé le cache des fonctions de weighting afin de ne pas surcharché la RAM.
-Mais nous avons réactivé ce cache (de 256Mo pour chaque fonction de calcule intermédiraire
-qui sont au nombre de 2 à 4), car les optimisation faites dans la version précédentes on
-permis de réseooudre ce problème de RAM et on peut donc se permettre de réactiver le cache.
+C'est étapes on été enlevé du module main.py pour être implémenté en tant que méthode dans la classe
+models.IRun.
 
-Maintenant le temps de traitement d'une query est oscille autour de 26s.
-
-Pour donner un ordre de grandeur, le programme affiche une utilisation de 8 900 Mo dans le
-gestionnaire des tâches de windows. (sur 16Go)
-
-
-On a aussi tester de faire des run en prennant en compte une liste réduite de tags xml :
-["article", "title", "bdy", "p"], ce qui permet de réduire drastiquement le temps de 
-traitement d'une query de 20s à moins de 200ms.
-
-
-Les statistiques de la collection sont les mêmes que précédements et sont remis ici au besoin
 
 ## Quelques chiffres :
 
@@ -86,3 +77,4 @@ Documents ranked in 00h00m00s164ms606700ns (total: 164606700ns)
 
 
 Saving run file to ../results/MohammedWilliam_266_bm25_article_title_bdy_p_stop671_porter_k3.7_b0.9.txt...
+

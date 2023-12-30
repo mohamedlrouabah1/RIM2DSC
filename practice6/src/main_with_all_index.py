@@ -113,13 +113,11 @@ def rank(collection:XMLCollection, queries:list, file_name, a_ranking, a_params)
         #OVERLAPPING#
         #############
         # we filter overlapping results sorting by doc_id
-        nb_scores = 0
-        run_lines = []
-        run_lines.append(ranking[0])
-        j = 1
-        n = len(ranking)
+        nb_scores, j, n = 0, 1, len(ranking)
+        run_lines = [ranking[0]]
+
         while nb_scores < n  and j < n:
-            line_id = run_lines[nb_scores][0].split(':')
+            line_id, line_xpath = run_lines[nb_scores][0].split(':')
             doc_id, xpath = ranking[j][0].split(':')
 
             # does it overlap with the previous score ?
@@ -128,37 +126,28 @@ def rank(collection:XMLCollection, queries:list, file_name, a_ranking, a_params)
 
             j+=1
                 
-        if j < NB_RANKING:
-            print(f"Only {j} results for query {id} instead of {NB_RANKING}")
+
+
+        #############
+        #EXTRACTION #
+        #############
+        # we sort by score and then extract NB_RANKING results
+        run_lines.sort(key=lambda x: x[1], reverse=True)
+        run_lines = run_lines[:NB_RANKING]
+        
 
         #############
         #INTERTWINED#
         #############
-        # we filter intertwined results by sorting by score and removind all intertwined results
-        ranking.sort(key=lambda x: (x[1], x[0]), reverse=True)
-        nb_scores = 0
-        run_lines = []
-        doc_already_return = set()
-        run_lines.append(ranking[0])
-        j = 1 
-        doc_already_return.add(ranking[0][0].split(':')[0])
-        while nb_scores < NB_RANKING  and j < len(ranking):
-            line_id, line_xpath = run_lines[nb_scores][0].split(':')
-            doc_id, xpath = ranking[j][0].split(':')
- 
-            # does it not intertwine with a previous result return from the document ?
-            if doc_id != line_id  and  doc_id not in doc_already_return:
-                nb_scores += 1
-                if nb_scores < NB_RANKING:
-                    run_lines.append(ranking[j])
-                    doc_already_return.add(doc_id)
+        # we sort by doc_id the extracted NB_RANKING best result
+        run_lines.sort(key=lambda x: x[0])
 
-            j+=1
-                
+
+        #############
+        #DISPLAY    #
+        #############
         if j < NB_RANKING:
             print(f"Only {j} results for query {id} instead of {NB_RANKING}")
-
-
         print(f"Ranking results:")
         for i, (doc_id, score) in enumerate(run_lines[:top_n]):
             print(f"#{i+1} - Document {doc_id} with score {score}")
@@ -167,13 +156,14 @@ def rank(collection:XMLCollection, queries:list, file_name, a_ranking, a_params)
 
 
         # We add the results to the run file
-        for i, (doc_id, score) in enumerate(run_lines):
-            # xml_path = Document.get_xml_path()
+        # We modify the score according to INEX Run specification that need
+        # to have result with decresing scores.
+        for i, (doc_id, _) in enumerate(run_lines):
             run.add_result_line(
                 query_id=id,
                 doc_id=doc_id,
                 rank=i+1,
-                score=score,
+                score=NB_RANKING - i,
             )
 
     # Finnally we save the run file

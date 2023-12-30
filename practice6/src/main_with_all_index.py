@@ -28,15 +28,16 @@ def main():
     args.generate_index = True
 
 
-    for granularity in [["element"], ["article", "title", "bdy", "p"]]:
+    for granularity in [["article", "title", "bdy", "p"]]: # ["element"],
         XMLDocument.granularity = granularity
         print(f"granularity: {granularity}")
-        for stopword in [True, False]:
+        for stopword in [True]: # False
             args.stopword = stopword
 
-            for stemmer in ["None", "porter"]:
+            for stemmer in ["porter"]: # "None",
                 args.stemmer = stemmer
 
+                collection = None # free memory
                 collection = create_or_load_collection(args, type="xml", save=False)
                 index_path = f"{DIR_SAVE}/index_regex_{stopword}_nltk_{stopword}_{stemmer}_collection5.pkl"
 
@@ -75,7 +76,7 @@ def rank(collection:XMLCollection, queries:list, file_name, a_ranking, a_params)
     # get info from collection save file name
     tmp = file_name.split('_')
     a_stopword = tmp[2]
-    a_stemmer = tmp[4]
+    a_stemmer = tmp[5]
     
     # To create run result files
     print("Instanciate IRun class ...", file=stderr)

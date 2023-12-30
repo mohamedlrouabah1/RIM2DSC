@@ -12,11 +12,11 @@ class SMART_ltn(WeightingFunction):
         super().__init__()
         self.N = N
 
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=1024)
     def compute_idf(self, df, N):
         return log10(N / df)
     
-    @lru_cache(maxsize=256)
+    @lru_cache(maxsize=1024)
     def compute_tf_part(self, tf):
         return 1 + log10(tf) if tf > 0 else 0
 

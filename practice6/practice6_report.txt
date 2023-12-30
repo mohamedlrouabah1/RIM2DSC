@@ -1,4 +1,4 @@
-# Rapport RI - TP5 - v4
+# Rapport RI - TP6
 
 
 ## Correction apportées à la version 3 :
@@ -23,7 +23,8 @@ gestionnaire des tâches de windows. (sur 16Go)
 
 
 On a aussi tester de faire des run en prennant en compte une liste réduite de tags xml :
-["article", "title", "bdy", "p"].
+["article", "title", "bdy", "p"], ce qui permet de réduire drastiquement le temps de 
+traitement d'une query de 20s à moins de 200ms.
 
 
 Les statistiques de la collection sont les mêmes que précédements et sont remis ici au besoin
@@ -43,44 +44,45 @@ Les statistiques de la collection sont les mêmes que précédements et sont rem
 
 
 index_nltk_nostop_lem_porter_XML_Only_Ascii_Coll_NoSem.pkl
- --------------------------------------------------
+--------------------------------------------------
 
-        Collection: ../../data/Practice_05_data/XML-Coll-withSem/
+  Collection: ../../data/Practice_05_data/XML-Coll-withSem/
 
-        Number of documents: 9805
+  Number of documents: 9805
 
-        Average Document Length: 27.96430392656808 (words)
+  Average Document Length: 27.96430392656808 (words)
 
-        Average Term Length: 5.754018202601445 (characters)
+  Average Term Length: 5.754018202601445 (characters)
 
-        Vocabulary Size: 157870 (unique terms)
+  Vocabulary Size: 157870 (unique terms)
 
-        Total Collection Frequency: 2688255 (terms)
+  Total Collection Frequency: 2688255 (terms)
 
-        Loading time: 00h02m00s120252ms616100ns (total: 120252616100ns) seconds
+  Loading time: 00h02m00s120252ms616100ns (total: 120252616100ns) seconds
 
-        Preprocessing time: 00h06m26s386328ms967800ns (total: 386328967800ns) seconds
+  Preprocessing time: 00h06m26s386328ms967800ns (total: 386328967800ns) seconds
 
-        Indexation time: 00h01m58s118548ms39900ns (total: 118548039900ns) seconds
+  Indexation time: 00h01m58s118548ms39900ns (total: 118548039900ns) seconds
 
-        Total time: 00h06m26s386328ms967800ns (total: 386328967800ns)00h01m58s118548ms39900ns (total: 118548039900ns) seconds
+  Total time: 00h06m26s386328ms967800ns (total: 386328967800ns)00h01m58s118548ms39900ns (total: 118548039900ns) seconds
 
-        Computing statistics time: 00h00m02s2352ms751000ns (total: 2352751000ns) seconds
+  Computing statistics time: 00h00m02s2352ms751000ns (total: 2352751000ns) seconds
 
-        --------------------------------------------------
+--------------------------------------------------
+
+
+## Exemple de temps de traitement pour 2 queries avec une liste de tag
+
+Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
+Computing RSV for 19821 xpath...
+Documents ranked in 00h00m00s172ms340200ns (total: 172340200ns)
 
 
 
-## Avancement Practice 5 v3 :
+Query preprocessed: ['oper', 'system', 'mutual', 'exclus']
+Computing RSV for 19821 xpath...
+Documents ranked in 00h00m00s164ms606700ns (total: 164606700ns)
 
-- conception et modification de classes pour les runs XML
-- fichiers de tests sur une collection XML créée
-- fonction SMART_lnu
-- script de validation du format des fichiers de runs
-- run de "test" sur une sous partie de la collection (2K) 
-  pour plus de rapidité et prendre moins de RAM
-- Puis run sur la collection entière avec les fonctions de poids 
-  (ltn, ltc, lnu varie slope, BM25 varie k1 ou b) avec ou sans 
-  stopwords/Porter stemmer.
-- Pour automatiser les run utilisation d'un script python au lieu d'un script bash
-  pour éviter de recharger les index à chaque run.
+
+
+Saving run file to ../results/MohammedWilliam_266_bm25_article_title_bdy_p_stop671_porter_k3.7_b0.9.txt...

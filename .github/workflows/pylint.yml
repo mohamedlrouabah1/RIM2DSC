@@ -33,6 +33,7 @@ jobs:
     
     - name: Run tests and generate code coverage report
       run: |
+        chmod +x "./practice${{ env.NUM_TP }}/src/run_tests.sh"
         "./practice${{ env.NUM_TP }}/src/run_tests.sh"
     
     - name: Archive code coverage results

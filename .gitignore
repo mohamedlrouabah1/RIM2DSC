@@ -22,3 +22,7 @@ out.txt
 
 # diagramio backup file
 **/.$*
+
+# code coverage tool files
+.coverage
+htmlcov/

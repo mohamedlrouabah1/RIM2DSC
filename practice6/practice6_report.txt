@@ -89,3 +89,92 @@ Total time: 00h02m44s164272ms882400ns (total: 164272882400ns)00h00m24s24312ms316
 Computing statistics time: 00h00m00s682ms117800ns (total: 682117800ns) seconds
 
 --------------------------------------------------
+
+
+## Test
+
+Voici le code coverage des tests unitaire du projet :
+
+```bash
+> coverage report
+Name                                                                 Stmts   Miss  Cover
+----------------------------------------------------------------------------------------
+/usr/lib/python3/dist-packages/_distutils_hack/__init__.py             100     95     5%
+/usr/lib/python3/dist-packages/six.py                                  504    248    51%
+practice4/test/conftest.py                                               4      0   100%
+practice4/test/integration/test_indexing_ranking.py                      0      0   100%
+practice4/test/unit/__init__.py                                          0      0   100%
+practice4/test/unit/test_Collection.py                                   0      0   100%
+practice4/test/unit/test_Document.py                                     0      0   100%
+practice4/test/unit/test_PostingList.py                                  0      0   100%
+practice4/test/unit/test_PostingListUnit.py                              0      0   100%
+practice4/test/unit/test_TextPreprocessor.py                             0      0   100%
+practice4/test/unit/test_Timer.py                                        9      5    44%
+practice4/test/unit/test_indexing.py                                     0      0   100%
+practice4/test/unit/test_ranking_smart_bm25.py                          43     40     7%
+practice4/test/unit/test_ranking_smart_ltc.py                           30     27    10%
+practice4/test/unit/test_ranking_smart_ltn.py                           32     29     9%
+practice6/src/models/IRrun.py                                          104     83    20%
+practice6/src/models/PostingList.py                                     27     20    26%
+practice6/src/models/PostingListUnit.py                                  6      3    50%
+practice6/src/models/Timer.py                                           55     37    33%
+practice6/src/models/__init__.py                                         0      0   100%
+practice6/src/models/concepts/CollectionOfRessources.py                 32     13    59%
+practice6/src/models/concepts/InformationRessource.py                   18      9    50%
+practice6/src/models/concepts/__init__.py                                0      0   100%
+practice6/src/models/txt/TextCollection.py                             107     75    30%
+practice6/src/models/txt/TextDocument.py                                 9      4    56%
+practice6/src/models/txt/TextIndexer.py                                 49     31    37%
+practice6/src/models/txt/TextPreprocessor.py                            61     38    38%
+practice6/src/models/txt/__init__.py                                     0      0   100%
+practice6/src/models/weighting/BM25.py                                  45     30    33%
+practice6/src/models/weighting/BM25E.py                                  3      0   100%
+practice6/src/models/weighting/BM25Fr.py                                19     15    21%
+practice6/src/models/weighting/BM25Fw.py                                15     11    27%
+practice6/src/models/weighting/BM25T.py                                  3      0   100%
+practice6/src/models/weighting/SMART_lnu.py                             34     25    26%
+practice6/src/models/weighting/SMART_ltc.py                             45     36    20%
+practice6/src/models/weighting/SMART_ltn.py                             31     18    42%
+practice6/src/models/weighting/WeightingFunction.py                      5      1    80%
+practice6/src/models/weighting/__init__.py                               0      0   100%
+practice6/src/models/xml/XMLCollection.py                               95     71    25%
+practice6/src/models/xml/XMLDocument.py                                 22      9    59%
+practice6/src/models/xml/XMLElement.py                                  34     24    29%
+practice6/src/models/xml/XMLIndexer.py                                  18      8    56%
+practice6/src/models/xml/XMLPreprocessor.py                             60     45    25%
+practice6/src/models/xml/__init__.py                                     0      0   100%
+practice6/src/utilities/config.py                                       11      0   100%
+practice6/src/utilities/parser.py                                       18     16    11%
+practice6/src/utilities/utilities.py                                    62     49    21%
+practice6/test/conftest.py                                               4      0   100%
+practice6/test/test.py                                                  15      7    53%
+practice6/test/unit/models/concepts/test_CollectionOfRessources.py       4      1    75%
+practice6/test/unit/models/concepts/test_InformationRessource.py         4      1    75%
+practice6/test/unit/models/test_IRrun.py                                 5      1    80%
+practice6/test/unit/models/test_PostingList.py                           5      1    80%
+practice6/test/unit/models/test_PostingListUnit.py                       5      1    80%
+practice6/test/unit/models/test_Timer.py                                 9      5    44%
+practice6/test/unit/models/txt/test_TextCollection.py                    5      1    80%
+practice6/test/unit/models/txt/test_TextDocument.py                      5      1    80%
+practice6/test/unit/models/txt/test_TextIndexer.py                       5      1    80%
+practice6/test/unit/models/txt/test_TextPreprocessor.py                  5      1    80%
+practice6/test/unit/models/weighting/test_BM25.py                       43     37    14%
+practice6/test/unit/models/weighting/test_BM25E.py                       5      3    40%
+practice6/test/unit/models/weighting/test_BM25Fr.py                      5      1    80%
+practice6/test/unit/models/weighting/test_BM25Fw.py                      5      1    80%
+practice6/test/unit/models/weighting/test_BM25T.py                       5      1    80%
+practice6/test/unit/models/weighting/test_SMART_lnu.py                   5      1    80%
+practice6/test/unit/models/weighting/test_SMART_ltc.py                  30     27    10%
+practice6/test/unit/models/weighting/test_SMART_ltn.py                  32     29     9%
+practice6/test/unit/models/weighting/test_WeightingFunction.py           5      1    80%
+practice6/test/unit/models/xml/test_XMLCollection.py                     5      1    80%
+practice6/test/unit/models/xml/test_XMLDocument.py                       5      1    80%
+practice6/test/unit/models/xml/test_XMLElement.py                        5      1    80%
+practice6/test/unit/models/xml/test_XMLIndexer.py                        5      1    80%
+practice6/test/unit/models/xml/test_XMLPreprocessor.py                   4      0   100%
+practice6/test/unit/utilities/test_config.py                            29     23    21%
+practice6/test/unit/utilities/test_parser.py                            60     51    15%
+practice6/test/unit/utilities/test_utilities.py                          4      0   100%
+----------------------------------------------------------------------------------------
+TOTAL                                                                 2033   1315    35%
+````

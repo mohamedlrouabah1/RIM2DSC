@@ -3,4 +3,5 @@ nltk
 matplotlib
 tqdm
 pytest
+coverage
 hickle

@@ -16,7 +16,6 @@ jobs:
       with:
         path: .env
         mode: development
-        load-mode: strict
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3

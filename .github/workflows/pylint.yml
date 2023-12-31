@@ -1,0 +1,45 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  analyze_and_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8"] #, "3.9", "3.10"]
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Load .env file
+      uses: xom9ikk/dotenv@v2
+      with:
+        path: ./
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        cd "practice${{ env.NUM_TP }}/src"
+        python -m pip install --upgrade pip
+        pip install pylint
+    
+    - name: Analysing the code with pylint
+      run: |
+        python3 practice6/test/conftest.py
+        pylint --rcfile=.pylintrc $(git ls-files '*.py')
+    
+    - name: Run tests and generate code coverage report
+      run: |
+        chmod +x "./practice${{ env.NUM_TP }}/src/run_tests.sh"
+        "./practice${{ env.NUM_TP }}/src/run_tests.sh"
+    
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-coverage-report
+        path: htmlcov/
+        retention-days: 35

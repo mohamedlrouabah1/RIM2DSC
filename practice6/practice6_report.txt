@@ -1,0 +1,184 @@
+# Rapport RI - TP6
+
+
+## Correction apportées à la version précédente :
+
+Rappel du processus de tri des résultats du TP5 :
+1. trie par doc_id et supression des éléments qui englobe d'autres éléments retournés
+2. puis trie par score décroissant
+3. ajoute les score par ordre décroissant que si on n'a pas déjà ajouté un élément du
+  même document.
+
+L'étape 3 peut nous amener à enlever des éléments révélant de document mais ayant des score
+inférieur à d'autres éléments du même document. (ce qui fait que l'on retourne beaucoup d'article[1])
+On va donc changer cette étape comme suit :
+3.1. Prend les 1500 premier scores trié par ordre de score décroissant
+3.2. Trie ces 1500 scores par doc_id (enlever les intertwinned elements)
+3.3. Modifie les scores par '1500-rank' pour avoir un score décroissant conformément au format de run
+
+C'est étapes ont été enlevé du module main.py pour être implémenté en tant que méthode dans la classe
+models.IRun.
+
+
+## Nouvelles fonctionnalités :
+
+- BM25Fw : hérite de la classe BM25 et pondère le poids de chaque xml tag calculé par BM25
+- BM25Fr : hérite de la classe BM25 et surcharge la méthode de calcule des score pour pondérer les tf des différents tag xml
+- variation des poids pour les 2 fonctions ci-dessus (TP5 ex 5-6),en fixant k1 à 1,2 et b à 0.75 qui permettaient d'obtenir de meilleurs résultats
+- ajout de test unitaires pour l'ensemble des classes du projet
+- ajout d'intégration continue utilisant les workflow github : pylint, pytest, coverage
+- test coverage de 35% selon le module python coverage
+- note pylint de 7.43/10 pour le code du projet
+- TP6 ex1,2 déjà fait dans le rendus précédent donc pas refait
+- TP6 ex3  run 1-19 avec la correction apportée au tri des résultats
+- TP6 ex4  : BM25Fw et BM25Fr run ...
+
+## Quelques chiffres :
+
+- exploration de 3,457,522 xpath dans la collection pour le ranking
+- temps moyen du preprocessing : 3min
+- temps moyen de l'indexing : 4min (2 min si on utilise une stop-liste)
+- taille moyenne des index sauvegardé (avec qq stats) : 3,3Go
+- temps de ranking de 26s
+
+
+## Exemple de statistiques pour une de nos collections :
+
+> python3 main.py 
+Index file ../../saves/index_nltk_stop_lem_porter_XML_Only_Ascii_Coll_NoSem.pkl already exists.
+Stopwords loaded from ../../stop-words/stop-words-english4.txt with 703 words.
+XMLIndexer constructor ...
+args: exclude_stopwords=True, exclude_digits=True, tokenizer=nltk, lemmer=True, stemmer=porter
+Loading collection from file ../../data/Practice_05_data/XML-Coll-withSem/ ...
+loading xml files ...: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [01:32<00:00, 105.64it/s]
+Collection loaded in 00h01m32s92832ms620400ns (total: 92832620400ns) seconds.
+Preprocessing collection...
+preprocessing xml documents ...: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [02:44<00:00, 59.69it/s]
+Collection of 9805 documents, preprocessed in 00h02m44s164272ms882400ns (total: 164272882400ns) seconds.
+Indexing collection...
+Indexing XML documents: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [00:24<00:00, 403.41it/s]
+Collection indexed in 00h00m24s24312ms316200ns (total: 24312316200ns) seconds.
+Computing collection statistics...
+computing avdl ...
+computing avtl ...
+Computing avtl ...: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [00:00<00:00, 25307.58it/s]
+computing terms collection frequency ...
+computing nb distinct terms ...
+Computing nb distinct terms ...: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [00:00<00:00, 37838.39it/s]
+Average nb distinct terms: 259.6781234064253, (XMLCollection._compute_nb_distinct_terms)
+Collection statistics computed in 00h00m00s682ms117800ns (total: 682117800ns) seconds.
+
+--------------------------------------------------
+
+Collection: ../../data/Practice_05_data/XML-Coll-withSem/
+
+Number of documents: 9805
+
+Average Document Length: 325.4870984191739 (words)
+
+Average Term Length: 6.5247022810225515 (characters)
+
+Vocabulary Size: 446357 (unique terms)
+
+Total Collection Frequency: 2546144 (terms)
+
+Loading time: 00h01m32s92832ms620400ns (total: 92832620400ns) seconds
+
+Preprocessing time: 00h02m44s164272ms882400ns (total: 164272882400ns) seconds
+
+Indexation time: 00h00m24s24312ms316200ns (total: 24312316200ns) seconds
+
+Total time: 00h02m44s164272ms882400ns (total: 164272882400ns)00h00m24s24312ms316200ns (total: 24312316200ns) seconds
+
+Computing statistics time: 00h00m00s682ms117800ns (total: 682117800ns) seconds
+
+--------------------------------------------------
+
+
+## Test
+
+Voici le code coverage des tests unitaire du projet :
+
+```bash
+> coverage report
+Name                                                                 Stmts   Miss  Cover
+----------------------------------------------------------------------------------------
+/usr/lib/python3/dist-packages/_distutils_hack/__init__.py             100     95     5%
+/usr/lib/python3/dist-packages/six.py                                  504    248    51%
+practice4/test/conftest.py                                               4      0   100%
+practice4/test/integration/test_indexing_ranking.py                      0      0   100%
+practice4/test/unit/__init__.py                                          0      0   100%
+practice4/test/unit/test_Collection.py                                   0      0   100%
+practice4/test/unit/test_Document.py                                     0      0   100%
+practice4/test/unit/test_PostingList.py                                  0      0   100%
+practice4/test/unit/test_PostingListUnit.py                              0      0   100%
+practice4/test/unit/test_TextPreprocessor.py                             0      0   100%
+practice4/test/unit/test_Timer.py                                        9      5    44%
+practice4/test/unit/test_indexing.py                                     0      0   100%
+practice4/test/unit/test_ranking_smart_bm25.py                          43     40     7%
+practice4/test/unit/test_ranking_smart_ltc.py                           30     27    10%
+practice4/test/unit/test_ranking_smart_ltn.py                           32     29     9%
+practice6/src/models/IRrun.py                                          104     83    20%
+practice6/src/models/PostingList.py                                     27     20    26%
+practice6/src/models/PostingListUnit.py                                  6      3    50%
+practice6/src/models/Timer.py                                           55     37    33%
+practice6/src/models/__init__.py                                         0      0   100%
+practice6/src/models/concepts/CollectionOfRessources.py                 32     13    59%
+practice6/src/models/concepts/InformationRessource.py                   18      9    50%
+practice6/src/models/concepts/__init__.py                                0      0   100%
+practice6/src/models/txt/TextCollection.py                             107     75    30%
+practice6/src/models/txt/TextDocument.py                                 9      4    56%
+practice6/src/models/txt/TextIndexer.py                                 49     31    37%
+practice6/src/models/txt/TextPreprocessor.py                            61     38    38%
+practice6/src/models/txt/__init__.py                                     0      0   100%
+practice6/src/models/weighting/BM25.py                                  45     30    33%
+practice6/src/models/weighting/BM25E.py                                  3      0   100%
+practice6/src/models/weighting/BM25Fr.py                                19     15    21%
+practice6/src/models/weighting/BM25Fw.py                                15     11    27%
+practice6/src/models/weighting/BM25T.py                                  3      0   100%
+practice6/src/models/weighting/SMART_lnu.py                             34     25    26%
+practice6/src/models/weighting/SMART_ltc.py                             45     36    20%
+practice6/src/models/weighting/SMART_ltn.py                             31     18    42%
+practice6/src/models/weighting/WeightingFunction.py                      5      1    80%
+practice6/src/models/weighting/__init__.py                               0      0   100%
+practice6/src/models/xml/XMLCollection.py                               95     71    25%
+practice6/src/models/xml/XMLDocument.py                                 22      9    59%
+practice6/src/models/xml/XMLElement.py                                  34     24    29%
+practice6/src/models/xml/XMLIndexer.py                                  18      8    56%
+practice6/src/models/xml/XMLPreprocessor.py                             60     45    25%
+practice6/src/models/xml/__init__.py                                     0      0   100%
+practice6/src/utilities/config.py                                       11      0   100%
+practice6/src/utilities/parser.py                                       18     16    11%
+practice6/src/utilities/utilities.py                                    62     49    21%
+practice6/test/conftest.py                                               4      0   100%
+practice6/test/test.py                                                  15      7    53%
+practice6/test/unit/models/concepts/test_CollectionOfRessources.py       4      1    75%
+practice6/test/unit/models/concepts/test_InformationRessource.py         4      1    75%
+practice6/test/unit/models/test_IRrun.py                                 5      1    80%
+practice6/test/unit/models/test_PostingList.py                           5      1    80%
+practice6/test/unit/models/test_PostingListUnit.py                       5      1    80%
+practice6/test/unit/models/test_Timer.py                                 9      5    44%
+practice6/test/unit/models/txt/test_TextCollection.py                    5      1    80%
+practice6/test/unit/models/txt/test_TextDocument.py                      5      1    80%
+practice6/test/unit/models/txt/test_TextIndexer.py                       5      1    80%
+practice6/test/unit/models/txt/test_TextPreprocessor.py                  5      1    80%
+practice6/test/unit/models/weighting/test_BM25.py                       43     37    14%
+practice6/test/unit/models/weighting/test_BM25E.py                       5      3    40%
+practice6/test/unit/models/weighting/test_BM25Fr.py                      5      1    80%
+practice6/test/unit/models/weighting/test_BM25Fw.py                      5      1    80%
+practice6/test/unit/models/weighting/test_BM25T.py                       5      1    80%
+practice6/test/unit/models/weighting/test_SMART_lnu.py                   5      1    80%
+practice6/test/unit/models/weighting/test_SMART_ltc.py                  30     27    10%
+practice6/test/unit/models/weighting/test_SMART_ltn.py                  32     29     9%
+practice6/test/unit/models/weighting/test_WeightingFunction.py           5      1    80%
+practice6/test/unit/models/xml/test_XMLCollection.py                     5      1    80%
+practice6/test/unit/models/xml/test_XMLDocument.py                       5      1    80%
+practice6/test/unit/models/xml/test_XMLElement.py                        5      1    80%
+practice6/test/unit/models/xml/test_XMLIndexer.py                        5      1    80%
+practice6/test/unit/models/xml/test_XMLPreprocessor.py                   4      0   100%
+practice6/test/unit/utilities/test_config.py                            29     23    21%
+practice6/test/unit/utilities/test_parser.py                            60     51    15%
+practice6/test/unit/utilities/test_utilities.py                          4      0   100%
+----------------------------------------------------------------------------------------
+TOTAL                                                                 2033   1315    35%
+````

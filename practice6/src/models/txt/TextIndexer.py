@@ -68,7 +68,6 @@ class TextIndexer:
         
         print("Using pool to index documents.")
         num_processes = os.cpu_count()
-        indexing = lambda doc : self._index_text(doc)
 
         with ProcessPoolExecutor(num_processes) as executor:
-            results = executor.map(indexing, docs)
+            executor.map(self._index_text, docs)

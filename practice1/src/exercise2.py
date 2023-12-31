@@ -1,6 +1,5 @@
 import re
 from collections import defaultdict, Counter
-import pandas as pd
 
 # functiond to generate the inverted index
 def generate_index(doc):

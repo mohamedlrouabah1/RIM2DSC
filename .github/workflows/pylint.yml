@@ -23,7 +23,6 @@ jobs:
     
     - name: Install dependencies
       run: |
-        source .env
         cd "practice${{ env.NUM_TP }}/src"
         python -m pip install --upgrade pip
         pip install pylint
@@ -31,7 +30,7 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         cd "practice${{ env.NUM_TP }}/src"
-        pylint $(git ls-files '*.py')
+        pylint --rcfile=.pylintrc $(git ls-files '*.py')
     
     - name: Run tests and generate code coverage report
       run: |

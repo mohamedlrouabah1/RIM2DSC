@@ -35,7 +35,7 @@ class TestParser(unittest.TestCase):
         finally:
             sys.argv = saved_argv
         
-    def test_wrong_weighting_function(self, mock_parse_args):
+    def test_wrong_weighting_function(self):
         saved_argv = sys.argv
         sys.argv = ['main.py', '-r', 'wrong', 'queries.csv']
 
@@ -77,7 +77,7 @@ class TestParser(unittest.TestCase):
 
         try:
             with self.assertRaises(SystemExit):
-                args = parse_command_line_arguments()
+                parse_command_line_arguments()
 
         finally:
             sys.argv = saved_argv

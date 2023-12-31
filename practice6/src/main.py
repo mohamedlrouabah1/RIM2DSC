@@ -1,7 +1,6 @@
 import sys
 import nltk
 from tqdm import tqdm
-from models.IRrun import IRrun
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn

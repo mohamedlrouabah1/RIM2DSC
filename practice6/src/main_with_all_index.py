@@ -42,18 +42,18 @@ def main():
                 queries = load_queries_from_csv(DIR_Q)
 
                 # for each weighting function
-                # ranking_function = SMART_ltn(N=len(collection))
-                # collection.information_retriever = ranking_function
-                # launch_run(collection, queries, index_path, "smart_ltn", [])
+                ranking_function = SMART_ltn(N=len(collection))
+                collection.information_retriever = ranking_function
+                launch_run(collection, queries, index_path, "smart_ltn", [])
 
-                # ranking_function = SMART_ltc(N=len(collection))
-                # collection.information_retriever = ranking_function
-                # launch_run(collection, queries, index_path, "smart_ltc", [])
+                ranking_function = SMART_ltc(N=len(collection))
+                collection.information_retriever = ranking_function
+                launch_run(collection, queries, index_path, "smart_ltc", [])
 
-                # for slope in [0.1, 0.2, 0.3, 0.4, 0.5]:
-                #     ranking_function = SMART_lnu(N=len(collection), slope=slope)
-                #     collection.information_retriever = ranking_function
-                #     launch_run(collection, queries, index_path, "smart_lnu", [f"slope{slope}"])
+                for slope in [0.1, 0.2, 0.3, 0.4, 0.5]:
+                    ranking_function = SMART_lnu(N=len(collection), slope=slope)
+                    collection.information_retriever = ranking_function
+                    launch_run(collection, queries, index_path, "smart_lnu", [f"slope{slope}"])
 
                 for alpha_article in [ 0.5, 1]:
                     for alpha_title in [2, 4, 5]:

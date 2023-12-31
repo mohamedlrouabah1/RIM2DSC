@@ -31,6 +31,11 @@ class IRrun:
 
         self.file_path = self._create_file_path(weighting_function_name, stop, stem, params)
         self.run_as_str = ""
+
+        if weighting_function_name == "bm25fw" or weighting_function_name == "bm25fr":
+            self.run_type = 'article'
+        else:
+            self.run_type = 'element'
     
     def ranking(self, collection, queries) :
         for id, query in queries:
@@ -49,11 +54,22 @@ class IRrun:
             print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')}\n{self.delimiter}")
             print()
 
-            ranking = self._delOverlappingXMLElement(ranking)
-            ranking = self._extractBestScores(ranking)
-            ranking = self._delIntertwinedResults(ranking)
-            for i, (doc_id, _) in enumerate(ranking):
-                self._writeResultLine(query_id=id, doc_id=doc_id, rank=i+1)
+            if self.run_type == 'element':
+                ranking = self._delOverlappingXMLElement(ranking)
+                ranking = self._extractBestScores(ranking)
+                ranking = self._delIntertwinedResults(ranking)
+
+                for i, (doc_id, _) in enumerate(ranking):
+                    rank = i+1
+                    self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=self.NB_RANKING - rank)
+            
+            else: # 'article
+                ranking = self._extractBestScores(ranking)
+                
+                for i, (doc_id, score) in enumerate(ranking):
+                    rank = i+1
+                    self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=score)
+    
     
     def save_run(self, verbose=False) -> bool:
         try:
@@ -94,8 +110,7 @@ class IRrun:
         if weighting_function in ["bm25fw", "bm25fr"]:
             for tag, alpha in XMLDocument.granularity_weights.items():
                 params += f"_alpha{tag}{alpha}"
-        else:
-            granularity = '_'.join(XMLDocument.granularity)
+        granularity = '_'.join(XMLDocument.granularity)
 
         return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{granularity}_{stop}_{stem}_{params}.txt"
 
@@ -155,12 +170,11 @@ class IRrun:
         ranking.sort(key=lambda x: x[0])
         return ranking
     
-    def _writeResultLine(self, query_id:str, doc_id:str, rank:int) -> None:
+    def _writeResultLine(self, query_id:str, doc_id:str, rank:int, score:float) -> None:
         """
         Create a result line for a INEX run file.
         Note: the scores are modified in order to be decresing with the rank.
         """
-        score=self.NB_RANKING - rank
         if ":" in doc_id:
             doc_id, xpath = doc_id.split(':')
             xpath.replace('/', '_')

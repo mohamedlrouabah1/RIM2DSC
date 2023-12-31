@@ -16,65 +16,76 @@ On va donc changer cette étape comme suit :
 3.2. Trie ces 1500 scores par doc_id (enlever les intertwinned elements)
 3.3. Modifie les scores par '1500-rank' pour avoir un score décroissant conformément au format de run
 
-C'est étapes on été enlevé du module main.py pour être implémenté en tant que méthode dans la classe
+C'est étapes ont été enlevé du module main.py pour être implémenté en tant que méthode dans la classe
 models.IRun.
 
+
+## Nouvelles fonctionnalités :
+
+- BM25Fw : hérite de la classe BM25 et pondère le poids de chaque xml tag calculé par BM25
+- BM25Fr : hérite de la classe BM25 et surcharge la méthode de calcule des score pour pondérer les tf des différents tag xml
+- variation des poids pour les 2 fonctions ci-dessus (TP5 ex 5-6),en fixant k1 à 1,2 et b à 0.75 qui permettaaient d'obtenir de meilleurs résultats
+- TP6 ex1,2 déjà fait dans le rendus précédent donc pas refait
+- TP6 ex3  run 1-19 avec la correction apportée au tri des résultats
+- TP6 ex4  : BM25Fw et BM25Fr run ...
 
 ## Quelques chiffres :
 
 - exploration de 3,457,522 xpath dans la collection pour le ranking
-- temps moyen du preprocessing : 7min
+- temps moyen du preprocessing : 3min
 - temps moyen de l'indexing : 4min (2 min si on utilise une stop-liste)
 - taille moyenne des index sauvegardé (avec qq stats) : 3,3Go
 - temps de ranking de 26s
-- chargement d'un index sauvegarder ~10min (dû à la taille du fichier et au module python 
-  (pickle) utilisé, on envisage des alternatives comme hickle ou cPickle)
 
 
 ## Exemple de statistiques pour une de nos collections :
 
-
-index_nltk_nostop_lem_porter_XML_Only_Ascii_Coll_NoSem.pkl
---------------------------------------------------
-
-  Collection: ../../data/Practice_05_data/XML-Coll-withSem/
-
-  Number of documents: 9805
-
-  Average Document Length: 27.96430392656808 (words)
-
-  Average Term Length: 5.754018202601445 (characters)
-
-  Vocabulary Size: 157870 (unique terms)
-
-  Total Collection Frequency: 2688255 (terms)
-
-  Loading time: 00h02m00s120252ms616100ns (total: 120252616100ns) seconds
-
-  Preprocessing time: 00h06m26s386328ms967800ns (total: 386328967800ns) seconds
-
-  Indexation time: 00h01m58s118548ms39900ns (total: 118548039900ns) seconds
-
-  Total time: 00h06m26s386328ms967800ns (total: 386328967800ns)00h01m58s118548ms39900ns (total: 118548039900ns) seconds
-
-  Computing statistics time: 00h00m02s2352ms751000ns (total: 2352751000ns) seconds
+> python3 main.py 
+Index file ../../saves/index_nltk_stop_lem_porter_XML_Only_Ascii_Coll_NoSem.pkl already exists.
+Stopwords loaded from ../../stop-words/stop-words-english4.txt with 703 words.
+XMLIndexer constructor ...
+args: exclude_stopwords=True, exclude_digits=True, tokenizer=nltk, lemmer=True, stemmer=porter
+Loading collection from file ../../data/Practice_05_data/XML-Coll-withSem/ ...
+loading xml files ...: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [01:32<00:00, 105.64it/s]
+Collection loaded in 00h01m32s92832ms620400ns (total: 92832620400ns) seconds.
+Preprocessing collection...
+preprocessing xml documents ...: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [02:44<00:00, 59.69it/s]
+Collection of 9805 documents, preprocessed in 00h02m44s164272ms882400ns (total: 164272882400ns) seconds.
+Indexing collection...
+Indexing XML documents: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [00:24<00:00, 403.41it/s]
+Collection indexed in 00h00m24s24312ms316200ns (total: 24312316200ns) seconds.
+Computing collection statistics...
+computing avdl ...
+computing avtl ...
+Computing avtl ...: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [00:00<00:00, 25307.58it/s]
+computing terms collection frequency ...
+computing nb distinct terms ...
+Computing nb distinct terms ...: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9805/9805 [00:00<00:00, 37838.39it/s]
+Average nb distinct terms: 259.6781234064253, (XMLCollection._compute_nb_distinct_terms)
+Collection statistics computed in 00h00m00s682ms117800ns (total: 682117800ns) seconds.
 
 --------------------------------------------------
 
+Collection: ../../data/Practice_05_data/XML-Coll-withSem/
 
-## Exemple de temps de traitement pour 2 queries avec une liste de tag
+Number of documents: 9805
 
-Query preprocessed: ['supervis', 'machin', 'learn', 'algorithm']
-Computing RSV for 19821 xpath...
-Documents ranked in 00h00m00s172ms340200ns (total: 172340200ns)
+Average Document Length: 325.4870984191739 (words)
 
+Average Term Length: 6.5247022810225515 (characters)
 
+Vocabulary Size: 446357 (unique terms)
 
-Query preprocessed: ['oper', 'system', 'mutual', 'exclus']
-Computing RSV for 19821 xpath...
-Documents ranked in 00h00m00s164ms606700ns (total: 164606700ns)
+Total Collection Frequency: 2546144 (terms)
 
+Loading time: 00h01m32s92832ms620400ns (total: 92832620400ns) seconds
 
+Preprocessing time: 00h02m44s164272ms882400ns (total: 164272882400ns) seconds
 
-Saving run file to ../results/MohammedWilliam_266_bm25_article_title_bdy_p_stop671_porter_k3.7_b0.9.txt...
+Indexation time: 00h00m24s24312ms316200ns (total: 24312316200ns) seconds
 
+Total time: 00h02m44s164272ms882400ns (total: 164272882400ns)00h00m24s24312ms316200ns (total: 24312316200ns) seconds
+
+Computing statistics time: 00h00m00s682ms117800ns (total: 682117800ns) seconds
+
+--------------------------------------------------

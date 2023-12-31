@@ -1,10 +1,8 @@
 import xml.dom.minidom as minidom
 import os
 from tqdm import tqdm
-from sys import stderr
-from string import punctuation
 
-from utilities.config import STOPWORDS_DIR, START_TAG, MAX_FILES
+from utilities.config import START_TAG
 from models.txt.TextPreprocessor import TextPreprocessor
 from models.xml.XMLDocument import XMLDocument
 from models.xml.XMLElement import XMLElement

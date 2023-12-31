@@ -55,10 +55,10 @@ def main():
                 #     collection.information_retriever = ranking_function
                 #     launch_run(collection, queries, index_path, "smart_lnu", [f"slope{slope}"])
 
-                for alpha_article in [0.5]: # 0.5, 1, 2, 3, 4, 5
-                    for alpha_title in [4]: # 0.5, 1, 2, 3, 4, 5
-                        for alpha_bdy in [1.5]: # 0.5, 1, 2, 3, 4, 5
-                            for alpha_p in [3.25]: # 0.5, 1, 2, 3, 4, 5
+                for alpha_article in [ 0.5, 1]:
+                    for alpha_title in [2, 4, 5]:
+                        for alpha_bdy in [1.75, 2.86]:
+                            for alpha_p in [0.15, 5.67]:
 
                                 XMLDocument.granularity_weights = {
                                     "article" : alpha_article,

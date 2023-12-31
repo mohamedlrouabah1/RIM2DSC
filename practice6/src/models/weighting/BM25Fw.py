@@ -12,10 +12,11 @@ class BM25Fw(BM25):
 
         for doc_id_xpath, score in bm25_scores.items():
             doc_id, xpath = doc_id_xpath.split(':')
-            current_tag = xpath.split('/')[-1]
+            current_tag = xpath.split('/')[-1].split('[')[0]
 
             weighted_score = XMLDocument.granularity_weights[current_tag] * score
 
+            doc_id = f"{doc_id}:/article[1]"
             if doc_id not in scores:
                 scores[doc_id] = weighted_score
             else:

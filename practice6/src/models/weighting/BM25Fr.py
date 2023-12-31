@@ -11,12 +11,17 @@ class BM25Fr(BM25):
         for doc in documents:
             score = 0
             for term in query:
-                _, xpath = doc.id.split(':')
-                current_tag = xpath.split('/')[-1]
+                doc_id, xpath = doc.id.split(':')
+                current_tag = xpath.split('/')[-1].split('[')[0]
                 df = indexer.get_df(term)
                 tf = indexer.get_tf(term, doc.id) * XMLDocument.granularity_weights[current_tag]
                 dl = len(doc)
                 score += self.compute_weight(tf, df, dl)
-            scores[doc.id] = score
+
+            doc_id = f"{doc_id}:/article[1]"    
+            if doc_id not in scores:
+                scores[doc_id] = score
+            else:
+                scores[doc_id] += score
 
         return scores

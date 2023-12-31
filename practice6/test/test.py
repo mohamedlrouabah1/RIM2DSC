@@ -1,6 +1,9 @@
 from collections import Counter
 
 def compter_apparitions_colonne(nom_fichier):
+    """
+    Vérifie que le fichier de run contient 1500 doc par query
+    """
     try:
         with open(nom_fichier, 'r') as fichier:
             lignes = fichier.readlines()

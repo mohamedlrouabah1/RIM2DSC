@@ -1,7 +1,7 @@
 from pytest import approx
 from models.weighting.SMART_ltc import SMART_ltc
 
-from unit.test_data.TD3TestData import TD3TestData
+from test.mock.TD3TestData import TD3TestData
 
 class TestSmartLtc:
     data = TD3TestData()

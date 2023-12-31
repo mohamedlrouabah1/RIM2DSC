@@ -3,7 +3,7 @@ from models.weighting.BM25 import BM25
 from models.txt.TextDocument import TextDocument
 from models.txt.TextIndexer import TextIndexer
 from models.txt.TextCollection import TextCollection
-from unit.test_data.TD3TestData import TD3TestData
+from test.mock.TD3TestData import TD3TestData
 
 
 class TestBM25:

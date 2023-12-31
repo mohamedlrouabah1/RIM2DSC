@@ -29,6 +29,7 @@ jobs:
     
     - name: Analysing the code with pylint
       run: |
+        python3 practice6/test/conftest.py
         pylint --rcfile=.pylintrc $(git ls-files '*.py')
     
     - name: Run tests and generate code coverage report

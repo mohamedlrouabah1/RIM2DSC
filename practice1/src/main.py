@@ -1,7 +1,6 @@
 from exercise2 import generate_index  
 from exercise3 import generate_query
 from src.utils import load_text_collection,generate_grid
-import pandas as pd
 
 def main() -> None:
     ###### Exercise 2 ###### 

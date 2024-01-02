@@ -5,6 +5,7 @@ class XMLElement(InformationRessource):
         super().__init__(f'{id}:{xpath}', text_content)
         self.attributes = attributes
         self.childs = childs
+        self.len = len(self.content) + sum(len(child) for child in self.childs)
 
     def __str__(self) -> str:
         s = f"""
@@ -21,7 +22,7 @@ class XMLElement(InformationRessource):
         return s
     
     def __len__(self) -> int:
-        return len(self.content) + sum(len(child) for child in self.childs)
+        return self.len
 
     def get_doc_id(self) -> str:
         return self.id.split(':')[0]

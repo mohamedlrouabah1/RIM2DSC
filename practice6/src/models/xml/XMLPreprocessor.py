@@ -9,11 +9,12 @@ from models.xml.XMLElement import XMLElement
 
 class XMLPreprocessor(TextPreprocessor):
 
+    anchors:list[str, str, list[str]] = []
+
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         super().__init__(exclude_stopwords, exclude_digits, tokenizer, lemmer, stemmer)
         print("XMLIndexer constructor ...")
         print(f"args: exclude_stopwords={exclude_stopwords}, exclude_digits={exclude_digits}, tokenizer={tokenizer}, lemmer={lemmer}, stemmer={stemmer}")
-        
     
     def _update_xpath(self, xpath:str, tag_name:str, existing_xpath:dict) -> str:
         i = 1
@@ -73,6 +74,14 @@ class XMLPreprocessor(TextPreprocessor):
                     raw_str = self._extract_text(child_node)
                     if (raw_str := raw_str.strip()):
                         text_content += self._text_preprocessing(raw_str)
+
+                if child_node.tagName == "link":
+                    if (anchor := child_node.firstChild.nodeValue.strip()):
+                        text_content += self._text_preprocessing(anchor)
+                        referred_doc_id = child_node.getAttribute('xlink:href').split('/')[-1].split('.')[0]
+                        referred_doc_id  =  f'{referred_doc_id}:/link'
+                        XMLPreprocessor.anchors += [(id, referred_doc_id, anchor)]
+
            
            elif child_node.nodeType == minidom.Node.TEXT_NODE:   
                if (raw_text := child_node.nodeValue.strip()):
@@ -94,3 +103,4 @@ class XMLPreprocessor(TextPreprocessor):
             xml_documents += [XMLDocument(doc_id, xml_elements)]
 
         return xml_documents
+        

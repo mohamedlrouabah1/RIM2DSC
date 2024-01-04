@@ -49,7 +49,6 @@ class Timer:
 
         self.measure[name] = [perf_counter_ns()]
         self.current = name
-        pass
 
     def stop(self):
         if self.current is None:

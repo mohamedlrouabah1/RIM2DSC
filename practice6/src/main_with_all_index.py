@@ -17,7 +17,7 @@ class ARGS :
         pass
 
 # because pylint doesn't handle well polymorphism
-# pylint: disable=R0204
+# pylint: disable=redefined-variable-type
 def main():
     args = ARGS()
     args.tokenizer = "nltk"

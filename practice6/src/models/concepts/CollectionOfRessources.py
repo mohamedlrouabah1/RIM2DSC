@@ -26,7 +26,7 @@ class CollectionOfRessources(ABC):
         raise NotImplementedError("Should implement load()")
 
     @abstractmethod
-    def preprocess(self) -> None:
+    def preprocess(self, raw_collection) -> None:
         raise NotImplementedError("Should implement preprocessing()")
 
     @abstractmethod

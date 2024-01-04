@@ -7,8 +7,8 @@ import re
 import types
 from multiprocessing import Pool
 
-from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from string import punctuation
+from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from tqdm import tqdm
 from utilities.config import STOPWORDS_DIR
 
@@ -17,7 +17,7 @@ def _pickle_method(method):
     func_name = method.im_func.func_name
 
     if func_name.startswith('pre_'):
-        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))[0]
+        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))
 
     return (getattr, (attached_object, func_name))
 
@@ -90,12 +90,12 @@ class TextPreprocessor:
             document_collection_str = f.read().lower()
         return document_collection_str
 
-    def pre_process(self, data, use_parallel_computing=False):
+    def pre_process(self, raw_collection, use_parallel_computing=False):
         # use_parallel_computing = False # For now bc pbm with pickle instance of this class
         if not use_parallel_computing :
             return [
                 (doc_id, self._text_preprocessing(content))
-                for doc_id, content in tqdm(self.collection_pattern.findall(data),
+                for doc_id, content in tqdm(self.collection_pattern.findall(raw_collection),
                                             desc="Preprocessing contents...",
                                             colour="blue")
             ]
@@ -105,7 +105,7 @@ class TextPreprocessor:
         num_processes = os.cpu_count()
 
         with Pool(num_processes) as executor:
-            results = executor.starmap(self._preprocessing, self.collection_pattern.findall(data))
+            results = executor.starmap(self._preprocessing, self.collection_pattern.findall(raw_collection))
 
         # NB: when we quit the with block automatically wait all future objects
         return list(results)

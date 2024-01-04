@@ -118,9 +118,13 @@ class TextCollection(CollectionOfRessources):
         units = ["(words)", "(characters)", "(unique terms)", "(terms)", "(seconds)"]
 
         # Annotate with exact values and units
-        for i, bar in enumerate(bars):
-            yval = bar.get_height()
-            plt.text(bar.get_x() + bar.get_width()/2, yval + (0.02 * yval), f"{round(yval, 2)} {units[i]}", ha='center', va='bottom', fontsize=9)
+        for i, bar_plot in enumerate(bars):
+            yval = bar_plot.get_height()
+            plt.text(
+                bar_plot.get_x() + bar_plot.get_width()/2,
+                yval + (0.02 * yval),
+                f"{round(yval, 2)} {units[i]}",
+                ha='center', va='bottom', fontsize=9)
 
         plt.tight_layout()
         plt.savefig(os.path.join(GRAPH_FOLDER, f"{self.path}_Metrics_Bar_Plot.png"))

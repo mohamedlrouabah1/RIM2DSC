@@ -5,8 +5,8 @@ class TextDocument(InformationRessource):
     """
     Store a document and its related metadata.
     """
-    def __init__(self, id:int, content:list[str]):
-        super().__init__(id, content)
+    def __init__(self, doc_id:int, content:list[str]):
+        super().__init__(doc_id, content)
 
     def get_next_token(self) -> str:
         for token in self.content:

@@ -38,6 +38,6 @@ class XMLIndexer(TextIndexer):
     def _index_anchors(self) -> None:
         for link in tqdm(XMLPreprocessor.anchors, desc="Indexing anchors", file=stderr):
             _, reffered_doc_id, anchor = link
-            self._index_text(InformationRessource(id, reffered_doc_id, anchor))
+            self._index_text(InformationRessource(reffered_doc_id, anchor))
 
         #XMLPreprocessor.links_node = None # maybe we will use it elsewhere

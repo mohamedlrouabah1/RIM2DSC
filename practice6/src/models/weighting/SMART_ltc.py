@@ -63,7 +63,7 @@ class SMART_ltc(WeightingFunction):
             index: list of index of the terms in the query
         """
         den, num = 0, 0
-        for i, (ltn, tf) in enumerate(zip(tf_list, ltn_list)):
+        for i, (ltn, _) in enumerate(zip(tf_list, ltn_list)):
             den += ltn ** 2
             if i in index:
                 print(f"i: {i}, w_t_d: {ltn}")

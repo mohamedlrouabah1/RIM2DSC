@@ -1,6 +1,5 @@
 from __future__ import annotations
 import os
-from sys import stderr
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 
@@ -52,10 +51,10 @@ class TextIndexer:
         Create the posting lists for the given document.
         """
         tokens = doc.content if content is None else content
-        id = doc.id
+        doc_id = doc.id
         tf = Counter(tokens)
         for term, freq in tf.items():
-            unit = PostingListUnit(id, freq)
+            unit = PostingListUnit(doc_id, freq)
 
             if not (term in self.posting_lists):
                 self.posting_lists[term] = PostingList(term)

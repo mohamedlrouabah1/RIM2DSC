@@ -36,7 +36,6 @@ class SMART_lnu(WeightingFunction):
             dl_on_avdl = len(doc) / avdl
             nt_d = indexer.nb_distinct_terms[doc.id.split(':')[0]]
             for term in query:
-                df = indexer.get_df(term)
                 tf = indexer.get_tf(term, doc.id)
                 score += self._compute_weight(tf, dl_on_avdl, nt_d, den_part1)
             scores[doc.id] = score

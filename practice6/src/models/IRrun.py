@@ -39,20 +39,20 @@ class IRrun:
             self.run_type = 'element'
 
     def ranking(self, collection, queries) :
-        for id, query in queries:
-            id = int(id)
+        for query_id, query in queries:
+            query_id = int(query_id)
             print(f"Query: {query}")
-            collection.Timer.start(f"query{id:02d}_preprocessing")
+            collection.Timer.start(f"query{query_id:02d}_preprocessing")
             query = collection.preprocessor._text_preprocessing(query)
             collection.Timer.stop()
-            print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')}")
+            print(f"Query preprocessed in {collection.Timer.get_time(f'query{query_id:02d}_preprocessing')}")
             print(f"Query preprocessed: {query}\n{self.delimiter}")
 
             print('Ranking documents...')
-            collection.Timer.start(f"query{id:02d}_ranking")
+            collection.Timer.start(f"query{query_id:02d}_ranking")
             ranking = collection.compute_RSV(query)
             collection.Timer.stop()
-            print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')}\n{self.delimiter}")
+            print(f"Documents ranked in {collection.Timer.get_time(f'query{query_id:02d}_ranking')}\n{self.delimiter}")
             print()
 
             if self.run_type == 'element':
@@ -62,14 +62,14 @@ class IRrun:
 
                 for i, (doc_id, _) in enumerate(ranking):
                     rank = i+1
-                    self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=self.NB_RANKING - rank)
+                    self._writeResultLine(query_id=query_id, doc_id=doc_id, rank=rank, score=self.NB_RANKING - rank)
 
             else: # 'article
                 ranking = self._extractBestScores(ranking)
 
                 for i, (doc_id, score) in enumerate(ranking):
                     rank = i+1
-                    self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=score)
+                    self._writeResultLine(query_id, doc_id, rank, score)
 
 
     def save_run(self, verbose=False) -> bool:

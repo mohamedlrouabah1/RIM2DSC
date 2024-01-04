@@ -1,7 +1,8 @@
 from __future__ import annotations
 import os
-from tqdm import tqdm
 from xml.dom import minidom
+from tqdm import tqdm
+
 
 from utilities.config import START_TAG
 from models.txt.TextPreprocessor import TextPreprocessor
@@ -30,9 +31,9 @@ class XMLPreprocessor(TextPreprocessor):
         articles = []
         for xml_file in tqdm(xml_files, desc="loading xml files ..."):
             file_path = os.path.join(dir_collection, xml_file)
-            id = xml_file.split('.')[0]
+            doc_id = xml_file.split('.')[0]
             dom = minidom.parse(file_path)
-            articles += [(id, dom)]
+            articles += [(doc_id, dom)]
 
         return articles
 
@@ -59,7 +60,7 @@ class XMLPreprocessor(TextPreprocessor):
 
         return text
 
-    def _browse(self, node:minidom.Node, xpath:str, id:str) -> XMLElement:
+    def _browse(self, node:minidom.Node, xpath:str, doc_id:str) -> XMLElement:
         childs:dict('xpath','XMLElement') = {}
         text_content:list[str] = []
 
@@ -68,7 +69,7 @@ class XMLPreprocessor(TextPreprocessor):
                 # Does it belong to the granularity list
                 if ("element" in XMLDocument.granularity) or (child_node.tagName in XMLDocument.granularity):
                     child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
-                    child_xml_element = self._browse(child_node, child_xpath, id)
+                    child_xml_element = self._browse(child_node, child_xpath, doc_id)
                     childs[child_xpath] = child_xml_element
 
                 else:
@@ -82,14 +83,14 @@ class XMLPreprocessor(TextPreprocessor):
                         text_content += self._text_preprocessing(anchor)
                         referred_doc_id = child_node.getAttribute('xlink:href').split('/')[-1].split('.')[0]
                         referred_doc_id  =  f'{referred_doc_id}:/link'
-                        XMLPreprocessor.anchors += [(id, referred_doc_id, anchor)]
+                        XMLPreprocessor.anchors += [(doc_id, referred_doc_id, anchor)]
 
 
            elif child_node.nodeType == minidom.Node.TEXT_NODE:
                if (raw_text := child_node.nodeValue.strip()):
                     text_content += self._text_preprocessing(raw_text)
 
-        return XMLElement(id, xpath, node.attributes, text_content, childs)
+        return XMLElement(doc_id, xpath, node.attributes, text_content, childs)
 
     def pre_process(self, raw_collection:list[tuple[str, minidom.Document]], use_parallel_computing=False) -> list[XMLDocument]:
         """

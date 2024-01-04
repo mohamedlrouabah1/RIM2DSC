@@ -26,7 +26,7 @@ class TextPreprocessor:
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         if exclude_stopwords:
-            with open(STOPWORDS_DIR, 'r') as f:
+            with open(STOPWORDS_DIR, 'r', encoding="utf-8") as f:
                 self.stopwords = set(f.read().splitlines() + list(punctuation))
             print(f"Stopwords loaded from {STOPWORDS_DIR} with {len(self.stopwords)} words.", file=sys.stderr)
         else:
@@ -49,6 +49,9 @@ class TextPreprocessor:
             self.collection_pattern = collection_pattern
         else:
             self.collection_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
+
+        self.exclude_digits = exclude_digits
+        self.tokenizer_name = tokenizer
 
     def _identity(self, x):
         return x
@@ -82,7 +85,7 @@ class TextPreprocessor:
             str: the document collection as a lowered
                  string
         """
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding="utf-8") as f:
             document_collection_str = f.read().lower()
         return document_collection_str
 

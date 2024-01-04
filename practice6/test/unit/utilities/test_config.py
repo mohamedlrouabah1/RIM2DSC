@@ -1,5 +1,5 @@
 import unittest
-import utilities.config as config
+from utilities import config
 
 class TestGlobalConfiguration(unittest.TestCase):
     """

@@ -7,11 +7,13 @@ from models.weighting.BM25Fr import BM25Fr
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
 from models.weighting.SMART_lnu import SMART_lnu
+from models.xml.XMLIndexer import XMLIndexer
 from utilities.utilities import load_queries_from_csv, create_or_load_collection, launch_run
 
 DIR_SAVE='../../saves'
 DIR_Q='../queries.csv'
 
+XMLIndexer.index_anchors = True
 class ARGS :
     def __init__(self) -> None:
         pass
@@ -26,7 +28,7 @@ def main():
     args.generate_index = True
 
 
-    for granularity in (["article", "title", "bdy", "p"]): # ["element"],
+    for granularity in (["element"]): #(["article", "title", "bdy", "p"]): # ["element"],
         XMLDocument.granularity = granularity
 
         for stopword in [True]: # False

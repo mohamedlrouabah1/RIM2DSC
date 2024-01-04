@@ -1,6 +1,7 @@
 from pytest import approx
 from models.weighting.SMART_ltn import SMART_ltn
-from test.mock.TD3TestData import TD3TestData
+
+from mymock.TD3TestData import TD3TestData
 
 class TestSmartltn:
     data = TD3TestData()
@@ -22,7 +23,7 @@ class TestSmartltn:
     def test_compute_tf_part(self, weight=True):
         assert weight
 
-    def test_compute_weight(self, weight=True):
+    def test_compute_weight(self):
         a_d1 = self.smart_ltn.compute_weight(1, 10)
         assert a_d1 == approx(2.0, abs=1e-1)
 

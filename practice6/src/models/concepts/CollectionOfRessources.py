@@ -31,11 +31,11 @@ class CollectionOfRessources(ABC):
     @abstractmethod
     def index(self) -> None:
         raise NotImplementedError("Should implement indexing()")
-    
+
     @abstractmethod
     def compute_RSV(self, query:str) -> dict[str, float]:
         raise NotImplementedError("Should implement query()")
-    
+
     @abstractmethod
     def compute_stats(self) -> None:
         raise NotImplementedError("Should implement compute_stats()")

@@ -29,7 +29,7 @@ class TestSmartLtc:
             expected_score = data.RSV_smart_ltc[doc.id]
             assert computed_score == approx(expected_score, abs=data.APPROX), f"collection: {collection}, doc: {doc}, expected: {expected_score}, actual: {computed_score}"
 
-    
+
 
     def test_compute_weight(self):
         df_list = [10.00,25.00,10.00,24.00,250.00]

@@ -11,8 +11,8 @@ from utilities.utilities import create_or_load_collection, load_queries_from_csv
 
 def main() -> None:
     # Process program's arguments
-    args = parse_command_line_arguments()    
-    
+    args = parse_command_line_arguments()
+
     # Create/Load the Collection
     collection = create_or_load_collection(args)
     if args.plot: collection.plot_statistics()
@@ -30,7 +30,7 @@ def main() -> None:
     else:
         ranking_function = BM25(
             N=len(collection),
-            avdl=collection.get_avdl(), 
+            avdl=collection.get_avdl(),
             b=args.b, k1=args.k1
             )
         params = [f"k{args.k1}", f"b{args.b}"]
@@ -40,11 +40,11 @@ def main() -> None:
     # Now we can use the index and the preprocessor to do the queries
     print("Loading queries...", file=sys.stderr)
     queries = load_queries_from_csv(args.queries_file_path)
-    
+
     # To create run result files
     launch_run(collection, queries, args.index_path, args.ranking, params)
-   
-    
+
+
 if __name__ == "__main__":
     sys.setrecursionlimit(RECURSION_LIM)
     # Downloading nltk dependencies

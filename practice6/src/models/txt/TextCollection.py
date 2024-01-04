@@ -26,7 +26,7 @@ class TextCollection(CollectionOfRessources):
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor
         self.indexer = TextIndexer() if indexer is None else indexer
 
-   
+
     def __str__(self) -> str:
         return f"""
         {'-'*50}\n
@@ -43,16 +43,16 @@ class TextCollection(CollectionOfRessources):
         Computing statistics time: {self.Timer.get_time('compute_statistics')} seconds\n
         {'-'*50}\n
         """
-    
+
     def get_avdl(self) -> float:
         return self.avdl
-    
+
     def get_avtl(self) -> float:
         return self.avtl
 
     def get_vocabulary_size(self) -> int:
-        return len(self.indexer)    
-    
+        return len(self.indexer)
+
     def get_terms_collection_frequency(self) -> float:
         return self.cf
 
@@ -73,8 +73,8 @@ class TextCollection(CollectionOfRessources):
 
         print("Instantiate Document objects...")
         self.Timer.start("instantiate_documents")
-        self.collection = [ TextDocument(doc_id, doc_tokens) 
-                          for doc_id, doc_tokens in 
+        self.collection = [ TextDocument(doc_id, doc_tokens)
+                          for doc_id, doc_tokens in
                           tqdm(doc_token_list, desc="Instantiating documents...", colour="blue", file=stderr)
                           ]
         self.Timer.stop()
@@ -105,13 +105,13 @@ class TextCollection(CollectionOfRessources):
         self.Timer.stop()
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.", file=stderr)
 
-    def plot_stats(self) -> None: 
+    def plot_stats(self) -> None:
         labels = ["Avg Doc Length", "Avg Term Length", "Vocabulary Size", "Total Collection Frequency", "Preprocessing Time (seconds)", "Indexing Time (seconds)"]
         values = [self.avdl, self.avtl, self.get_vocabulary_size(), sum(self.cf), self.Timer.get_time('preprocessing') + self.Timer.get_time('indexing')]
 
         plt.figure(figsize=(12, 8))
         bars = plt.bar(labels, values, color=['blue', 'green', 'red', 'purple', 'cyan'])
-        
+
         # Use logarithmic scale for y-axis
         plt.yscale('log')
         plt.ylabel('Value (log scale)')
@@ -129,19 +129,19 @@ class TextCollection(CollectionOfRessources):
 
     def _compute_avdl(self) -> float:
         return sum(len(d) for d in self.collection) / len(self.collection)
-    
+
     def _compute_avtl(self) -> float:
         return sum(doc.compute_avtl() for doc in self.collection) / len(self.collection)
-    
+
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
-     
+
     def __reduce__(self) -> tuple:
         # Exclude the 'doc_preprocessing' and 'pre_process' methods from pickling
         state = self.__dict__.copy()
         state.pop('preprocessor', None)
         return (self.__class__, (), state)
-    
+
     def serialize(self, path:str) -> bool:
         try:
             with open(path, 'wb') as f:
@@ -158,6 +158,6 @@ class TextCollection(CollectionOfRessources):
 
         if isinstance(index, cls):
             return index
-        
+
         print(f"Deserialized object from {path} is not an instance of the Index class.", file=stderr)
         return None

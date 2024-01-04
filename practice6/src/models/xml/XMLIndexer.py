@@ -9,7 +9,7 @@ from models.xml.XMLElement import XMLElement
 from models.xml.XMLPreprocessor import XMLPreprocessor
 
 class XMLIndexer(TextIndexer):
-    
+
     def __init__(self, index_anchors=False):
         super().__init__()
         self.index_anchors = index_anchors
@@ -22,7 +22,7 @@ class XMLIndexer(TextIndexer):
 
         if not hasattr(xml_element, "childs"):
             return
-        
+
         for _, field in xml_element.childs.items():
             self._index_fields(field)
 
@@ -39,5 +39,5 @@ class XMLIndexer(TextIndexer):
         for link in tqdm(XMLPreprocessor.anchors, desc="Indexing anchors", file=stderr):
             _, id, anchor = link
             self._index_text(InformationRessource(id, anchor))
-            
+
         #XMLPreprocessor.links_node = None # maybe we will use it elsewhere

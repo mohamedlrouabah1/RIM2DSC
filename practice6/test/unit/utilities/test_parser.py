@@ -34,7 +34,7 @@ class TestParser(unittest.TestCase):
 
         finally:
             sys.argv = saved_argv
-        
+
     def test_wrong_weighting_function(self):
         saved_argv = sys.argv
         sys.argv = ['main.py', '-r', 'wrong', 'queries.csv']

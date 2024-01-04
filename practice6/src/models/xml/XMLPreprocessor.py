@@ -15,14 +15,14 @@ class XMLPreprocessor(TextPreprocessor):
         super().__init__(exclude_stopwords, exclude_digits, tokenizer, lemmer, stemmer)
         print("XMLIndexer constructor ...")
         print(f"args: exclude_stopwords={exclude_stopwords}, exclude_digits={exclude_digits}, tokenizer={tokenizer}, lemmer={lemmer}, stemmer={stemmer}")
-    
+
     def _update_xpath(self, xpath:str, tag_name:str, existing_xpath:dict) -> str:
         i = 1
         while f'{xpath}/{tag_name}[{i}]' in existing_xpath:
             i += 1
-            
+
         return f'{xpath}/{tag_name}[{i}]'
-    
+
     def _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
@@ -33,7 +33,7 @@ class XMLPreprocessor(TextPreprocessor):
             articles += [(id, dom)]
 
         return articles
-    
+
     def load(self, path) -> list[tuple[str, minidom.Document]]:
         return self._fetch_articles(path)
 
@@ -68,7 +68,7 @@ class XMLPreprocessor(TextPreprocessor):
                     child_xpath = self._update_xpath(xpath, child_node.tagName, childs)
                     child_xml_element = self._browse(child_node, child_xpath, id)
                     childs[child_xpath] = child_xml_element
-                
+
                 else:
                     # we extract the text content from the tree
                     raw_str = self._extract_text(child_node)
@@ -82,11 +82,11 @@ class XMLPreprocessor(TextPreprocessor):
                         referred_doc_id  =  f'{referred_doc_id}:/link'
                         XMLPreprocessor.anchors += [(id, referred_doc_id, anchor)]
 
-           
-           elif child_node.nodeType == minidom.Node.TEXT_NODE:   
+
+           elif child_node.nodeType == minidom.Node.TEXT_NODE:
                if (raw_text := child_node.nodeValue.strip()):
                     text_content += self._text_preprocessing(raw_text)
-                        
+
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 
     def pre_process(self, raw_collection:list[tuple[str, minidom.Document]], use_parallel_computing=False) -> list[XMLDocument]:
@@ -103,4 +103,3 @@ class XMLPreprocessor(TextPreprocessor):
             xml_documents += [XMLDocument(doc_id, xml_elements)]
 
         return xml_documents
-        

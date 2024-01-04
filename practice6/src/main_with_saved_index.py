@@ -20,7 +20,7 @@ def main():
         file_path = os.path.join(DIR_SAVE, pickle_file)
         print(f"desearialize {pickle_file}", file=stderr)
         collection = XMLCollection.deserialize(file_path)
-        
+
         print("Loading queries...", file=stderr)
         queries = load_queries_from_csv(DIR_Q)
 
@@ -38,12 +38,12 @@ def main():
             collection.information_retriever = ranking_function
             launch_run(collection, queries, pickle_file, "smart_lnu", [f"slope{slope}"])
 
-        
+
         for k1 in [1.2, 1.7, 2.2, 3.7]:
             for b in [0.5, 0.75, 0.9]:
                 ranking_function = BM25(
                     N=len(collection),
-                    avdl=collection.get_avdl(), 
+                    avdl=collection.get_avdl(),
                     b=b, k1=k1
                     )
                 collection.information_retriever = ranking_function

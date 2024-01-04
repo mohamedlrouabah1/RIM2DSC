@@ -36,7 +36,7 @@ class TestBM25:
                 computed_weight = bm25.compute_weight(tf, df, dl)
                 expected_weight = result_weight[doc_id]
                 assert  computed_weight == approx(expected_weight, abs=data.APPROX), f"Term: {term}, Doc_id: {doc_id}, tf: {tf}, df: {df}, dl: {dl}, Expected: {expected_weight}, Actual: {computed_weight}"
-                
+
     def test_compute_score(self):
         assert True
         return # for now skip this test bc it's more an integration test than unit and can fail bc of dependencues btwn classes
@@ -51,7 +51,7 @@ class TestBM25:
             _, computed_score = scores[doc.id]
             expected_score = data.RSV_bm25[doc.id]
             assert computed_score == expected_score, f"scores: {scores}, doc: {doc}, expected: {expected_score}, actual: {computed_score}"
-        
+
 
     def test_compute_fixed_weight(self):
         tf = df = dl = 2

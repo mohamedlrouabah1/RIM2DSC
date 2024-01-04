@@ -1,7 +1,7 @@
 class PageRank():
 
     def __init__(self, list_tag_link:list[str, str, list[str]]):
-        """ 
+        """
         create the graph of links from a list of tag links.
         Params:
         -------

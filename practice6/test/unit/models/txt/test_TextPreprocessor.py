@@ -12,7 +12,7 @@ class TestTextPreprocessor(unittest.TestCase):
     def test_text_preprocessing(self):
         text = "This is a test document with some stopwords."
         processed_text = self.text_preprocessor._text_preprocessing(text)
-        
+
         self.assertIsInstance(processed_text, list)
         self.assertNotIn("stopwords", processed_text)
 

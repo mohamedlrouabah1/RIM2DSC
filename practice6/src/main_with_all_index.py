@@ -77,7 +77,7 @@ def main():
                                         for name, ranking_function in tmp.items():
                                             collection.information_retriever = ranking_function(
                                                 N=len(collection),
-                                                avdl=collection.get_avdl(), 
+                                                avdl=collection.get_avdl(),
                                                 b=b, k1=k1
                                                 )
                                             launch_run(collection, queries, index_path, name, [f"k{k1}", f"b{b}"])

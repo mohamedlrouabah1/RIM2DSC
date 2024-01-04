@@ -20,7 +20,7 @@ class XMLElement(InformationRessource):
         s += f"{'+'*50}\n"
 
         return s
-    
+
     def __len__(self) -> int:
         return self.len
 
@@ -29,7 +29,7 @@ class XMLElement(InformationRessource):
 
     def get_xpath(self) -> str:
         return self.id.split(':')[1]
-    
+
     def next_child(self) -> 'XMLElement':
         for child in self.childs:
             yield child
@@ -42,7 +42,7 @@ class XMLElement(InformationRessource):
 
         tokens += self.content
         return tokens
-    
+
     def get_xml_element_list(self) -> list['XMLElement']:
         elements = [self]
         if len(self.childs) > 0 :

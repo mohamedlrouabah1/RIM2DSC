@@ -16,15 +16,15 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
     If it does, load it. Otherwise, create it.
     """
     # First create the path to the save index file
-    index_path = f"{SAVE_FOLDER}/index_" 
-    index_path += "regex_" if args.tokenizer == "regex" else "nltk_" 
-    index_path += "stop_" if args.stopword else "nostop_" 
+    index_path = f"{SAVE_FOLDER}/index_"
+    index_path += "regex_" if args.tokenizer == "regex" else "nltk_"
+    index_path += "stop_" if args.stopword else "nostop_"
     index_path += "lem_" if args.lemmer else "nolem_"
 
     if args.stemmer == "None":
         index_path += "nostem_"
     else:
-        index_path += "snow_" if args.stemmer == "snowball" else "porter_"  
+        index_path += "snow_" if args.stemmer == "snowball" else "porter_"
 
     index_path += COLLECTION_NAME + ".pkl"
 
@@ -33,7 +33,7 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
         print(f"Index file {index_path} already exists.", file=stderr)
     else:
         print(f"Index file {index_path} does not exist.", file=stderr)
-    
+
     # Second we create the TextPreProcessor object
     if type == "xml":
         preprocessor = XMLPreprocessor(
@@ -76,7 +76,7 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
         collection.compute_stats()
         if save:
             collection.serialize(index_path)
-    
+
         collection.index_path = index_path
 
     else:
@@ -85,9 +85,9 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
             collection = XMLCollection.deserialize(index_path)
         else:
             collection = TextCollection.deserialize(index_path)
-        
+
         collection.preprocessor =preprocessor
-    
+
     print(collection, file=stderr)
 
     return collection
@@ -102,7 +102,7 @@ def load_queries_from_csv(path:str) -> list:
     try:
        with open(path, "r") as file:
             queries = [line.strip().split(',') for line in file]
-            
+
     except FileNotFoundError:
         print(f"File {path} not found.", file=stderr)
 
@@ -114,7 +114,7 @@ def launch_run(collection:XMLCollection, queries:list, file_name, a_ranking, a_p
     tmp = file_name.split('_')
     a_stopword = tmp[2]
     a_stemmer = tmp[5]
-    
+
     # To create run result files
     print("Instanciate IRun class ...", file=stderr)
     run = IRrun(a_ranking, a_stopword, a_stemmer, a_params)

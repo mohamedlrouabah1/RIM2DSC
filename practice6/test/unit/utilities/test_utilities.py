@@ -42,7 +42,7 @@ class TestUtilities(unittest.TestCase):
     def test_load_queries_from_csv_correct_path(self):
         queries = load_queries_from_csv("data/practice_6/queries.csv")
         self.assertEqual(len(queries), 7)
-        
+
 
     def test_launch_run(self):
         self.assertIsNotNone(launch_run)

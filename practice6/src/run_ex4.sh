@@ -3,7 +3,7 @@
 queries_file=../queries.csv
 
 weighting_functions=(
-    'smart_ltc' 
+    'smart_ltc'
     'smart_ltn'
     'smart_lnu'
     'bm25'

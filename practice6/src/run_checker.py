@@ -5,7 +5,7 @@ def check_file(file_path):
     try:
         with open(file_path, 'r') as file:
             for line_number, line in enumerate(file, start=1):
-                columns = line.strip().split(' ')  
+                columns = line.strip().split(' ')
                 # Check if the line has exactly 7 columns
                 if len(columns) != 7:
                     print(f"File: {file_path}, Line: {line_number} - Incorrect number of columns")

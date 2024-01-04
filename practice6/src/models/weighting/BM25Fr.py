@@ -6,7 +6,7 @@ class BM25Fr(BM25):
         """
         We ponderate BM25 term frequency according to weigh define in
         the XMLDocument.granularity_weights dictionary : dict[tag] = weight.
-        """    
+        """
         scores = {}
         for doc in documents:
             score = 0
@@ -18,7 +18,7 @@ class BM25Fr(BM25):
                 dl = len(doc)
                 score += self.compute_weight(tf, df, dl)
 
-            doc_id = f"{doc_id}:/article[1]"    
+            doc_id = f"{doc_id}:/article[1]"
             if doc_id not in scores:
                 scores[doc_id] = score
             else:

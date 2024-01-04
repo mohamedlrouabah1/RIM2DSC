@@ -18,7 +18,7 @@ class TestGlobalConfiguration(unittest.TestCase):
         self.assertTrue(hasattr(config, 'NB_RANKING'))
         self.assertTrue(hasattr(config, 'START_TAG'))
         self.assertTrue(hasattr(config, 'RECURSION_LIM'))
-    
+
     def test_config_variables_type(self):
         self.assertIsInstance(config.DATA_FOLDER, str)
         self.assertIsInstance(config.STOPWORDS_DIR, str)

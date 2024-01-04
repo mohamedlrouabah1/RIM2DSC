@@ -36,7 +36,7 @@ class IRrun:
             self.run_type = 'article'
         else:
             self.run_type = 'element'
-    
+
     def ranking(self, collection, queries) :
         for id, query in queries:
             id = int(id)
@@ -62,30 +62,30 @@ class IRrun:
                 for i, (doc_id, _) in enumerate(ranking):
                     rank = i+1
                     self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=self.NB_RANKING - rank)
-            
+
             else: # 'article
                 ranking = self._extractBestScores(ranking)
-                
+
                 for i, (doc_id, score) in enumerate(ranking):
                     rank = i+1
                     self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=score)
-    
-    
+
+
     def save_run(self, verbose=False) -> bool:
         try:
             if verbose: print(f"Saving run file to {self.file_path}...")
-           
+
             with open(self.file_path, "w") as f:
                 f.write(self.run_as_str)
 
             if verbose: print("Done.")
 
             return True
-        
+
         except IOError:
             print(f"Error while saving run file to {self.file_path}.")
             return False
-        
+
 
     def load_last_id(self) -> int:
         if os.path.exists(IRrun.ID_FILE_PATH):
@@ -141,7 +141,7 @@ class IRrun:
             j+=1
 
         return run_lines
-    
+
 
     def _extractBestScores(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
         """
@@ -155,7 +155,7 @@ class IRrun:
         """
         ranking.sort(key=lambda x: x[1], reverse=True)
         return ranking[:IRrun.NB_RANKING]
-    
+
 
     def _delIntertwinedResults(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
         """
@@ -169,7 +169,7 @@ class IRrun:
         """
         ranking.sort(key=lambda x: x[0])
         return ranking
-    
+
     def _writeResultLine(self, query_id:str, doc_id:str, rank:int, score:float) -> None:
         """
         Create a result line for a INEX run file.

@@ -16,7 +16,7 @@ class SMART_ltn(WeightingFunction):
     @lru_cache(maxsize=1024)
     def compute_idf(self, df, N):
         return log10(N / df)
-    
+
     @lru_cache(maxsize=1024)
     def compute_tf_part(self, tf):
         return 1 + log10(tf) if tf > 0 else 0
@@ -28,7 +28,7 @@ class SMART_ltn(WeightingFunction):
             tf_part = self.compute_tf_part(tf)
             return tf_part * idf
         return 0
-    
+
     def compute_scores(self, documents, query, indexer):
         """
         Return a dictionary of scores for each document for each query.

@@ -1,7 +1,7 @@
 from models.PostingListUnit import PostingListUnit
 
 class PostingList:
-    """ 
+    """
     Store the posting list of a term and its related metadata.
     """
     def __init__(self, term:str):
@@ -34,11 +34,10 @@ class PostingList:
             self.doc_ids.add(id)
             self.document_frequency += 1
             self.total_frequency += posting.frequency
-        
+
         self.postings[posting.document_id] = posting
 
     def get_tfd(self, doc_id:int):
         if self.postings.get(doc_id) is None:
             return 0
         return self.postings[doc_id].frequency
-    

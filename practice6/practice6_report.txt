@@ -44,7 +44,7 @@ models.IRun.
 
 ## Exemple de statistiques pour une de nos collections :
 
-> python3 main.py 
+> python3 main.py
 Index file ../../saves/index_nltk_stop_lem_porter_XML_Only_Ascii_Coll_NoSem.pkl already exists.
 Stopwords loaded from ../../stop-words/stop-words-english4.txt with 703 words.
 XMLIndexer constructor ...

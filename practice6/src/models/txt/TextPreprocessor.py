@@ -19,15 +19,15 @@ def _pickle_method(method):
         func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))[0]
 
     return (getattr, (attached_object, func_name))
-        
+
 copyreg.pickle(types.MethodType, _pickle_method)
 
 class TextPreprocessor:
-    
+
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         if exclude_stopwords:
             with open(STOPWORDS_DIR, 'r') as f:
-                self.stopwords = set(f.read().splitlines() + list(punctuation)) 
+                self.stopwords = set(f.read().splitlines() + list(punctuation))
             print(f"Stopwords loaded from {STOPWORDS_DIR} with {len(self.stopwords)} words.", file=sys.stderr)
         else:
             print("Error, unnable to load stopwords.", file=sys.stderr)
@@ -52,13 +52,13 @@ class TextPreprocessor:
 
     def _identity(self, x):
         return x
-       
+
     def _normalize(self, w:str) -> str:
         return self.stemming(self.lemmatizing(w))
-    
+
     def _tokenize(self, w:str):
         return word_tokenize(w)
-    
+
     def _is_valid_token(self, w:str) -> bool:
         return len(w) > 2 and w.isalpha() and w not in self.stopwords
 
@@ -68,18 +68,18 @@ class TextPreprocessor:
             for token in self._tokenize(text)
             if self._is_valid_token(token)
         ]
-    
+
     def _preprocessing(self, doc_id, content):
         """Used for the parallel computing"""
         return (doc_id, self._text_preprocessing(content))
-    
+
     def load_and_lower_text_collection(self, path) -> str:
         """
         Read the document collection from a file.
         Handles both regular and gzipped files.
 
         Returns:
-            str: the document collection as a lowered 
+            str: the document collection as a lowered
                  string
         """
         with open(path, 'r') as f:
@@ -91,11 +91,11 @@ class TextPreprocessor:
         if not use_parallel_computing :
             return [
                 (doc_id, self._text_preprocessing(content))
-                for doc_id, content in tqdm(self.collection_pattern.findall(data), 
-                                            desc="Preprocessing contents...", 
+                for doc_id, content in tqdm(self.collection_pattern.findall(data),
+                                            desc="Preprocessing contents...",
                                             colour="blue")
             ]
-        
+
         # compute it using parallel computing
         print("Using pool to preprocess documents...")
         num_processes = os.cpu_count()

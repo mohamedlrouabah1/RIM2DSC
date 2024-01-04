@@ -6,7 +6,7 @@ from sys import stderr
 from typing import Any
 from tqdm import tqdm
 
-from models.txt.TextCollection import TextCollection  
+from models.txt.TextCollection import TextCollection
 from models.xml.XMLDocument import XMLDocument
 from models.xml.XMLIndexer import XMLIndexer
 from models.xml.XMLPreprocessor import XMLPreprocessor
@@ -22,7 +22,7 @@ class XMLCollection(TextCollection):
         self.preprocessor = XMLPreprocessor() if preprocessor is None else preprocessor
         self.indexer = XMLIndexer() if indexer is None else indexer
         self.information_retriever = None
-    
+
     def load(self) -> list[tuple[str, minidom.Document]]:
         print(f"Loading collection from file {self.path} ...", file=stderr)
         self.Timer.start("load_collection")
@@ -44,7 +44,7 @@ class XMLCollection(TextCollection):
         self.indexer.index(self.collection, self.use_parallel_computing)
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
-    
+
     def compute_stats(self) -> dict[int]:
          # Compute collection statistics
         print("Computing collection statistics...", file=stderr)
@@ -63,13 +63,13 @@ class XMLCollection(TextCollection):
 
     def _compute_avdl(self) -> float:
         return sum(len(d) for d in self.collection) / len(self.collection)
-    
+
     def _compute_avtl(self) -> float:
         return sum(doc.compute_avtl() for doc in tqdm(self.collection, desc="Computing avtl ...")) / len(self.collection)
-    
+
     def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
-    
+
     def _compute_nb_distinct_terms(self) -> None:
         tot = 0
         self.indexer.nb_distinct_terms = {}
@@ -78,7 +78,7 @@ class XMLCollection(TextCollection):
             nb_distinct_terms = len(set(tokens))
             tot += nb_distinct_terms
             self.indexer.nb_distinct_terms[doc.id] = nb_distinct_terms
-        
+
         self.indexer.average_nb_distinct_terms = tot / len(self.collection)
         print(f"Average nb distinct terms: {self.indexer.average_nb_distinct_terms}, (XMLCollection._compute_nb_distinct_terms)", file=stderr)
 
@@ -92,14 +92,14 @@ class XMLCollection(TextCollection):
             collection = []
             for doc_xml in tqdm(self.collection, desc="Extracting XML elements from documents ...."):
                 collection  += doc_xml.get_xml_element_list()
-            
+
         else:
             collection = self.collection
 
         print(f"Computing RSV for {len(collection)} xpath...")
         scores = self.information_retriever.compute_scores(collection, query, self.indexer)
         return sorted(scores.items(), key=lambda x: (x[0], x[1]), reverse=False)
-    
+
 
     def serialize(self, path:str) -> bool:
         try:
@@ -109,7 +109,7 @@ class XMLCollection(TextCollection):
                 pickle.dump(self, f)
             print("Indexed collection serialized to", path, file=stderr)
             return True
-        
+
         except Exception as e:
             print(f"Error serializing indexed collection to {path}: {e}", file=stderr)
             return False

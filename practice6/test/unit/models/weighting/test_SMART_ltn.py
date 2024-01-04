@@ -21,9 +21,9 @@ class TestSmartltn:
 
     def test_compute_tf_part(self, weight=True):
         assert weight
-    
+
     def test_compute_weight(self, weight=True):
-        a_d1 = self.smart_ltn.compute_weight(1, 10)  
+        a_d1 = self.smart_ltn.compute_weight(1, 10)
         assert a_d1 == approx(2.0, abs=1e-1)
 
         b_d1 = self.smart_ltn.compute_weight(0, 25)
@@ -38,7 +38,7 @@ class TestSmartltn:
         e_d1 = self.smart_ltn.compute_weight(5, 250)
         assert e_d1 == approx(1.0229, abs=1e-1)
 
-        
+
 
     def test_compute_score(self, weight=True):
         assert weight

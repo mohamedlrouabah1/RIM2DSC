@@ -1,9 +1,9 @@
-import matplotlib.pyplot as  plt
+from __future__ import annotations
 import os
 import pickle
 from sys import stderr
 from tqdm import tqdm
-from typing import List, Dict
+import matplotlib.pyplot as  plt
 
 from models.concepts.CollectionOfRessources import CollectionOfRessources
 from models.txt.TextDocument import TextDocument
@@ -20,8 +20,8 @@ class TextCollection(CollectionOfRessources):
     """
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         super().__init__(path, {})
-        self.collection:List[TextDocument] = []
-        self.terms_frequency:Dict[str, int] = {}
+        self.collection:list[TextDocument] = []
+        self.terms_frequency:dict[str, int] = {}
         self.vocabulary_size = 0
         self.path = path
         self.preprocessor = TextPreprocessor() if preprocessor is None else preprocessor

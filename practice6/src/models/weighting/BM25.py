@@ -1,4 +1,3 @@
-from sys import stderr
 from functools import lru_cache
 from math import log10
 from models.weighting.WeightingFunction import WeightingFunction

@@ -1,6 +1,5 @@
-from sys import stderr
 from functools import lru_cache
-from math import log10, sqrt
+from math import sqrt
 from models.weighting.SMART_ltn import SMART_ltn
 from models.weighting.WeightingFunction import WeightingFunction
 
@@ -55,6 +54,7 @@ class SMART_ltc(WeightingFunction):
 
         return scores
 
+    @lru_cache(maxsize=1024)
     def _compute_weight(self, ltn_list, tf_list, index):
         """
         Param:

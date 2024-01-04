@@ -1,8 +1,8 @@
+from __future__ import annotations
 import os
 from sys import stderr
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
-from typing import List, Dict
 
 from models.concepts.InformationRessource import InformationRessource
 from models.txt.TextDocument import TextDocument
@@ -12,7 +12,7 @@ from models.PostingListUnit import PostingListUnit
 class TextIndexer:
 
     def __init__(self):
-       self.posting_lists: Dict[PostingList] = {}
+       self.posting_lists: dict[PostingList] = {}
 
     def __len__(self):
         return len(self.posting_lists)
@@ -31,14 +31,14 @@ class TextIndexer:
     def get_vocabulary_size(self) -> int:
         return len(self.posting_lists)
 
-    def get_vocabulary(self) -> List[str]:
+    def get_vocabulary(self) -> list[str]:
         return self.posting_lists.keys()
 
     def get_df(self, term:str) -> int:
         """ Return the number of documents in which the term appears."""
         if term not in self.posting_lists:
-            #print(f"Term {term} not in vocabulary.", file=stderr)
             return 0
+
         return len(self.posting_lists[term])
 
     def get_tf(self, term:str, doc_id:int) -> int:
@@ -62,7 +62,7 @@ class TextIndexer:
 
             self.posting_lists[term].add_posting(unit)
 
-    def index(self, docs:List[TextDocument], use_parallel_computing=False) -> None:
+    def index(self, docs:list[TextDocument], use_parallel_computing=False) -> None:
         if not use_parallel_computing:
             for doc in docs: self._index_text(doc)
             return

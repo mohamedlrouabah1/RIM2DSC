@@ -1,12 +1,13 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+
 from models.Timer import Timer
 from models.concepts.InformationRessource import InformationRessource
 from models.weighting.WeightingFunction import WeightingFunction
 
 class CollectionOfRessources(ABC):
 
-    def __init__(self, path:str, ressourcesCollection:Dict[str,InformationRessource], use_parallel_computing=False):
+    def __init__(self, path:str, ressourcesCollection:dict[str,InformationRessource], use_parallel_computing=False):
         self.id = id
         self.path = path
         self.collection = ressourcesCollection
@@ -21,7 +22,7 @@ class CollectionOfRessources(ABC):
         self.information_retriever = ranking_function
 
     @abstractmethod
-    def load(self) -> Any:
+    def load(self) -> 'any':
         raise NotImplementedError("Should implement load()")
 
     @abstractmethod

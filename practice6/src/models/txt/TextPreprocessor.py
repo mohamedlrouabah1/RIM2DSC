@@ -1,12 +1,13 @@
+
+from __future__ import annotations
 import copyreg
 import os
 import sys
 import re
 import types
 from multiprocessing import Pool
-from typing import Any
+
 from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
-# from nltk.corpus import stopwords
 from string import punctuation
 from tqdm import tqdm
 from utilities.config import STOPWORDS_DIR

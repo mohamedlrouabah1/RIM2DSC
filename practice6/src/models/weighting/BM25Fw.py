@@ -1,10 +1,10 @@
-from typing import Dict
+from __future__ import annotations
 
 from models.weighting.BM25 import BM25
 from models.xml.XMLDocument import XMLDocument
 
 class BM25Fw(BM25):
-    def compute_scores(self, documents, query, indexer) -> Dict[str, float]:
+    def compute_scores(self, documents, query, indexer) -> dict[str, float]:
         """
         We ponderate BM25 tag weights according to weigh define in
         the XMLDocument.granularity_weights dictionary : dict[tag] = weight.

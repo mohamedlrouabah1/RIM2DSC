@@ -28,10 +28,10 @@ def main():
     for granularity in (["article", "title", "bdy", "p"]): # ["element"],
         XMLDocument.granularity = granularity
 
-        for stopword in (True): # False
+        for stopword in [True]: # False
             args.stopword = stopword
 
-            for stemmer in ("porter"): # "None",
+            for stemmer in ["porter"]: # "None",
                 args.stemmer = stemmer
 
                 collection = None # free memory
@@ -66,8 +66,8 @@ def main():
                                     "bdy" : alpha_bdy,
                                     "p" : alpha_p,
                                 }
-                                for k1 in (1.2): # , 1.7, 2.2, 3.7
-                                    for b in (0.75): # 0.5, , 0.9
+                                for k1 in [1.2]: # , 1.7, 2.2, 3.7
+                                    for b in [0.75]: # 0.5, , 0.9
                                         tmp = {
                                             #"bm25" : BM25,
                                             "bm25fw" : BM25Fw,

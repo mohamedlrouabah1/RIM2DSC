@@ -1,3 +1,4 @@
+from __future__ import annotations
 import unittest
 from models.xml.XMLDocument import XMLDocument
 from models.xml.XMLElement import XMLElement

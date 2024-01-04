@@ -38,11 +38,6 @@ class Timer:
     def __len__(self) -> int:
         return len(self.measure)
 
-    def __str__(self) -> str:
-        print(f"Timer with {len(self)} measures")
-        for name in self.measure:
-            print(f" - {name} : {self.computation_time(name, self.default_unit)} {self.default_unit.name}")
-
     def start(self, name, force=False) -> bool:
         if self.current is not None:
             print("A timer is already started, stop it first.")

@@ -9,8 +9,6 @@ from models.concepts.CollectionOfRessources import CollectionOfRessources
 from models.txt.TextDocument import TextDocument
 from models.txt.TextIndexer import TextIndexer
 from models.txt.TextPreprocessor import TextPreprocessor
-from models.Timer import Timer
-from models.weighting.WeightingFunction import WeightingFunction
 from utilities.config import GRAPH_FOLDER
 
 

@@ -11,7 +11,7 @@ class PageRank():
             list of tuples (doc_id, reffered_doc_id, anchor_tokens)
         """
         self.graph = {}
-        for doc_id, referred_doc_id, _ in list_tag_link.values():
+        for _, (doc_id, referred_doc_id, _) in list_tag_link.items():
             if doc_id not in self.graph:
                 self.graph[doc_id] = []
             self.graph[doc_id].append(referred_doc_id)

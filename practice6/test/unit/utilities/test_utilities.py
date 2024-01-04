@@ -5,9 +5,6 @@ from models.txt.TextCollection import TextCollection
 from models.xml.XMLCollection import XMLCollection
 from utilities.utilities import create_or_load_collection, load_queries_from_csv, launch_run
 
-
-
-global SAVE_FOLDER, COLLECTION_NAME, DATA_PRACTICE_5
 class ARGS :
     """A class to store some attributes"""
     def __init__(self) -> None:
@@ -50,6 +47,7 @@ class TestUtilities(unittest.TestCase):
 
 
     def _set_global_context(self) -> None:
+        global SAVE_FOLDER, COLLECTION_NAME, DATA_PRACTICE_5
         SAVE_FOLDER = '.pytest_cache/test_utilities/'
         COLLECTION_NAME = 'test_collection'
         DATA_PRACTICE_5 = "data/Practice_05_data/XML-Coll-withSem/"

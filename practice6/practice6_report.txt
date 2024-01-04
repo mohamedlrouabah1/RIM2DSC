@@ -28,7 +28,7 @@ models.IRun.
 - ajout de test unitaires pour l'ensemble des classes du projet
 - ajout d'intégration continue utilisant les workflow github : pylint, pytest, coverage
 - test coverage de 35% selon le module python coverage
-- note pylint de 7.43/10 pour le code du projet
+- note pylint de 7.59/10 pour le code du projet
 - TP6 ex1,2 déjà fait dans le rendus précédent donc pas refait
 - TP6 ex3  run 1-19 avec la correction apportée au tri des résultats
 - TP6 ex4  : BM25Fw et BM25Fr run ...

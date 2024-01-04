@@ -1,7 +1,7 @@
+from __future__ import annotations
 import os
-import xml.dom.minidom as minidom
 from tqdm import tqdm
-from typing import Dict, List, Tuple
+from xml.dom import minidom
 
 from utilities.config import START_TAG
 from models.txt.TextPreprocessor import TextPreprocessor
@@ -10,21 +10,22 @@ from models.xml.XMLElement import XMLElement
 
 class XMLPreprocessor(TextPreprocessor):
 
-    anchors:List[Tuple(str, str, list[str])] = []
+    anchors:list[tuple(str, str, list[str])] = []
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         super().__init__(exclude_stopwords, exclude_digits, tokenizer, lemmer, stemmer)
+        self.collection_pattern = collection_pattern
         print("XMLIndexer constructor ...")
         print(f"args: exclude_stopwords={exclude_stopwords}, exclude_digits={exclude_digits}, tokenizer={tokenizer}, lemmer={lemmer}, stemmer={stemmer}")
 
-    def _update_xpath(self, xpath:str, tag_name:str, existing_xpath:Dict) -> str:
+    def _update_xpath(self, xpath:str, tag_name:str, existing_xpath:dict) -> str:
         i = 1
         while f'{xpath}/{tag_name}[{i}]' in existing_xpath:
             i += 1
 
         return f'{xpath}/{tag_name}[{i}]'
 
-    def _fetch_articles(self, dir_collection:str) -> List[Tuple[str, minidom.Document]]:
+    def _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
         for xml_file in tqdm(xml_files, desc="loading xml files ..."):
@@ -35,7 +36,7 @@ class XMLPreprocessor(TextPreprocessor):
 
         return articles
 
-    def load(self, path) -> List[Tuple[str, minidom.Document]]:
+    def load(self, path) -> list[tuple[str, minidom.Document]]:
         return self._fetch_articles(path)
 
     def _extract_text(self, node):
@@ -90,7 +91,7 @@ class XMLPreprocessor(TextPreprocessor):
 
         return XMLElement(id, xpath, node.attributes, text_content, childs)
 
-    def pre_process(self, raw_collection:List[Tuple[str, minidom.Document]], use_parallel_computing=False) -> List[XMLDocument]:
+    def pre_process(self, raw_collection:list[tuple[str, minidom.Document]], use_parallel_computing=False) -> list[XMLDocument]:
         """
         Preprocess the raw collection and return a list of TextDocument objects.
         """

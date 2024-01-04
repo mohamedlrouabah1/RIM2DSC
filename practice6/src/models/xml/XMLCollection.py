@@ -1,10 +1,10 @@
-import xml.dom.minidom as minidom
+from __future__ import annotations
 import pickle
 #import hickle as hkl
 
 from sys import stderr
 from tqdm import tqdm
-from typing import Dict, List, Tuple
+from xml.dom import minidom
 
 from models.txt.TextCollection import TextCollection
 from models.xml.XMLDocument import XMLDocument
@@ -15,14 +15,14 @@ class XMLCollection(TextCollection):
 
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
         super().__init__(path, {}, use_parallel_computing)
-        self.collection:List[XMLDocument] = []
-        self.terms_frequency:Dict[str, int] = {}
+        self.collection:list[XMLDocument] = []
+        self.terms_frequency:dict[str, int] = {}
         self.vocabulary_size = 0
         self.preprocessor = XMLPreprocessor() if preprocessor is None else preprocessor
         self.indexer = XMLIndexer() if indexer is None else indexer
         self.information_retriever = None
 
-    def load(self) -> List[Tuple[str, minidom.Document]]:
+    def load(self) -> list[tuple[str, minidom.Document]]:
         print(f"Loading collection from file {self.path} ...", file=stderr)
         self.Timer.start("load_collection")
         raw_xml_collection = self.preprocessor.load(self.path)
@@ -30,7 +30,7 @@ class XMLCollection(TextCollection):
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.", file=stderr)
         return raw_xml_collection
 
-    def preprocess(self, raw_collection:List[Tuple[str, minidom.Document]]) -> None:
+    def preprocess(self, raw_collection:list[tuple[str, minidom.Document]]) -> None:
         print("Preprocessing collection...", file=stderr)
         self.Timer.start("preprocessing")
         self.collection = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
@@ -44,7 +44,7 @@ class XMLCollection(TextCollection):
         self.Timer.stop()
         print(f"Collection indexed in {self.Timer.get_time('indexing')} seconds.", file=stderr)
 
-    def compute_stats(self) -> Dict[int]:
+    def compute_stats(self) -> dict[int]:
          # Compute collection statistics
         print("Computing collection statistics...", file=stderr)
         self.Timer.start("compute_statistics")
@@ -66,7 +66,7 @@ class XMLCollection(TextCollection):
     def _compute_avtl(self) -> float:
         return sum(doc.compute_avtl() for doc in tqdm(self.collection, desc="Computing avtl ...")) / len(self.collection)
 
-    def _compute_terms_collection_frequency(self) -> List[float]:
+    def _compute_terms_collection_frequency(self) -> list[float]:
         return [self.indexer.get_df(term) for term in self.indexer.get_vocabulary()]
 
     def _compute_nb_distinct_terms(self) -> None:
@@ -82,7 +82,7 @@ class XMLCollection(TextCollection):
         print(f"Average nb distinct terms: {self.indexer.average_nb_distinct_terms}, (XMLCollection._compute_nb_distinct_terms)", file=stderr)
 
 
-    def compute_RSV(self, query:str, type="xml") -> Dict[str, float]:
+    def compute_RSV(self, query:str, type="xml") -> dict[str, float]:
         """
         compute the Relevant Status Value of a document for a query
         Return the result sorted by doc id then score, in reverse order)

@@ -1,8 +1,9 @@
+from __future__ import annotations
 from typing import List, Tuple
 
 class PageRank():
 
-    def __init__(self, list_tag_link:List[Tuple[str, str, List[str]]]):
+    def __init__(self, list_tag_link:list[tuple[str, str, list[str]]]):
         """
         create the graph of links from a list of tag links.
         Params:
@@ -10,8 +11,8 @@ class PageRank():
         list_tag_link: (list[Tuple[str, str, list[str]]])
             list of tuples (doc_id, reffered_doc_id, anchor_tokens)
         """
-        self.graph = dict()
-        for doc_id, referred_doc_id, _ in list_tag_link:
+        self.graph = {}
+        for doc_id, referred_doc_id, _ in list_tag_link.values():
             if doc_id not in self.graph:
                 self.graph[doc_id] = []
             self.graph[doc_id].append(referred_doc_id)
@@ -33,7 +34,7 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
         - dict: A dictionary containing PageRank scores for each page in the input graph.
         """
 
-        # Initialization of PageRank scors
+        # Initialization of PageRank scores
         pr = {page: 1 / len(self.graph) for page in self.graph}
 
         for _ in range(max_iterations):

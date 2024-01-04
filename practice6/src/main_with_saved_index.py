@@ -33,14 +33,14 @@ def main():
         collection.information_retriever = ranking_function
         launch_run(collection, queries, pickle_file, "smart_ltc", [])
 
-        for slope in [0.1, 0.2, 0.3, 0.4, 0.5]:
+        for slope in (0.1, 0.2, 0.3, 0.4, 0.5):
             ranking_function = SMART_lnu(N=len(collection), slope=slope)
             collection.information_retriever = ranking_function
             launch_run(collection, queries, pickle_file, "smart_lnu", [f"slope{slope}"])
 
 
-        for k1 in [1.2, 1.7, 2.2, 3.7]:
-            for b in [0.5, 0.75, 0.9]:
+        for k1 in (1.2, 1.7, 2.2, 3.7):
+            for b in (0.5, 0.75, 0.9):
                 ranking_function = BM25(
                     N=len(collection),
                     avdl=collection.get_avdl(),

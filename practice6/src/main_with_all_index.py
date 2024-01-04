@@ -25,13 +25,13 @@ def main():
     args.generate_index = True
 
 
-    for granularity in [["article", "title", "bdy", "p"]]: # ["element"],
+    for granularity in (["article", "title", "bdy", "p"]): # ["element"],
         XMLDocument.granularity = granularity
 
-        for stopword in [True]: # False
+        for stopword in (True): # False
             args.stopword = stopword
 
-            for stemmer in ["porter"]: # "None",
+            for stemmer in ("porter"): # "None",
                 args.stemmer = stemmer
 
                 collection = None # free memory
@@ -50,15 +50,15 @@ def main():
                 collection.information_retriever = ranking_function
                 launch_run(collection, queries, index_path, "smart_ltc", [])
 
-                for slope in [0.1, 0.2, 0.3, 0.4, 0.5]:
+                for slope in (0.1, 0.2, 0.3, 0.4, 0.5):
                     ranking_function = SMART_lnu(N=len(collection), slope=slope)
                     collection.information_retriever = ranking_function
                     launch_run(collection, queries, index_path, "smart_lnu", [f"slope{slope}"])
 
-                for alpha_article in [ 0.5, 1]:
-                    for alpha_title in [2, 4, 5]:
-                        for alpha_bdy in [1.75, 2.86]:
-                            for alpha_p in [0.15, 5.67]:
+                for alpha_article in (0.5, 1):
+                    for alpha_title in (2, 4, 5):
+                        for alpha_bdy in (1.75, 2.86):
+                            for alpha_p in (0.15, 5.67):
 
                                 XMLDocument.granularity_weights = {
                                     "article" : alpha_article,
@@ -66,8 +66,8 @@ def main():
                                     "bdy" : alpha_bdy,
                                     "p" : alpha_p,
                                 }
-                                for k1 in [1.2]: # , 1.7, 2.2, 3.7
-                                    for b in [0.75]: # 0.5, , 0.9
+                                for k1 in (1.2): # , 1.7, 2.2, 3.7
+                                    for b in (0.75): # 0.5, , 0.9
                                         tmp = {
                                             #"bm25" : BM25,
                                             "bm25fw" : BM25Fw,

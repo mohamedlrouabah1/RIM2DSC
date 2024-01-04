@@ -1,6 +1,6 @@
+from __future__ import annotations
 from sys import stderr
 from tqdm import tqdm
-from typing import List
 
 from models.concepts.InformationRessource import InformationRessource
 from models.txt.TextIndexer import TextIndexer
@@ -27,7 +27,7 @@ class XMLIndexer(TextIndexer):
             self._index_fields(field)
 
 
-    def index(self, xml_documents:List[XMLDocument], use_parallel_computing=False) -> None:
+    def index(self, xml_documents:list[XMLDocument], use_parallel_computing=False) -> None:
         for xml_doc in tqdm(xml_documents, desc=f"Indexing XML documents", file=stderr):
             self._index_fields(xml_doc.content)
 

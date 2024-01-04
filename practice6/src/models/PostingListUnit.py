@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 class PostingListUnit:
     """
     Define what a posing list cell stored.

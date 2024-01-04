@@ -1,4 +1,4 @@
-from typing import Dict
+from __future__ import annotations
 from models.PostingListUnit import PostingListUnit
 
 class PostingList:
@@ -7,7 +7,7 @@ class PostingList:
     """
     def __init__(self, term:str):
         self.term = term
-        self.postings: Dict(PostingListUnit) = {}
+        self.postings: dict(PostingListUnit) = {}
         self.document_frequency = 0
         self.total_frequency = 0
         self.doc_ids = set()

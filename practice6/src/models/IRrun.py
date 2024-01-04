@@ -76,7 +76,7 @@ class IRrun:
         try:
             if verbose: print(f"Saving run file to {self.file_path}...")
 
-            with open(self.file_path, "w") as f:
+            with open(self.file_path, "w", encoding="utf-8") as f:
                 f.write(self.run_as_str)
 
             if verbose: print("Done.")
@@ -90,14 +90,14 @@ class IRrun:
 
     def load_last_id(self) -> int:
         if os.path.exists(IRrun.ID_FILE_PATH):
-            with open(IRrun.ID_FILE_PATH, "r") as file:
+            with open(IRrun.ID_FILE_PATH, "r", encoding="utf-8") as file:
                 last_id = int(file.read())
             return last_id
 
         return 0
 
     def save_last_id(self, last_id):
-        with open(IRrun.ID_FILE_PATH, "w") as file:
+        with open(IRrun.ID_FILE_PATH, "w", encoding="utf-8") as file:
             file.write(str(last_id))
 
 

@@ -45,7 +45,7 @@ class TestBM25:
             query = data.get_test_query()
             collection = data.get_test_collection()
             collection.set_ranking_function(bm25)
-            scores = collection.RSV(query)
+            scores = collection.compute_RSV(query)
 
             for doc in collection.documents:
                 _, computed_score = scores[doc.id]

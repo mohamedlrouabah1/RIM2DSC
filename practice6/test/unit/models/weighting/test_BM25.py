@@ -37,20 +37,20 @@ class TestBM25:
                 expected_weight = result_weight[doc_id]
                 assert  computed_weight == approx(expected_weight, abs=data.APPROX), f"Term: {term}, Doc_id: {doc_id}, tf: {tf}, df: {df}, dl: {dl}, Expected: {expected_weight}, Actual: {computed_weight}"
 
-    def test_compute_score(self):
+    def test_compute_score(self, all=False):
         assert True
-        return # for now skip this test bc it's more an integration test than unit and can fail bc of dependencues btwn classes
-        bm25 = TestBM25.bm25
-        data = TestBM25.data
-        query = data.get_test_query()
-        collection = data.get_test_collection()
-        collection.set_ranking_function(bm25)
-        scores = collection.RSV(query)
+        if all: # for now skip this test bc it's more an integration test than unit and can fail bc of dependencues btwn classes
+            bm25 = TestBM25.bm25
+            data = TestBM25.data
+            query = data.get_test_query()
+            collection = data.get_test_collection()
+            collection.set_ranking_function(bm25)
+            scores = collection.RSV(query)
 
-        for doc in collection.documents:
-            _, computed_score = scores[doc.id]
-            expected_score = data.RSV_bm25[doc.id]
-            assert computed_score == expected_score, f"scores: {scores}, doc: {doc}, expected: {expected_score}, actual: {computed_score}"
+            for doc in collection.documents:
+                _, computed_score = scores[doc.id]
+                expected_score = data.RSV_bm25[doc.id]
+                assert computed_score == expected_score, f"scores: {scores}, doc: {doc}, expected: {expected_score}, actual: {computed_score}"
 
 
     def test_compute_fixed_weight(self):

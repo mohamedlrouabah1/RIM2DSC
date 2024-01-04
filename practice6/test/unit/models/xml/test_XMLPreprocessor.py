@@ -51,9 +51,10 @@ class TestXMLPreprocessor(unittest.TestCase):
         root = dom.documentElement
 
         xml_element = self.xml_preprocessor._browse(root, "", "doc_id")
+        id, xpath = xml_element.id.split(":")
 
-        self.assertEqual(xml_element.id, "doc_id")
-        self.assertEqual(xml_element.xpath, "/root")
+        self.assertEqual(id, "doc_id")
+        self.assertEqual(xpath, "/article[1]")
         self.assertEqual(xml_element.text_content, ["Text 1", "Text 2"])
         self.assertEqual(len(xml_element.childs), 2)
 

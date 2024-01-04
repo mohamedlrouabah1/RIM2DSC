@@ -29,7 +29,7 @@ jobs:
     
     - name: Analysing the code with pylint
       run: |
-        export PATH="$PATH:./practice${{ env.NUM_TP }}/src/"
+        python3 practice6/test/conftest.py
         pylint --rcfile=.pylintrc $(git ls-files '*.py')
     
     - name: Run tests and generate code coverage report

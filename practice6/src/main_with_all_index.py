@@ -16,7 +16,8 @@ class ARGS :
     def __init__(self) -> None:
         pass
 
-
+# because pylint doesn't handle well polymorphism
+# pylint: disable=R0204
 def main():
     args = ARGS()
     args.tokenizer = "nltk"

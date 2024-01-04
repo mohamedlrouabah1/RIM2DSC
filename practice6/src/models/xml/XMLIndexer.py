@@ -27,8 +27,8 @@ class XMLIndexer(TextIndexer):
             self._index_fields(field)
 
 
-    def index(self, xml_documents:list[XMLDocument], use_parallel_computing=False) -> None:
-        for xml_doc in tqdm(xml_documents, desc=f"Indexing XML documents", file=stderr):
+    def index(self, docs:list[XMLDocument], use_parallel_computing=False) -> None:
+        for xml_doc in tqdm(docs, desc='Indexing XML documents', file=stderr):
             self._index_fields(xml_doc.content)
 
         if self.index_anchors:
@@ -37,7 +37,7 @@ class XMLIndexer(TextIndexer):
 
     def _index_anchors(self) -> None:
         for link in tqdm(XMLPreprocessor.anchors, desc="Indexing anchors", file=stderr):
-            _, id, anchor = link
-            self._index_text(InformationRessource(id, anchor))
+            _, reffered_doc_id, anchor = link
+            self._index_text(InformationRessource(id, reffered_doc_id, anchor))
 
         #XMLPreprocessor.links_node = None # maybe we will use it elsewhere

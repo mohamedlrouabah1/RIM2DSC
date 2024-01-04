@@ -25,6 +25,8 @@ class InformationRessource(ABC):
         s += self.content.__repr__()
         s += "<"*50 + "\n"
 
+        return s
+
     def get_id(self) -> int:
         return self.id
 

@@ -1,3 +1,5 @@
+from typing import List
+
 from models.concepts.InformationRessource import InformationRessource
 from models.xml.XMLElement import XMLElement
 
@@ -21,10 +23,10 @@ class XMLDocument(InformationRessource):
     def __str__(self) -> str:
         return f"XMLDocument {self.id} :\n {self.content.__str__()}"
 
-    def get_text_content(self) -> list[str]:
+    def get_text_content(self) -> List[str]:
         return self.content.get_text_content()
 
-    def get_xml_element_list(self) -> list[XMLElement]:
+    def get_xml_element_list(self) -> List[XMLElement]:
         return self.content.get_xml_element_list()
 
     def compute_avtl(self) -> float:

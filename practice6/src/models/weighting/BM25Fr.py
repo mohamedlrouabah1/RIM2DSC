@@ -1,8 +1,10 @@
+from typing import Dict
+
 from models.weighting.BM25 import BM25
 from models.xml.XMLDocument import XMLDocument
 
 class BM25Fr(BM25):
-    def compute_scores(self, documents, query, indexer) -> dict[str, float]:
+    def compute_scores(self, documents, query, indexer) -> Dict[str, float]:
         """
         We ponderate BM25 term frequency according to weigh define in
         the XMLDocument.granularity_weights dictionary : dict[tag] = weight.

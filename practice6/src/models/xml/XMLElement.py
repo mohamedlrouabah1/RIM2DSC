@@ -1,7 +1,8 @@
+from typing import Dict, List
 from models.concepts.InformationRessource import InformationRessource
 class XMLElement(InformationRessource):
 
-    def __init__(self, id:str, xpath:str, attributes:dict, text_content:list[str], childs:dict[str,'XMLElement']):
+    def __init__(self, id:str, xpath:str, attributes:Dict, text_content:List[str], childs:Dict[str,'XMLElement']):
         super().__init__(f'{id}:{xpath}', text_content)
         self.attributes = attributes
         self.childs = childs
@@ -34,7 +35,7 @@ class XMLElement(InformationRessource):
         for child in self.childs:
             yield child
 
-    def get_text_content(self) -> list[str]:
+    def get_text_content(self) -> List[str]:
         tokens = []
         if self.childs :
             for child in self.childs.values():
@@ -43,7 +44,7 @@ class XMLElement(InformationRessource):
         tokens += self.content
         return tokens
 
-    def get_xml_element_list(self) -> list['XMLElement']:
+    def get_xml_element_list(self) -> List['XMLElement']:
         elements = [self]
         if len(self.childs) > 0 :
             for child in self.childs.values():

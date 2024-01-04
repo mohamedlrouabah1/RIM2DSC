@@ -1,5 +1,6 @@
 import os
-from sys import stderr
+from typing import List, Tuple
+
 from models.xml.XMLDocument import XMLDocument
 
 class IRrun:
@@ -12,7 +13,7 @@ class IRrun:
     delimiter = "-" * 80
     top_n = 10
 
-    def __init__(self, weighting_function_name:str, stop:list[str], stem:str, params:dict) -> None:
+    def __init__(self, weighting_function_name:str, stop:List[str], stem:str, params:dict) -> None:
         """
         the filename of your runs should be named using the following template:
         TeamName_Run-Id_WeigthingFunction_Granularity_Stop_Stem_Parameters.txt
@@ -114,7 +115,7 @@ class IRrun:
 
         return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{granularity}_{stop}_{stem}_{params}.txt"
 
-    def _delOverlappingXMLElement(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
+    def _delOverlappingXMLElement(self, ranking:List[Tuple[str, float]]) -> List[Tuple[str, float]]:
         """
         Remove overlapping rankings from a run result list.
 
@@ -143,7 +144,7 @@ class IRrun:
         return run_lines
 
 
-    def _extractBestScores(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
+    def _extractBestScores(self, ranking:List[Tuple[str, float]]) -> List[Tuple[str, float]]:
         """
         Extract the best scores from a run result list.
 
@@ -157,7 +158,7 @@ class IRrun:
         return ranking[:IRrun.NB_RANKING]
 
 
-    def _delIntertwinedResults(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
+    def _delIntertwinedResults(self, ranking:List[Tuple[str, float]]) -> List[Tuple[str, float]]:
         """
         Remove intertwined results from a run result list.
 

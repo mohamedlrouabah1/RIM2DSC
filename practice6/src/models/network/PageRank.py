@@ -1,11 +1,13 @@
+from typing import List, Tuple
+
 class PageRank():
 
-    def __init__(self, list_tag_link:list[str, str, list[str]]):
+    def __init__(self, list_tag_link:List[Tuple[str, str, List[str]]]):
         """
         create the graph of links from a list of tag links.
         Params:
         -------
-        list_tag_link: (list[str, str, list[str]])
+        list_tag_link: (list[Tuple[str, str, list[str]]])
             list of tuples (doc_id, reffered_doc_id, anchor_tokens)
         """
         self.graph = dict()

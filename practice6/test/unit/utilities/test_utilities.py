@@ -5,6 +5,8 @@ from models.txt.TextCollection import TextCollection
 from models.xml.XMLCollection import XMLCollection
 from utilities.utilities import create_or_load_collection, load_queries_from_csv, launch_run
 
+SAVE_FOLDER = COLLECTION_NAME = DATA_PRACTICE_5 = ""
+
 class ARGS :
     """A class to store some attributes"""
     def __init__(self) -> None:

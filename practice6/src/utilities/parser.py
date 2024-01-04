@@ -106,5 +106,13 @@ def parse_command_line_arguments() -> argparse.Namespace:
         default=None,
         help="Perform gradient descent on the given parameter."
         )
+    
+    # ======= link arguments =======
+    parser.add_argument(
+        "-a", "--anchors",
+        action="store_true",
+        default=False,
+        help="Index anchors."
+        )
 
     return parser.parse_args()

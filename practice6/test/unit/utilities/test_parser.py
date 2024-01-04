@@ -41,7 +41,7 @@ class TestParser(unittest.TestCase):
 
         try:
             with self.assertRaises(SystemExit):
-                args = parse_command_line_arguments()
+                parse_command_line_arguments()
 
         finally:
             sys.argv = saved_argv

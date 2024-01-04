@@ -33,7 +33,7 @@ class IRrun:
         self.file_path = self._create_file_path(weighting_function_name, stop, stem, params)
         self.run_as_str = ""
 
-        if weighting_function_name == "bm25fw" or weighting_function_name == "bm25fr":
+        if weighting_function_name in ("bm25fw", "bm25fr"):
             self.run_type = 'article'
         else:
             self.run_type = 'element'
@@ -48,7 +48,7 @@ class IRrun:
             print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')}")
             print(f"Query preprocessed: {query}\n{self.delimiter}")
 
-            print(f"Ranking documents...")
+            print('Ranking documents...')
             collection.Timer.start(f"query{id:02d}_ranking")
             ranking = collection.compute_RSV(query)
             collection.Timer.stop()
@@ -79,7 +79,7 @@ class IRrun:
             with open(self.file_path, "w", encoding="utf-8") as f:
                 f.write(self.run_as_str)
 
-            if verbose: print("Done.")
+            if verbose: print('Done.')
 
             return True
 
@@ -108,7 +108,7 @@ class IRrun:
         stop = f"stop{IRrun.STOPLIST_SIZE}" if stop else "nostop"
         stem = stem if stem else "nostem"
         params = '_'.join(params)
-        if weighting_function in ["bm25fw", "bm25fr"]:
+        if weighting_function in ("bm25fw", "bm25fr"):
             for tag, alpha in XMLDocument.granularity_weights.items():
                 params += f"_alpha{tag}{alpha}"
         granularity = '_'.join(XMLDocument.granularity)
@@ -184,7 +184,7 @@ class IRrun:
         self.run_as_str += result_line
 
     def _debugDisplayTopN(self, ranking:list[tuple[str, float]], top_n:int=10):
-        print(f"Ranking results:")
+        print("Ranking results:")
         for i, (doc_id, score) in enumerate(ranking[:top_n]):
             print(f"#{i+1} - Document {doc_id} with score {score}")
         print(self.delimiter)

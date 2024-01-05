@@ -50,3 +50,8 @@ class XMLElement(InformationRessource):
             for child in self.childs.values():
                 elements += child.get_xml_element_list()
         return elements
+
+    def _del_tokens_list(self):
+        self.content = []
+        for child in self.childs.values():
+            child._del_tokens_list()

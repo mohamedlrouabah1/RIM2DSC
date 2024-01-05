@@ -10,7 +10,7 @@ from models.xml.XMLPreprocessor import XMLPreprocessor
 from models.IRrun import IRrun
 
 
-def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
+def create_or_load_collection(args, col_type="xml", save=True) -> TextCollection:
     """
     Check if the index based on the given arguments already exists.
     If it does, load it. Otherwise, create it.
@@ -35,7 +35,7 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
         print(f"Index file {index_path} does not exist.", file=stderr)
 
     # Second we create the TextPreProcessor object
-    if type == "xml":
+    if col_type == "xml":
         preprocessor = XMLPreprocessor(
             exclude_stopwords=args.stopword,
             exclude_digits=args.stopword,
@@ -54,8 +54,11 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
 
     # Finnally Do we need to compute the indexed Collection ?
     if args.generate_index or not is_existing_index:
-        if type == "xml":
+        if col_type == "xml":
             index = XMLIndexer()
+            if args.anchors :
+                XMLIndexer.index_anchors = True
+
             collection = XMLCollection(
                 path=DATA_PRACTICE_5,
                 indexer=index,
@@ -80,7 +83,7 @@ def create_or_load_collection(args, type="xml", save=True) -> TextCollection:
         collection.index_path = index_path
 
     else:
-        if type == "xml":
+        if col_type == "xml":
             print(f"deserialize {index_path}", file=stderr)
             collection = XMLCollection.deserialize(index_path)
         else:
@@ -100,7 +103,7 @@ def load_queries_from_csv(path:str) -> list:
     queries = []
 
     try:
-       with open(path, "r") as file:
+       with open(path, "r", encoding="utf-8") as file:
             queries = [line.strip().split(',') for line in file]
 
     except FileNotFoundError:
@@ -109,7 +112,7 @@ def load_queries_from_csv(path:str) -> list:
     return queries
 
 
-def launch_run(collection:XMLCollection, queries:list, file_name, a_ranking, a_params) -> None:
+def launch_run(collection:XMLCollection, queries:list, file_name:str, a_ranking, a_params, pagerank:dict=None) -> None:
     # get info from collection save file name
     tmp = file_name.split('_')
     a_stopword = tmp[2]
@@ -117,6 +120,6 @@ def launch_run(collection:XMLCollection, queries:list, file_name, a_ranking, a_p
 
     # To create run result files
     print("Instanciate IRun class ...", file=stderr)
-    run = IRrun(a_ranking, a_stopword, a_stemmer, a_params)
-    run.ranking(collection, queries)
+    run = IRrun(a_ranking, a_stopword, a_stemmer, ["anchors_"]+a_params)
+    run.ranking(collection, queries, pagerank)
     run.save_run(verbose=True)

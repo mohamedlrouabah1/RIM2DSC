@@ -40,7 +40,7 @@ class XMLPreprocessor(TextPreprocessor):
     def load(self, path) -> list[tuple[str, minidom.Document]]:
         return self._fetch_articles(path)
 
-    def _extract_text(self, node):
+    def _extract_text(self, node, doc_id):
         """
         Extract recursively the text content of all children tags of a tag.
         Args:
@@ -53,7 +53,20 @@ class XMLPreprocessor(TextPreprocessor):
 
         if node.nodeType == minidom.Node.ELEMENT_NODE:
             for child_node in node.childNodes:
-                text += self._extract_text(child_node)
+                text += self._extract_text(child_node, doc_id)
+
+                if  child_node.nodeType == minidom.Node.ELEMENT_NODE and child_node.tagName == "link":
+                    # we extract the text content from the tree
+                    raw_str = self._extract_text(child_node, doc_id)
+                    if (raw_str := raw_str.strip()):
+                        anchor_tokens = self._text_preprocessing(raw_str)
+                    else:
+                        print("anchor_tokens empty")
+                        anchor_tokens = []
+
+                    referred_doc_id = child_node.getAttribute('xlink:href').split('/')[-1].split('.')[0]
+                    referred_doc_id  =  f'{referred_doc_id}:/article[1]'
+                    XMLPreprocessor.anchors += [(doc_id, referred_doc_id, anchor_tokens)]
 
         elif node.nodeType == minidom.Node.TEXT_NODE:
             text += node.nodeValue.strip()
@@ -74,17 +87,23 @@ class XMLPreprocessor(TextPreprocessor):
 
                 else:
                     # we extract the text content from the tree
-                    raw_str = self._extract_text(child_node)
+                    raw_str = self._extract_text(child_node, doc_id)
                     if (raw_str := raw_str.strip()):
                         text_content += self._text_preprocessing(raw_str)
 
                 if child_node.tagName == "link":
-                    if (anchor := child_node.firstChild.nodeValue.strip()):
-                        text_content += self._text_preprocessing(anchor)
-                        referred_doc_id = child_node.getAttribute('xlink:href').split('/')[-1].split('.')[0]
-                        referred_doc_id  =  f'{referred_doc_id}:/link'
-                        XMLPreprocessor.anchors += [(doc_id, referred_doc_id, anchor)]
+                    # we extract the text content from the tree
+                    raw_str = self._extract_text(child_node, doc_id)
+                    if (raw_str := raw_str.strip()):
+                        anchor_tokens = self._text_preprocessing(raw_str)
+                        text_content += anchor_tokens
+                    else:
+                        print("anchor_tokens empty")
+                        anchor_tokens = []
 
+                    referred_doc_id = child_node.getAttribute('xlink:href').split('/')[-1].split('.')[0]
+                    referred_doc_id  =  f'{referred_doc_id}:/article[1]'
+                    XMLPreprocessor.anchors += [(doc_id, referred_doc_id, anchor_tokens)]
 
            elif child_node.nodeType == minidom.Node.TEXT_NODE:
                if (raw_text := child_node.nodeValue.strip()):

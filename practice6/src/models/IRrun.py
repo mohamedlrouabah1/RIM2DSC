@@ -1,6 +1,7 @@
 from __future__ import annotations
 import os
 
+from models.network.PageRank import PageRank
 from models.xml.XMLDocument import XMLDocument
 
 class IRrun:
@@ -38,7 +39,7 @@ class IRrun:
         else:
             self.run_type = 'element'
 
-    def ranking(self, collection, queries) :
+    def ranking(self, collection, queries, pagerank:dict[str, float]=None) :
         for query_id, query in queries:
             query_id = int(query_id)
             print(f"Query: {query}")
@@ -54,6 +55,21 @@ class IRrun:
             collection.Timer.stop()
             print(f"Documents ranked in {collection.Timer.get_time(f'query{query_id:02d}_ranking')}\n{self.delimiter}")
             print()
+
+            if pagerank:
+                print('Ponderate ranking with pagerank...')
+                collection.Timer.start(f"query{query_id:02d}_pagerank")
+                tmp = []
+                for xpath, score in ranking:
+                    doc_id = xpath.split(':')[0]
+                    if doc_id in pagerank:
+                        tmp.append((xpath, score * pagerank[doc_id]))
+                    else:
+                        tmp.append((xpath, score * PageRank.default))
+                ranking = tmp
+                collection.Timer.stop()
+                print(f"Scores ponderated with pagerank in {collection.Timer.get_time(f'query{query_id:02d}_pagerank')}\n{self.delimiter}")
+                print()
 
             if self.run_type == 'element':
                 ranking = self._delOverlappingXMLElement(ranking)

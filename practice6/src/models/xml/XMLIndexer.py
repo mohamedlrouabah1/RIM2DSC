@@ -10,15 +10,10 @@ from models.xml.XMLPreprocessor import XMLPreprocessor
 
 class XMLIndexer(TextIndexer):
 
-    def __init__(self, index_anchors=False):
-        super().__init__()
-        self.index_anchors = index_anchors
+    index_anchors = False
 
     def _index_fields(self, xml_element:XMLElement) -> None:
         self._index_text(xml_element, content=xml_element.get_text_content())
-        # after indexing we don't need to keep the tokens in memory
-        xml_element.content = None
-
 
         if not hasattr(xml_element, "childs"):
             return
@@ -31,13 +26,14 @@ class XMLIndexer(TextIndexer):
         for xml_doc in tqdm(docs, desc='Indexing XML documents', file=stderr):
             self._index_fields(xml_doc.content)
 
-        if self.index_anchors:
+        if XMLIndexer.index_anchors:
             self._index_anchors()
 
 
     def _index_anchors(self) -> None:
         for link in tqdm(XMLPreprocessor.anchors, desc="Indexing anchors", file=stderr):
             _, reffered_doc_id, anchor = link
-            self._index_text(InformationRessource(reffered_doc_id, anchor))
+            if anchor:
+                self._index_text(InformationRessource(reffered_doc_id, anchor))
 
         #XMLPreprocessor.links_node = None # maybe we will use it elsewhere

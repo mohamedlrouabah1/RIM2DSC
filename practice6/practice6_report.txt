@@ -28,18 +28,42 @@ models.IRun.
 - ajout de test unitaires pour l'ensemble des classes du projet
 - ajout d'intégration continue utilisant les workflow github : pylint, pytest, coverage
 - test coverage de 35% selon le module python coverage
-- note pylint de 9.37/10 pour le code du projet
-- TP6 ex1,2 déjà fait dans le rendus précédent donc pas refait
+- note pylint de 9.40/10 pour le code du projet
+- TP6 ex1,2 fait dans le rendus précédent donc pas refait
 - TP6 ex3  run 1-19 avec la correction apportée au tri des résultats
-- TP6 ex4  : BM25Fw et BM25Fr run ...
+- TP6 ex4  : BM25Fw et BM25Fr run 20-67
+- récupération des balises link de la collection et indexation des ancres de
+  ces liens en fonction de l'id de l'article cible (attribut xlink:href)
+- les liens sont récupérés dans une variable de classe XMLPreprocessor.anchors
+  en tant que liste (id, id_cible, list_tokens_ancre)
+- ensuite l'indexer va indexer les ancre dans la posting list de l'élément xml
+  doc_cible:/article[1] (i.e on l'ajoute au contenu de l'article cible)
+- TP6 ex6 : runs 601-655
+- réalisation de l'algorithme pagerank :
+  - création du graphe de la collection
+    sous forme de dictionnaire de la forme {id_article : [id_article_cible1, id_article_cible2, ...]}
+  - initialisation des rang des document à 1/nb_docs
+  - à chaque itération on calcule le nouveau rang de chaque document en fonction de la formule
+    du pagerank : chaque lien dans un document d1 vers un document d2 augment le rang du document d2
+    de pagerank(d1)/nb_liens(d1).
+  - On a aussi un paramètre d qui représente la probabilité qu'un utilisateur clique sur un lien
+    au hasard, qui pondère la valeur calculé précédement. On l'a fixé à 0.85 qui est la valeur par défaut recommandé
+    sur la page wikipédia du pagerank.
+  - ensuite pour savoir quand s'arrêté on a fixé un seuil de convergence à 0.0001, qui est utilisé lors de la comparaison
+    du pagerank calculé avec celui calculé à l'itération précédente.
+  - Et enfin on va normaliser les valeurs obtenus pour chaque pagerank des documents par un facteur de 1/nb(pagerank)
+- Ensuite pondération des résultats de run article[1] par le pagerank de chaque article (i.e res = RSV * pr)
+- TP6 ex5 : runs
+
 
 ## Quelques chiffres :
 
 - exploration de 3,457,522 xpath dans la collection pour le ranking
 - temps moyen du preprocessing : 3min
-- temps moyen de l'indexing : 4min (2 min si on utilise une stop-liste)
+- temps moyen de l'indexing : 4min avec un run indecant tous les éléments (2 min si on utilise une stop-liste,  et 22s en faisant des run article[1])
 - taille moyenne des index sauvegardé (avec qq stats) : 3,3Go
-- temps de ranking de 26s
+- temps de ranking de +- 50ms
+- Nombre d'ancre trouvés (après pre-processing) : 794 795
 
 
 ## Exemple de statistiques pour une de nos collections :

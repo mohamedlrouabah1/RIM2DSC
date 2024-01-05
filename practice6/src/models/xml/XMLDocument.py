@@ -14,8 +14,8 @@ class XMLDocument(InformationRessource):
     def set_granularity(cls, granularity:str):
         cls.granularity = granularity
 
-    def __init__(self, id:int, dom:XMLElement):
-        super().__init__(id, dom)
+    def __init__(self, doc_id:int, dom:XMLElement):
+        super().__init__(doc_id, dom)
 
     def __len__(self) -> int:
         return len(self.content)
@@ -33,3 +33,6 @@ class XMLDocument(InformationRessource):
         tokens = self.get_text_content()
         num = sum(len(t) for t in tokens)
         return num / len(tokens)
+
+    def del_tokens_list(self):
+        self.content._del_tokens_list()

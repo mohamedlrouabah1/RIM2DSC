@@ -1,10 +1,12 @@
 import sys
 import nltk
 from tqdm import tqdm
+from models.network.PageRank import PageRank
 from models.weighting.BM25 import BM25
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
 from models.weighting.SMART_lnu import SMART_lnu
+from models.xml.XMLPreprocessor import XMLPreprocessor
 from utilities.config import RECURSION_LIM
 from utilities.parser import parse_command_line_arguments
 from utilities.utilities import create_or_load_collection, load_queries_from_csv, launch_run
@@ -41,8 +43,16 @@ def main() -> None:
     print("Loading queries...", file=sys.stderr)
     queries = load_queries_from_csv(args.queries_file_path)
 
+    # If we want to use pagerank
+    if args.pagerank:
+        pagerank = PageRank(XMLPreprocessor.anchors)
+        pr:dict[str, float] = pagerank.pagerank()
+        pagerank , XMLPreprocessor.anchors = None, []
+    else:
+        pagerank = None
+
     # To create run result files
-    launch_run(collection, queries, args.index_path, args.ranking, params)
+    launch_run(collection, queries, args.index_path, args.ranking, params, pr)
 
 
 if __name__ == "__main__":

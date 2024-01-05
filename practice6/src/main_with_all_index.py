@@ -7,13 +7,13 @@ from models.weighting.BM25Fr import BM25Fr
 from models.weighting.SMART_ltc import SMART_ltc
 from models.weighting.SMART_ltn import SMART_ltn
 from models.weighting.SMART_lnu import SMART_lnu
-from models.xml.XMLIndexer import XMLIndexer
+from models.xml.XMLPreprocessor import XMLPreprocessor
+from models.network.PageRank import PageRank
 from utilities.utilities import load_queries_from_csv, create_or_load_collection, launch_run
 
 DIR_SAVE='../../saves'
 DIR_Q='../queries.csv'
 
-XMLIndexer.index_anchors = True
 class ARGS :
     def __init__(self) -> None:
         pass
@@ -26,9 +26,11 @@ def main():
     args.lemmer = True
     args.parallel_computing = False
     args.generate_index = True
+    args.pagerank = True
+    args.anchors = False
 
 
-    for granularity in (["element"]): #(["article", "title", "bdy", "p"]): # ["element"],
+    for granularity in [["article"]]: #(): # ["element"], , "title", "bdy", "p"
         XMLDocument.granularity = granularity
 
         for stopword in [True]: # False
@@ -38,25 +40,31 @@ def main():
                 args.stemmer = stemmer
 
                 collection = None # free memory
-                collection = create_or_load_collection(args, type="xml", save=False)
-                index_path = f"{DIR_SAVE}/index_regex_{stopword}_nltk_{stopword}_{stemmer}_collection5.pkl"
+                collection = create_or_load_collection(args, "xml", False)
 
+                if args.pagerank:
+                    print("Computing pagerank...", file=stderr)
+                    pr = PageRank(XMLPreprocessor.anchors).pagerank()
+                else:
+                    pr = None
+
+                index_path = f"{DIR_SAVE}/index_regex_{stopword}_nltk_{stopword}_{stemmer}_collection5.pkl"
                 print("Loading queries...", file=stderr)
                 queries = load_queries_from_csv(DIR_Q)
 
                 # for each weighting function
                 ranking_function = SMART_ltn(N=len(collection))
                 collection.information_retriever = ranking_function
-                launch_run(collection, queries, index_path, "smart_ltn", [])
+                launch_run(collection, queries, index_path, "smart_ltn", [], pr)
 
                 ranking_function = SMART_ltc(N=len(collection))
                 collection.information_retriever = ranking_function
-                launch_run(collection, queries, index_path, "smart_ltc", [])
+                launch_run(collection, queries, index_path, "smart_ltc", [], pr)
 
                 for slope in (0.1, 0.2, 0.3, 0.4, 0.5):
                     ranking_function = SMART_lnu(N=len(collection), slope=slope)
                     collection.information_retriever = ranking_function
-                    launch_run(collection, queries, index_path, "smart_lnu", [f"slope{slope}"])
+                    launch_run(collection, queries, index_path, "smart_lnu", [f"slope{slope}"], pr)
 
                 for alpha_article in (0.5, 1):
                     for alpha_title in (2, 4, 5):
@@ -72,7 +80,7 @@ def main():
                                 for k1 in [1.2]: # , 1.7, 2.2, 3.7
                                     for b in [0.75]: # 0.5, , 0.9
                                         tmp = {
-                                            #"bm25" : BM25,
+                                            "bm25" : BM25,
                                             "bm25fw" : BM25Fw,
                                             "bm25fr" : BM25Fr
                                         }
@@ -83,7 +91,7 @@ def main():
                                                 avdl=collection.get_avdl(),
                                                 b=b, k1=k1
                                                 )
-                                            launch_run(collection, queries, index_path, name, [f"k{k1}", f"b{b}"])
+                                            launch_run(collection, queries, index_path, name, [f"k{k1}", f"b{b}"], pr)
 
 
 if __name__ == "__main__":

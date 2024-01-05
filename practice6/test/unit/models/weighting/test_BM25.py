@@ -1,9 +1,6 @@
 from pytest import approx
 from models.weighting.BM25 import BM25
-from models.txt.TextDocument import TextDocument
-from models.txt.TextIndexer import TextIndexer
-from models.txt.TextCollection import TextCollection
-from test.mock.TD3TestData import TD3TestData
+from mymock.TD3TestData import TD3TestData
 
 
 class TestBM25:
@@ -37,9 +34,9 @@ class TestBM25:
                 expected_weight = result_weight[doc_id]
                 assert  computed_weight == approx(expected_weight, abs=data.APPROX), f"Term: {term}, Doc_id: {doc_id}, tf: {tf}, df: {df}, dl: {dl}, Expected: {expected_weight}, Actual: {computed_weight}"
 
-    def test_compute_score(self, all=False):
+    def test_compute_score(self, launch_all=False):
         assert True
-        if all: # for now skip this test bc it's more an integration test than unit and can fail bc of dependencues btwn classes
+        if launch_all: # for now skip this test bc it's more an integration test than unit and can fail bc of dependencues btwn classes
             bm25 = TestBM25.bm25
             data = TestBM25.data
             query = data.get_test_query()

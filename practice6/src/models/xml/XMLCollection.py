@@ -2,9 +2,9 @@ from __future__ import annotations
 import pickle
 #import hickle as hkl
 
+from xml.dom import minidom
 from sys import stderr
 from tqdm import tqdm
-from xml.dom import minidom
 
 from models.txt.TextCollection import TextCollection
 from models.xml.XMLDocument import XMLDocument
@@ -36,6 +36,7 @@ class XMLCollection(TextCollection):
         self.collection = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)
         self.Timer.stop()
         print(f"Collection of {len(self.collection)} documents, preprocessed in {self.Timer.get_time('preprocessing')} seconds.", file=stderr)
+        print(f"Number of anchors list find : {len(XMLPreprocessor.anchors)}", file=stderr)
 
     def index(self) -> None:
         print("Indexing collection...", file=stderr)
@@ -60,6 +61,10 @@ class XMLCollection(TextCollection):
         self._compute_nb_distinct_terms()
         print(f"Collection statistics computed in {self.Timer.get_time('compute_statistics')} seconds.", file=stderr)
 
+        # after computing the stats, we don't need the tokens anymore
+        # for doc in tqdm(self.collection, "Remove document list token from memory ...", file=stderr):
+        #     doc.delete_tokens()
+
     def _compute_avdl(self) -> float:
         return sum(len(d) for d in self.collection) / len(self.collection)
 
@@ -82,12 +87,12 @@ class XMLCollection(TextCollection):
         print(f"Average nb distinct terms: {self.indexer.average_nb_distinct_terms}, (XMLCollection._compute_nb_distinct_terms)", file=stderr)
 
 
-    def compute_RSV(self, query:str, type="xml") -> dict[str, float]:
+    def compute_RSV(self, query:str, col_type="xml") -> list[str, float]:
         """
         compute the Relevant Status Value of a document for a query
         Return the result sorted by doc id then score, in reverse order)
         """
-        if type == "xml":
+        if col_type == "xml":
             collection = []
             for doc_xml in tqdm(self.collection, desc="Extracting XML elements from documents ...."):
                 collection  += doc_xml.get_xml_element_list()

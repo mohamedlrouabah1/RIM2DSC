@@ -8,7 +8,7 @@ uml_diagrams/*.bkp
 saves_tp*/*
 **/results/
 **/saves/
-out.txt
+out*.txt
 **/results*/
 **/saves*/
 

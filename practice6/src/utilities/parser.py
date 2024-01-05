@@ -2,9 +2,7 @@ import argparse
 
 def parse_command_line_arguments() -> argparse.Namespace:
     """
-    >main.py -e N
-    N: exercise number to run (1, 2, 3, 5, 7, 9)
-        default value: 9
+    Define the command line arguments for the main program.
     """
     parser = argparse.ArgumentParser(
         prog="Information Retrieval Practice",
@@ -114,5 +112,12 @@ def parse_command_line_arguments() -> argparse.Namespace:
         default=False,
         help="Index anchors."
         )
+
+    parser.add_argument(
+        "-pr", "--pagerank",
+        action="store_true",
+        default=False,
+        help="Use pagerank algorithm to ponderate documents' scores."
+    )
 
     return parser.parse_args()

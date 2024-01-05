@@ -1,6 +1,9 @@
 from __future__ import annotations
+from tqdm import tqdm
 
 class PageRank():
+
+    default = 0.1
 
     def __init__(self, list_tag_link:list[tuple[str, str, list[str]]]):
         """
@@ -11,12 +14,13 @@ class PageRank():
             list of tuples (doc_id, reffered_doc_id, anchor_tokens)
         """
         self.graph = {}
-        for _, (doc_id, referred_doc_id, _) in list_tag_link.items():
+        for link in tqdm(list_tag_link, "Creating graph of links"):
+            doc_id, referred_doc_id, _ = link
             if doc_id not in self.graph:
                 self.graph[doc_id] = []
             self.graph[doc_id].append(referred_doc_id)
 
-    def pagerank(self, d=0.85, max_iterations=100, convergence_threshold=1e-6):
+    def pagerank(self, d=0.85, max_iterations=100, convergence_threshold=1e-6) -> dict[str, float]:
         """
         Calculate PageRank scores for a given graph.
 
@@ -36,9 +40,9 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
         # Initialization of PageRank scores
         pr = {page: 1 / len(self.graph) for page in self.graph}
 
-        for _ in range(max_iterations):
+        for i in range(max_iterations):
             pr_new = {}
-            for page in self.graph:
+            for page in tqdm(self.graph, f"Computing PageRank scores, iteration {i}"):
                 # Calculate the new PageRank score
                 pr_new[page] = (1 - d) + d * sum(pr[link] / len(self.graph[link]) for link in self.graph if page in self.graph[link])
 
@@ -50,5 +54,10 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
 
         normalization_factor = 1 / sum(pr.values())
         pr = {page: score * normalization_factor for page, score in pr.items()}
+
+        # debug save the page rank value into a file
+        with open("pagerank.txt", "w", encoding="utf-8") as f:
+            for page, score in pr.items():
+                f.write(f"{page}\t{score}\n")
 
         return pr

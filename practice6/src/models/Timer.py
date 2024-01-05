@@ -1,3 +1,4 @@
+from __future__ import annotations
 from time import perf_counter_ns
 from enum import Enum
 
@@ -19,7 +20,7 @@ class Timer:
     """
     Used to store computed time in nanoseconds of the execution of a function.
     You can use the name (or an id) of the function to start and stop the timer
-    for this function. 
+    for this function.
     Then you can get the time in nanoseconds or in the desired unit using the
     TimeUnit enum.
     """
@@ -37,23 +38,17 @@ class Timer:
     def __len__(self) -> int:
         return len(self.measure)
 
-    def __str__(self) -> str:
-        print(f"Timer with {len(self)} measures")
-        for name in self.measure:
-            print(f" - {name} : {self.computation_time(name, self.default_unit)} {self.default_unit.name}")
-        
     def start(self, name, force=False) -> bool:
         if self.current is not None:
             print("A timer is already started, stop it first.")
             return False
-        
+
         if name in self.measure and not force:
             print("The name is already used, used force option to overwrite it.")
             return False
-        
+
         self.measure[name] = [perf_counter_ns()]
         self.current = name
-        pass
 
     def stop(self):
         if self.current is None:
@@ -61,13 +56,13 @@ class Timer:
         self.measure[self.current].append(perf_counter_ns())
         self.current = None
         return True
-    
+
     def get_time(self, name) -> float:
         try:
             return self.format_time(name)
         except KeyError:
             return "Not measured"
-    
+
 
     def __str__(self) -> str:
         timer_str = f"Timer with {len(self)} measures\n"
@@ -83,8 +78,7 @@ class Timer:
         milliseconds, remainder = divmod(ns, TimeUnit.MS.value)
         formatted_time = f"{hours:02d}h{minutes:02d}m{seconds:02d}s{milliseconds:03d}ms{remainder:03d}ns (total: {ns}ns)"
         return formatted_time
-    
-    
+
+
     def display_histogram(self):
         raise NotImplementedError("Not implemented yet")
-        

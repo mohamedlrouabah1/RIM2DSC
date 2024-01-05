@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from models.weighting.BM25 import BM25
 from models.xml.XMLDocument import XMLDocument
 

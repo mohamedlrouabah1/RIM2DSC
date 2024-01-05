@@ -1,7 +1,5 @@
-from sys import stderr
 from functools import lru_cache
-from math import log10, sqrt
-from models.weighting.SMART_ltn import SMART_ltn
+from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
 
 
@@ -11,6 +9,7 @@ class SMART_lnu(WeightingFunction):
         self.N = N
         self.slope = slope
 
+    @lru_cache(maxsize=1024)
     def _compute_weight(self, tf, dl_on_avdl, nt_d, den_part1) -> float:
         num = 1 + log10(tf) if tf > 0 else 0
 
@@ -37,7 +36,6 @@ class SMART_lnu(WeightingFunction):
             dl_on_avdl = len(doc) / avdl
             nt_d = indexer.nb_distinct_terms[doc.id.split(':')[0]]
             for term in query:
-                df = indexer.get_df(term)
                 tf = indexer.get_tf(term, doc.id)
                 score += self._compute_weight(tf, dl_on_avdl, nt_d, den_part1)
             scores[doc.id] = score

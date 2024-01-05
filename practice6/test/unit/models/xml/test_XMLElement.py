@@ -2,7 +2,7 @@ import unittest
 from models.xml.XMLElement import XMLElement
 
 class TestXMLElement(unittest.TestCase):
-    
+
     def setUp(self):
         # Create a sample XMLElement for testing
         attributes = {'attr1': 'value1', 'attr2': 'value2'}

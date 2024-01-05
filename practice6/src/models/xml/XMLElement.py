@@ -1,3 +1,4 @@
+from __future__ import annotations
 from models.concepts.InformationRessource import InformationRessource
 class XMLElement(InformationRessource):
 
@@ -5,6 +6,7 @@ class XMLElement(InformationRessource):
         super().__init__(f'{id}:{xpath}', text_content)
         self.attributes = attributes
         self.childs = childs
+        self.len = len(self.content) + sum(len(child) for child in self.childs)
 
     def __str__(self) -> str:
         s = f"""
@@ -19,16 +21,16 @@ class XMLElement(InformationRessource):
         s += f"{'+'*50}\n"
 
         return s
-    
+
     def __len__(self) -> int:
-        return len(self.content) + sum(len(child) for child in self.childs)
+        return self.len
 
     def get_doc_id(self) -> str:
         return self.id.split(':')[0]
 
     def get_xpath(self) -> str:
         return self.id.split(':')[1]
-    
+
     def next_child(self) -> 'XMLElement':
         for child in self.childs:
             yield child
@@ -41,10 +43,15 @@ class XMLElement(InformationRessource):
 
         tokens += self.content
         return tokens
-    
+
     def get_xml_element_list(self) -> list['XMLElement']:
         elements = [self]
         if len(self.childs) > 0 :
             for child in self.childs.values():
                 elements += child.get_xml_element_list()
         return elements
+
+    def _del_tokens_list(self):
+        self.content = []
+        for child in self.childs.values():
+            child._del_tokens_list()

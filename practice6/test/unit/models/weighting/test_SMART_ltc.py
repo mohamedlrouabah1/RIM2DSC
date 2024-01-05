@@ -1,7 +1,7 @@
 from pytest import approx
 from models.weighting.SMART_ltc import SMART_ltc
 
-from test.mock.TD3TestData import TD3TestData
+from mymock.TD3TestData import TD3TestData
 
 class TestSmartLtc:
     data = TD3TestData()
@@ -22,14 +22,14 @@ class TestSmartLtc:
         query = data.get_test_query()
         collection = data.get_test_collection()
         collection.set_ranking_function(smart_ltc)
-        scores = collection.RSV(query)
+        scores = collection.compute_RSV(query)
 
         for doc in collection.documents:
             _, computed_score = scores[doc.id]
             expected_score = data.RSV_smart_ltc[doc.id]
             assert computed_score == approx(expected_score, abs=data.APPROX), f"collection: {collection}, doc: {doc}, expected: {expected_score}, actual: {computed_score}"
 
-    
+
 
     def test_compute_weight(self):
         df_list = [10.00,25.00,10.00,24.00,250.00]

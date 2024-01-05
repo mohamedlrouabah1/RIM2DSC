@@ -1,8 +1,8 @@
 import sys
 import os
 
-# Obtenir le chemin absolu du dossier "src"
 src_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src")
+test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "mymock")
 
-# Ajouter le chemin du dossier "src" dans sys.path
 sys.path.insert(0, src_dir)
+sys.path.insert(0, test_dir)

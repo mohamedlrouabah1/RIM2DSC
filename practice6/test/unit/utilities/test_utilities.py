@@ -1,7 +1,11 @@
 import unittest
 from unittest.mock import patch
 
-from utilities.utilities import *
+from models.txt.TextCollection import TextCollection
+from models.xml.XMLCollection import XMLCollection
+from utilities.utilities import create_or_load_collection, load_queries_from_csv, launch_run
+
+SAVE_FOLDER = COLLECTION_NAME = DATA_PRACTICE_5 = ""
 
 class ARGS :
     """A class to store some attributes"""
@@ -38,7 +42,7 @@ class TestUtilities(unittest.TestCase):
     def test_load_queries_from_csv_correct_path(self):
         queries = load_queries_from_csv("data/practice_6/queries.csv")
         self.assertEqual(len(queries), 7)
-        
+
 
     def test_launch_run(self):
         self.assertIsNotNone(launch_run)

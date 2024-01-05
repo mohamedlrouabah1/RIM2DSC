@@ -1,6 +1,5 @@
-from sys import stderr
 from functools import lru_cache
-from math import log10, sqrt
+from math import sqrt
 from models.weighting.SMART_ltn import SMART_ltn
 from models.weighting.WeightingFunction import WeightingFunction
 
@@ -16,7 +15,7 @@ class SMART_ltc(WeightingFunction):
         """
         Return a dictionary of scores for each document for each query.
         The keys of the dictionary are the queries ids.
-        """        
+        """
         scores = {}
         # compute the denominator used to normalise ltn weights depending on document
         dens = {}
@@ -30,10 +29,10 @@ class SMART_ltc(WeightingFunction):
                     tf = posting_unit.frequency
                     if doc_id in dens:
                         dens[doc_id] += self.smart_ltn.compute_weight(tf, df) ** 2
-                    
+
                     else:
                         dens[doc_id] = self.smart_ltn.compute_weight(tf, df) ** 2
-       
+
         # Compute ltn for each document
         for doc in documents:
             deno, num = 0, 0
@@ -55,6 +54,7 @@ class SMART_ltc(WeightingFunction):
 
         return scores
 
+    @lru_cache(maxsize=1024)
     def _compute_weight(self, ltn_list, tf_list, index):
         """
         Param:
@@ -63,10 +63,10 @@ class SMART_ltc(WeightingFunction):
             index: list of index of the terms in the query
         """
         den, num = 0, 0
-        for i, (ltn, tf) in enumerate(zip(tf_list, ltn_list)):
+        for i, (ltn, _) in enumerate(zip(tf_list, ltn_list)):
             den += ltn ** 2
             if i in index:
                 print(f"i: {i}, w_t_d: {ltn}")
                 num += ltn
-        
+
         return num / sqrt(den)

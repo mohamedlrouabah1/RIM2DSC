@@ -1,13 +1,14 @@
+
+from __future__ import annotations
 import copyreg
 import os
 import sys
 import re
 import types
 from multiprocessing import Pool
-from typing import Any
-from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
-# from nltk.corpus import stopwords
+
 from string import punctuation
+from nltk import word_tokenize, PorterStemmer, WordNetLemmatizer
 from tqdm import tqdm
 from utilities.config import STOPWORDS_DIR
 
@@ -16,18 +17,18 @@ def _pickle_method(method):
     func_name = method.im_func.func_name
 
     if func_name.startswith('pre_'):
-        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))[0]
+        func_name = filter(lambda method_name: method_name.startswith('_') and method_name.endswith(func_name), dir(attached_object))
 
     return (getattr, (attached_object, func_name))
-        
+
 copyreg.pickle(types.MethodType, _pickle_method)
 
 class TextPreprocessor:
-    
+
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
         if exclude_stopwords:
-            with open(STOPWORDS_DIR, 'r') as f:
-                self.stopwords = set(f.read().splitlines() + list(punctuation)) 
+            with open(STOPWORDS_DIR, 'r', encoding="utf-8") as f:
+                self.stopwords = set(f.read().splitlines() + list(punctuation))
             print(f"Stopwords loaded from {STOPWORDS_DIR} with {len(self.stopwords)} words.", file=sys.stderr)
         else:
             print("Error, unnable to load stopwords.", file=sys.stderr)
@@ -50,15 +51,18 @@ class TextPreprocessor:
         else:
             self.collection_pattern = re.compile(r'<doc><docno>(.*?)</docno>(.*?)</doc>', re.DOTALL)
 
+        self.exclude_digits = exclude_digits
+        self.tokenizer_name = tokenizer
+
     def _identity(self, x):
         return x
-       
+
     def _normalize(self, w:str) -> str:
         return self.stemming(self.lemmatizing(w))
-    
+
     def _tokenize(self, w:str):
         return word_tokenize(w)
-    
+
     def _is_valid_token(self, w:str) -> bool:
         return len(w) > 2 and w.isalpha() and w not in self.stopwords
 
@@ -68,40 +72,40 @@ class TextPreprocessor:
             for token in self._tokenize(text)
             if self._is_valid_token(token)
         ]
-    
+
     def _preprocessing(self, doc_id, content):
         """Used for the parallel computing"""
         return (doc_id, self._text_preprocessing(content))
-    
+
     def load_and_lower_text_collection(self, path) -> str:
         """
         Read the document collection from a file.
         Handles both regular and gzipped files.
 
         Returns:
-            str: the document collection as a lowered 
+            str: the document collection as a lowered
                  string
         """
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding="utf-8") as f:
             document_collection_str = f.read().lower()
         return document_collection_str
 
-    def pre_process(self, data, use_parallel_computing=False):
+    def pre_process(self, raw_collection, use_parallel_computing=False):
         # use_parallel_computing = False # For now bc pbm with pickle instance of this class
         if not use_parallel_computing :
             return [
                 (doc_id, self._text_preprocessing(content))
-                for doc_id, content in tqdm(self.collection_pattern.findall(data), 
-                                            desc="Preprocessing contents...", 
+                for doc_id, content in tqdm(self.collection_pattern.findall(raw_collection),
+                                            desc="Preprocessing contents...",
                                             colour="blue")
             ]
-        
+
         # compute it using parallel computing
         print("Using pool to preprocess documents...")
         num_processes = os.cpu_count()
 
         with Pool(num_processes) as executor:
-            results = executor.starmap(self._preprocessing, self.collection_pattern.findall(data))
+            results = executor.starmap(self._preprocessing, self.collection_pattern.findall(raw_collection))
 
         # NB: when we quit the with block automatically wait all future objects
         return list(results)

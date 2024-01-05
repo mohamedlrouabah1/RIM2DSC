@@ -1,5 +1,6 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any
+
 from models.Timer import Timer
 from models.concepts.InformationRessource import InformationRessource
 from models.weighting.WeightingFunction import WeightingFunction
@@ -21,21 +22,21 @@ class CollectionOfRessources(ABC):
         self.information_retriever = ranking_function
 
     @abstractmethod
-    def load(self) -> Any:
+    def load(self) -> 'any':
         raise NotImplementedError("Should implement load()")
 
     @abstractmethod
-    def preprocess(self) -> None:
+    def preprocess(self, raw_collection) -> None:
         raise NotImplementedError("Should implement preprocessing()")
 
     @abstractmethod
     def index(self) -> None:
         raise NotImplementedError("Should implement indexing()")
-    
+
     @abstractmethod
     def compute_RSV(self, query:str) -> dict[str, float]:
         raise NotImplementedError("Should implement query()")
-    
+
     @abstractmethod
     def compute_stats(self) -> None:
         raise NotImplementedError("Should implement compute_stats()")

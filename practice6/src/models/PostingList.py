@@ -1,7 +1,8 @@
+from __future__ import annotations
 from models.PostingListUnit import PostingListUnit
 
 class PostingList:
-    """ 
+    """
     Store the posting list of a term and its related metadata.
     """
     def __init__(self, term:str):
@@ -29,16 +30,15 @@ class PostingList:
 
     def add_posting(self, posting:PostingListUnit):
         # If it is the first time we index an xml element of this document, we add it to the list
-        id = posting.document_id.split(':')[0]
-        if id not in self.doc_ids:
-            self.doc_ids.add(id)
+        doc_id = posting.document_id.split(':')[0]
+        if doc_id not in self.doc_ids:
+            self.doc_ids.add(doc_id)
             self.document_frequency += 1
             self.total_frequency += posting.frequency
-        
+
         self.postings[posting.document_id] = posting
 
     def get_tfd(self, doc_id:int):
         if self.postings.get(doc_id) is None:
             return 0
         return self.postings[doc_id].frequency
-    

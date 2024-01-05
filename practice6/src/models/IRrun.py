@@ -1,5 +1,7 @@
+from __future__ import annotations
 import os
-from sys import stderr
+
+from models.network.PageRank import PageRank
 from models.xml.XMLDocument import XMLDocument
 
 class IRrun:
@@ -32,27 +34,43 @@ class IRrun:
         self.file_path = self._create_file_path(weighting_function_name, stop, stem, params)
         self.run_as_str = ""
 
-        if weighting_function_name == "bm25fw" or weighting_function_name == "bm25fr":
+        if weighting_function_name in ("bm25fw", "bm25fr"):
             self.run_type = 'article'
         else:
             self.run_type = 'element'
-    
-    def ranking(self, collection, queries) :
-        for id, query in queries:
-            id = int(id)
+
+    def ranking(self, collection, queries, pagerank:dict[str, float]=None) :
+        for query_id, query in queries:
+            query_id = int(query_id)
             print(f"Query: {query}")
-            collection.Timer.start(f"query{id:02d}_preprocessing")
+            collection.Timer.start(f"query{query_id:02d}_preprocessing")
             query = collection.preprocessor._text_preprocessing(query)
             collection.Timer.stop()
-            print(f"Query preprocessed in {collection.Timer.get_time(f'query{id:02d}_preprocessing')}")
+            print(f"Query preprocessed in {collection.Timer.get_time(f'query{query_id:02d}_preprocessing')}")
             print(f"Query preprocessed: {query}\n{self.delimiter}")
 
-            print(f"Ranking documents...")
-            collection.Timer.start(f"query{id:02d}_ranking")
+            print('Ranking documents...')
+            collection.Timer.start(f"query{query_id:02d}_ranking")
             ranking = collection.compute_RSV(query)
             collection.Timer.stop()
-            print(f"Documents ranked in {collection.Timer.get_time(f'query{id:02d}_ranking')}\n{self.delimiter}")
+            print(f"Documents ranked in {collection.Timer.get_time(f'query{query_id:02d}_ranking')}\n{self.delimiter}")
             print()
+
+            if pagerank:
+                print('Ponderate ranking with pagerank...')
+                collection.Timer.start(f"query{query_id:02d}_pagerank")
+                tmp = []
+                PageRank.default = min(pagerank.values())
+                for xpath, score in ranking:
+                    doc_id = xpath.split(':')[0]
+                    if doc_id in pagerank:
+                        tmp.append((xpath, score * pagerank[doc_id]))
+                    else:
+                        tmp.append((xpath, score * PageRank.default))
+                ranking = tmp
+                collection.Timer.stop()
+                print(f"Scores ponderated with pagerank in {collection.Timer.get_time(f'query{query_id:02d}_pagerank')}\n{self.delimiter}")
+                print()
 
             if self.run_type == 'element':
                 ranking = self._delOverlappingXMLElement(ranking)
@@ -61,42 +79,42 @@ class IRrun:
 
                 for i, (doc_id, _) in enumerate(ranking):
                     rank = i+1
-                    self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=self.NB_RANKING - rank)
-            
+                    self._writeResultLine(query_id=query_id, doc_id=doc_id, rank=rank, score=self.NB_RANKING - rank)
+
             else: # 'article
                 ranking = self._extractBestScores(ranking)
-                
+
                 for i, (doc_id, score) in enumerate(ranking):
                     rank = i+1
-                    self._writeResultLine(query_id=id, doc_id=doc_id, rank=rank, score=score)
-    
-    
+                    self._writeResultLine(query_id, doc_id, rank, score)
+
+
     def save_run(self, verbose=False) -> bool:
         try:
             if verbose: print(f"Saving run file to {self.file_path}...")
-           
-            with open(self.file_path, "w") as f:
+
+            with open(self.file_path, "w", encoding="utf-8") as f:
                 f.write(self.run_as_str)
 
-            if verbose: print("Done.")
+            if verbose: print('Done.')
 
             return True
-        
+
         except IOError:
             print(f"Error while saving run file to {self.file_path}.")
             return False
-        
+
 
     def load_last_id(self) -> int:
         if os.path.exists(IRrun.ID_FILE_PATH):
-            with open(IRrun.ID_FILE_PATH, "r") as file:
+            with open(IRrun.ID_FILE_PATH, "r", encoding="utf-8") as file:
                 last_id = int(file.read())
             return last_id
-        else:
-            return 0
+
+        return 0
 
     def save_last_id(self, last_id):
-        with open(IRrun.ID_FILE_PATH, "w") as file:
+        with open(IRrun.ID_FILE_PATH, "w", encoding="utf-8") as file:
             file.write(str(last_id))
 
 
@@ -107,7 +125,7 @@ class IRrun:
         stop = f"stop{IRrun.STOPLIST_SIZE}" if stop else "nostop"
         stem = stem if stem else "nostem"
         params = '_'.join(params)
-        if weighting_function in ["bm25fw", "bm25fr"]:
+        if weighting_function in ("bm25fw", "bm25fr"):
             for tag, alpha in XMLDocument.granularity_weights.items():
                 params += f"_alpha{tag}{alpha}"
         granularity = '_'.join(XMLDocument.granularity)
@@ -141,7 +159,7 @@ class IRrun:
             j+=1
 
         return run_lines
-    
+
 
     def _extractBestScores(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
         """
@@ -155,7 +173,7 @@ class IRrun:
         """
         ranking.sort(key=lambda x: x[1], reverse=True)
         return ranking[:IRrun.NB_RANKING]
-    
+
 
     def _delIntertwinedResults(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
         """
@@ -169,7 +187,7 @@ class IRrun:
         """
         ranking.sort(key=lambda x: x[0])
         return ranking
-    
+
     def _writeResultLine(self, query_id:str, doc_id:str, rank:int, score:float) -> None:
         """
         Create a result line for a INEX run file.
@@ -183,7 +201,7 @@ class IRrun:
         self.run_as_str += result_line
 
     def _debugDisplayTopN(self, ranking:list[tuple[str, float]], top_n:int=10):
-        print(f"Ranking results:")
+        print("Ranking results:")
         for i, (doc_id, score) in enumerate(ranking[:top_n]):
             print(f"#{i+1} - Document {doc_id} with score {score}")
         print(self.delimiter)

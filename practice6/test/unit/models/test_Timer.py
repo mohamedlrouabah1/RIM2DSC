@@ -1,6 +1,6 @@
 import time
 import unittest
-from models.Timer import *
+from models.Timer import Timer, TimeUnit
 
 class TestTimer(unittest.TestCase):
 
@@ -24,23 +24,27 @@ class TestTimer(unittest.TestCase):
 
         # Verify that the time is recorded in nanoseconds by default
         time_ns = timer.measure[function_id][1] - timer.measure[function_id][0]
-        self.assertAlmostEqual(timer.get_time(function_id), time_ns, delta=1e6)  # Delta tolerance for rounding errors
+        self.assertAlmostEqual(timer.get_time(function_id), time_ns, delta=1e6)
 
         # Verify that the time is correctly converted to milliseconds
         time_ms = time_ns / TimeUnit.MS.value
-        self.assertAlmostEqual(timer.get_time(function_id, TimeUnit.MS), time_ms, delta=1e-3)
+        timer.default_unit = TimeUnit.MS
+        self.assertAlmostEqual(timer.get_time(function_id), time_ms, delta=1e-3)
 
         # Verify that the time is correctly converted to seconds
         time_s = time_ns / TimeUnit.S.value
-        self.assertAlmostEqual(timer.get_time(function_id, TimeUnit.S), time_s, delta=1e-3)
+        timer.default_unit = TimeUnit.S
+        self.assertAlmostEqual(timer.get_time(function_id), time_s, delta=1e-3)
 
         # Verify that the time is correctly converted to minutes
         time_min = time_ns / TimeUnit.MIN.value
-        self.assertAlmostEqual(timer.get_time(function_id, TimeUnit.MIN), time_min, delta=1e-3)
+        timer.default_unit = TimeUnit.MIN
+        self.assertAlmostEqual(timer.get_time(function_id), time_min, delta=1e-3)
 
         # Verify that the time is correctly converted to hours
         time_hour = time_ns / TimeUnit.HOUR.value
-        self.assertAlmostEqual(timer.get_time(function_id, TimeUnit.HOUR), time_hour, delta=1e-3)
+        timer.default_unit = TimeUnit.HOUR
+        self.assertAlmostEqual(timer.get_time(function_id), time_hour, delta=1e-3)
 
     def time_measure(self, timer: Timer, function_id: str, sleep_time: float):
         # Helper method to measure time for testing

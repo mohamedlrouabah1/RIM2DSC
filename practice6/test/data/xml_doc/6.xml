@@ -1,0 +1,23 @@
+<article>
+    <section>
+        <div>Première partie</div>
+        <div>
+            <p>Introduction de la première partie.</p>
+            <div>
+                <p>Sous-section détaillée.</p>
+                <p>Plus d'informations ici.</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div>Deuxième partie</div>
+        <div>
+            <p>Contenu de la deuxième partie.</p>
+            <div>
+                <p>Section supplémentaire.</p>
+                <p>Détails importants.</p>
+            </div>
+        </div>
+    </section>
+    <p>Conclusion générale du document.</p>
+</article>

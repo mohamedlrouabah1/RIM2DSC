@@ -120,6 +120,6 @@ def launch_run(collection:XMLCollection, queries:list, file_name:str, a_ranking,
 
     # To create run result files
     print("Instanciate IRun class ...", file=stderr)
-    run = IRrun(a_ranking, a_stopword, a_stemmer, ["anchors_"]+a_params)
+    run = IRrun(a_ranking, a_stopword, a_stemmer, a_params)
     run.ranking(collection, queries, pagerank)
     run.save_run(verbose=True)

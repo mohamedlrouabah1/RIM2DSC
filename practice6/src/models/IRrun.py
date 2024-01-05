@@ -60,6 +60,7 @@ class IRrun:
                 print('Ponderate ranking with pagerank...')
                 collection.Timer.start(f"query{query_id:02d}_pagerank")
                 tmp = []
+                PageRank.default = min(pagerank.values())
                 for xpath, score in ranking:
                     doc_id = xpath.split(':')[0]
                     if doc_id in pagerank:

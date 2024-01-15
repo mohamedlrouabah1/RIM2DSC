@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-01-15T18:01:42.763Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.16 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="ZxJ8lLkd3es082BrOx6K" version="22.1.16" type="device">
+<mxfile host="Electron" modified="2024-01-15T19:41:39.624Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.16 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="oBGanmqlzlhm5sMhhmR7" version="22.1.16" type="device">
   <diagram name="Page-1" id="X75OGaa5OfOXW6teG9SR">
-    <mxGraphModel dx="528" dy="1819" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="515" dy="1802" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -288,16 +288,16 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="TDOq8ImsOCoTDgD2I6-n-1" value="IRun" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="1720" y="192" width="180" height="150" as="geometry" />
+          <mxGeometry x="1980" y="85" width="380" height="290" as="geometry" />
         </mxCell>
-        <mxCell id="TDOq8ImsOCoTDgD2I6-n-2" value="id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="TDOq8ImsOCoTDgD2I6-n-1" vertex="1">
-          <mxGeometry y="26" width="180" height="26" as="geometry" />
+        <mxCell id="TDOq8ImsOCoTDgD2I6-n-2" value="&lt;u&gt;+ NB_RANKING = 1500&lt;br&gt;+ GROUP_NAME=&quot;MohammedWilliam&quot;&lt;br&gt;+ ID_FILE_PATH=&quot;../../last_id.txt&quot;&lt;/u&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="TDOq8ImsOCoTDgD2I6-n-1" vertex="1">
+          <mxGeometry y="26" width="380" height="54" as="geometry" />
         </mxCell>
         <mxCell id="TDOq8ImsOCoTDgD2I6-n-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="TDOq8ImsOCoTDgD2I6-n-1" vertex="1">
-          <mxGeometry y="52" width="180" height="8" as="geometry" />
+          <mxGeometry y="80" width="380" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="TDOq8ImsOCoTDgD2I6-n-4" value="+ save" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="TDOq8ImsOCoTDgD2I6-n-1" vertex="1">
-          <mxGeometry y="60" width="180" height="90" as="geometry" />
+        <mxCell id="TDOq8ImsOCoTDgD2I6-n-4" value="+ __init__(str, list(str), str, dict)&lt;br&gt;+ ranking(list(InformationRessources, list(str), dict[str, float]) : None&lt;br&gt;+ save_run(bool) : bool&lt;br&gt;- load_last_id() : int&lt;br&gt;- save_last_id() : None&lt;br&gt;- _create_file_path(str, bool, str, str, dict) : None&lt;br&gt;- _delOverlappingXMLElement(list[tuple[str, float]]) :&amp;nbsp;list[tuple[str, float]]&lt;br&gt;-&amp;nbsp;_extractBestScores(list[tuple[str, float]]) :&amp;nbsp;list[tuple[str, float]]&lt;br&gt;-&amp;nbsp;_delIntertwinedResults(list[tuple[str, float]]) :&amp;nbsp;list[tuple[str, float]]&lt;br&gt;-&amp;nbsp;_writeResultLine(str, str, int, float) : None&lt;br&gt;-&amp;nbsp;_debugDisplayTopN(list[tuple[str, float]], int)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="TDOq8ImsOCoTDgD2I6-n-1" vertex="1">
+          <mxGeometry y="100" width="380" height="190" as="geometry" />
         </mxCell>
         <mxCell id="TDOq8ImsOCoTDgD2I6-n-5" value="&lt;i style=&quot;font-weight: normal;&quot;&gt;PostingList&lt;/i&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#bac8d3;strokeColor=#23445d;glass=1;" parent="1" vertex="1">
           <mxGeometry x="1050" y="672" width="220" height="190" as="geometry" />
@@ -378,13 +378,13 @@
         <mxCell id="e51l-U1AH-l_leqLZLDB-55" value="XMLPreprocessor" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;rounded=1;" parent="1" vertex="1">
           <mxGeometry x="310" y="800" width="390" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="e51l-U1AH-l_leqLZLDB-56" value="." style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="e51l-U1AH-l_leqLZLDB-55" vertex="1">
+        <mxCell id="e51l-U1AH-l_leqLZLDB-56" value="&lt;u&gt;+ anchors : list[tuple[str, str, list[str]]]&lt;/u&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="e51l-U1AH-l_leqLZLDB-55" vertex="1">
           <mxGeometry y="26" width="390" height="26" as="geometry" />
         </mxCell>
         <mxCell id="e51l-U1AH-l_leqLZLDB-57" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="e51l-U1AH-l_leqLZLDB-55" vertex="1">
           <mxGeometry y="52" width="390" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="e51l-U1AH-l_leqLZLDB-58" value="+ __init__(bool, bool, str, str, str, str)&lt;br&gt;- _update_xpath(str, str, dict) : str&lt;br&gt;- _fetch_articles(str) : list(tuple(str, minidomDocument))&lt;br&gt;+ load(str) : list(tuple(str, minidom.Document)&lt;br&gt;- _browse(minidom.Node, str, str) : XMLElement&lt;br&gt;+ pre_process(list(tuple(str, minidomDocument))) : list(XMLDocument)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="e51l-U1AH-l_leqLZLDB-55" vertex="1">
+        <mxCell id="e51l-U1AH-l_leqLZLDB-58" value="+ __init__(bool, bool, str, str, str, str)&lt;br&gt;- _update_xpath(str, str, dict) : str&lt;br&gt;- _fetch_articles(str) : list(tuple(str, minidomDocument))&lt;br&gt;+ load(str) : list(tuple(str, minidom.Document)&lt;br&gt;- _extract_text(minidom.Node, str) : str&lt;br&gt;- _browse(minidom.Node, str, str) : XMLElement&lt;br&gt;+ pre_process(list(tuple(str, minidomDocument))) : list(XMLDocument)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="e51l-U1AH-l_leqLZLDB-55" vertex="1">
           <mxGeometry y="60" width="390" height="120" as="geometry" />
         </mxCell>
         <mxCell id="3E4O9BEUz1lRJepPxAch-12" value="&amp;lt;&amp;lt;abstract&amp;gt;&amp;gt;&lt;br&gt;WeightingFunction" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">

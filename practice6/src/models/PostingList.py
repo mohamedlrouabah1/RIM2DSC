@@ -3,9 +3,46 @@ from models.PostingListUnit import PostingListUnit
 
 class PostingList:
     """
-    Store the posting list of a term and its related metadata.
+    PostingList class represents a posting list for a specific term in an
+    information retrieval system.
+
+    Attributes:
+    -----------
+    - term: str
+        The term for which the posting list is created.
+    - postings: dict(PostingListUnit)
+        Dictionary storing PostingListUnit objects for different documents.
+    - document_frequency: int
+        The number of documents in which the term appears.
+    - total_frequency: int
+        The total frequency of the term across all documents.
+    - doc_ids: set
+        Set storing unique document IDs in which the term appears.
+
+    Methods:
+    --------
+    - __init__(self, term:str):
+        Constructor for PostingList.
+    - __len__(self):
+        Get the document frequency of the term.
+    - __str__(self) -> str:
+        String representation of the PostingList object.
+    - add_posting(self, posting:PostingListUnit):
+        Add a PostingListUnit to the posting list.
+    - get_tfd(self, doc_id:int) -> int:
+        Get the term frequency in a specific document.
+
     """
+
     def __init__(self, term:str):
+        """
+        Constructor for PostingList.
+
+        Params:
+        -------
+        - term: str
+            The term for which the posting list is created.
+        """
         self.term = term
         self.postings: dict(PostingListUnit) = {}
         self.document_frequency = 0

@@ -1,10 +1,51 @@
 from __future__ import annotations
 import os
 
+from models.concepts.InformationRessource import InformationRessource
 from models.network.PageRank import PageRank
 from models.xml.XMLDocument import XMLDocument
 
 class IRrun:
+    """
+    Class for managing and saving Information Retrieval runs.
+
+    Class Attributes:
+    -----------------
+    - NB_RANKING: int
+        Number of top-ranked results to consider.
+    - GROUP_NAME: str
+        Group name for identifying the team in the run file.
+    - ID_FILE_PATH: str
+        File path for storing the last used run ID.
+    - STOPLIST_SIZE: int
+        Size of the stop-list.
+
+    Methods:
+    --------
+    - __init__(self, weighting_function_name:str, stop:list[str], stem:str, params:dict) -> None:
+        Constructor for IRrun.
+    - ranking(self, collection, queries, pagerank:dict[str, float]=None):
+        Rank documents based on queries and optionally incorporate PageRank scores.
+    - save_run(self, verbose=False) -> bool:
+        Save the run file to the specified file path.
+    - load_last_id(self) -> int:
+        Load the last used run ID from the file.
+    - save_last_id(self, last_id):
+        Save the last used run ID to the file.
+    - _create_file_path(self, weighting_function, stop, stem, params):
+        Create the file path for the run file.
+    - _delOverlappingXMLElement(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
+        Remove overlapping rankings from a run result list.
+    - _extractBestScores(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
+        Extract the best scores from a run result list.
+    - _delIntertwinedResults(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
+        Remove intertwined results from a run result list.
+    - _writeResultLine(self, query_id:str, doc_id:str, rank:int, score:float) -> None:
+        Write a result line for an INEX run file.
+    - _debugDisplayTopN(self, ranking:list[tuple[str, float]], top_n:int=10):
+        Display the top N results of a ranking for debugging purposes.
+
+    """
     NB_RANKING = 1500
     GROUP_NAME="MohammedWilliam"
     ID_FILE_PATH="../../last_id.txt"
@@ -39,7 +80,19 @@ class IRrun:
         else:
             self.run_type = 'element'
 
-    def ranking(self, collection, queries, pagerank:dict[str, float]=None) :
+    def ranking(self, collection:list[InformationRessource], queries:list[str], pagerank:dict[str, float]=None) :
+        """
+        Rank documents based on queries and optionally incorporate PageRank scores.
+
+        Params:
+        -------
+        - collection: Collection
+            The collection of documents.
+        - queries: list
+            List of queries.
+        - pagerank: dict[str, float], optional
+            PageRank scores for documents.
+        """
         for query_id, query in queries:
             query_id = int(query_id)
             print(f"Query: {query}")
@@ -90,6 +143,20 @@ class IRrun:
 
 
     def save_run(self, verbose=False) -> bool:
+        """
+        Save the run file to the specified file path.
+
+        Params:
+        -------
+        - verbose: bool, optional
+            Flag indicating whether to display verbose output.
+
+        Returns:
+        --------
+        bool
+            True if the save operation is successful, False otherwise.
+
+        """
         try:
             if verbose: print(f"Saving run file to {self.file_path}...")
 
@@ -106,6 +173,15 @@ class IRrun:
 
 
     def load_last_id(self) -> int:
+        """
+        Load the last used run ID from the file.
+
+        Returns:
+        --------
+        int
+            Last used run ID.
+
+        """
         if os.path.exists(IRrun.ID_FILE_PATH):
             with open(IRrun.ID_FILE_PATH, "r", encoding="utf-8") as file:
                 last_id = int(file.read())
@@ -114,13 +190,39 @@ class IRrun:
         return 0
 
     def save_last_id(self, last_id):
+        """
+        Save the last used run ID to the file.
+
+        Params:
+        -------
+        - last_id
+            Last used run ID.
+
+        """
         with open(IRrun.ID_FILE_PATH, "w", encoding="utf-8") as file:
             file.write(str(last_id))
 
 
     def _create_file_path(self, weighting_function, stop, stem, params):
         """
-        Internal used to create the file path of the run file at the initialization of the object.
+        Create the file path for the run file.
+
+        Params:
+        -------
+        - weighting_function
+            Name of the weighting function.
+        - stop: list[str]
+            Stoplist configuration.
+        - stem: str
+            Stemming configuration.
+        - params: dict
+            Other interesting parameters used.
+
+        Returns:
+        --------
+        str
+            File path for the run file.
+
         """
         stop = f"stop{IRrun.STOPLIST_SIZE}" if stop else "nostop"
         stem = stem if stem else "nostem"
@@ -132,15 +234,21 @@ class IRrun:
 
         return f"../results/{IRrun.GROUP_NAME}_{self.id}_{weighting_function}_{granularity}_{stop}_{stem}_{params}.txt"
 
+
     def _delOverlappingXMLElement(self, ranking:list[tuple[str, float]]) -> list[tuple[str, float]]:
         """
         Remove overlapping rankings from a run result list.
 
         Params:
-            ranking: list of tuple (doc_id, score) sorted by doc_id
+        -------
+        - ranking: list[tuple[str, float]]
+            List of tuple (doc_id, score) sorted by doc_id.
 
-        Return:
-            list of tuple (doc_id, score) without overlapping scores
+        Returns:
+        --------
+        list[tuple[str, float]]
+            List of tuple (doc_id, score) without overlapping scores.
+
         """
         nb_scores, j, n = 0, 1, len(ranking)
         run_lines = [ranking[0]]
@@ -166,10 +274,15 @@ class IRrun:
         Extract the best scores from a run result list.
 
         Params:
-            ranking: list of tuple (doc_id, score) sorted by score
+        -------
+        - ranking: list[tuple[str, float]]
+            List of tuple (doc_id, score) sorted by score.
 
-        Return:
-            list of tuple (doc_id, score) with the best scores
+        Returns:
+        --------
+        list[tuple[str, float]]
+            List of tuple (doc_id, score) with the best scores.
+
         """
         ranking.sort(key=lambda x: x[1], reverse=True)
         return ranking[:IRrun.NB_RANKING]
@@ -180,18 +293,34 @@ class IRrun:
         Remove intertwined results from a run result list.
 
         Params:
-            ranking: list of tuple (doc_id, score) sorted by doc_id
+        -------
+        - ranking: list[tuple[str, float]]
+            List of tuple (doc_id, score) sorted by doc_id.
 
-        Return:
-            list of tuple (doc_id, score) without intertwined results
+        Returns:
+        --------
+        list[tuple[str, float]]
+            List of tuple (doc_id, score) without intertwined results.
+
         """
         ranking.sort(key=lambda x: x[0])
         return ranking
 
     def _writeResultLine(self, query_id:str, doc_id:str, rank:int, score:float) -> None:
         """
-        Create a result line for a INEX run file.
-        Note: the scores are modified in order to be decresing with the rank.
+        Create a result line for an INEX run file.
+        Note: the scores are modified in order to be decreasing with the rank.
+
+        Params:
+        -------
+        - query_id: str
+            Query ID.
+        - doc_id: str
+            Document ID.
+        - rank: int
+            Rank of the document.
+        - score: float
+            Score of the document.
         """
         if ":" in doc_id:
             doc_id, xpath = doc_id.split(':')
@@ -201,6 +330,9 @@ class IRrun:
         self.run_as_str += result_line
 
     def _debugDisplayTopN(self, ranking:list[tuple[str, float]], top_n:int=10):
+        """
+        Display the top N results of a ranking for debugging purposes.
+        """
         print("Ranking results:")
         for i, (doc_id, score) in enumerate(ranking[:top_n]):
             print(f"#{i+1} - Document {doc_id} with score {score}")

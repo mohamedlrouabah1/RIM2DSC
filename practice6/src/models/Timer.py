@@ -18,11 +18,36 @@ class TimeUnit(Enum):
 
 class Timer:
     """
-    Used to store computed time in nanoseconds of the execution of a function.
-    You can use the name (or an id) of the function to start and stop the timer
-    for this function.
-    Then you can get the time in nanoseconds or in the desired unit using the
-    TimeUnit enum.
+    Timer class for measuring the execution time of functions and displaying results.
+
+    Attributes:
+    -----------
+    - measure: dict
+        A dictionary to store the start and stop times of measured functions.
+    - default_unit: TimeUnit
+        The default time unit to use when displaying the time.
+    - current: str
+        The name of the currently running timer.
+
+    Methods:
+    --------
+    - __init__(self, default_unit=TimeUnit.S):
+        Constructor for Timer.
+    - __len__(self) -> int:
+        Returns the number of measures recorded.
+    - start(self, name, force=False) -> bool:
+        Starts the timer for a function with the given name.
+    - stop(self) -> bool:
+        Stops the currently running timer.
+    - get_time(self, name) -> float:
+        Returns the formatted execution time for a function.
+    - __str__(self) -> str:
+        Returns a string representation of the Timer object.
+    - format_time(self, name) -> str:
+        Formats the execution time for a function.
+    - display_histogram(self):
+        Displays a histogram of the recorded execution times (not implemented).
+
     """
 
     def __init__(self, default_unit=TimeUnit.S):
@@ -39,6 +64,22 @@ class Timer:
         return len(self.measure)
 
     def start(self, name, force=False) -> bool:
+        """
+        Starts the timer for a function with the given name.
+
+        Params:
+        -------
+        - name: str
+            The name of the function.
+        - force: bool
+            If True, allows overwriting an existing timer with the same name.
+
+        Returns:
+        --------
+        bool
+            True if the timer is successfully started, False otherwise.
+
+        """
         if self.current is not None:
             print("A timer is already started, stop it first.")
             return False
@@ -51,6 +92,15 @@ class Timer:
         self.current = name
 
     def stop(self):
+        """
+        Stops the currently running timer.
+
+        Returns:
+        --------
+        bool
+            True if a timer was stopped, False otherwise.
+
+        """
         if self.current is None:
             return False
         self.measure[self.current].append(perf_counter_ns())
@@ -58,6 +108,20 @@ class Timer:
         return True
 
     def get_time(self, name) -> float:
+        """
+        Returns the formatted execution time for a function.
+
+        Params:
+        -------
+        - name: str
+            The name of the function.
+
+        Returns:
+        --------
+        float
+            The formatted execution time.
+
+        """
         try:
             return self.format_time(name)
         except KeyError:
@@ -71,6 +135,20 @@ class Timer:
         return timer_str
 
     def format_time(self, name) -> str:
+        """
+        Formats the execution time for a function.
+
+        Params:
+        -------
+        - name: str
+            The name of the function.
+
+        Returns:
+        --------
+        str
+            Formatted execution time.
+
+        """
         ns = self.measure[name][1] - self.measure[name][0]
         hours, remainder = divmod(ns, TimeUnit.HOUR.value)
         minutes, remainder = divmod(remainder, TimeUnit.MIN.value)

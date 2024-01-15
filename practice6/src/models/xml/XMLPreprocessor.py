@@ -10,16 +10,79 @@ from models.xml.XMLDocument import XMLDocument
 from models.xml.XMLElement import XMLElement
 
 class XMLPreprocessor(TextPreprocessor):
+    """
+    Preprocessor for XML documents, responsible for loading, extracting text content,
+    and creating an indexed structure.
+
+    Class Attributes:
+    -----------------
+    - anchors: list[tuple(str, str, list[str])]
+        List to store anchor information (linking two XML documents).
+
+    Methods:
+    --------
+    - __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
+        Constructor for XMLPreprocessor.
+    - _update_xpath(self, xpath:str, tag_name:str, existing_xpath:dict) -> str:
+        Update XPath for an XML element to avoid conflicts.
+    - _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
+        Fetch XML articles from a directory.
+    - load(self, path) -> list[tuple[str, minidom.Document]]:
+        Load XML documents from a given path.
+    - _extract_text(self, node, doc_id):
+        Recursively extract the text content of all children tags of a tag.
+    - _browse(self, node:minidom.Node, xpath:str, doc_id:str) -> XMLElement:
+        Recursively browse the XML document to create an indexed structure (XMLElement).
+    - pre_process(self, raw_collection:list[tuple[str, minidom.Document]], use_parallel_computing=False) -> list[XMLDocument]:
+        Preprocess the raw XML collection and return a list of XMLDocument objects.
+
+    """
 
     anchors:list[tuple(str, str, list[str])] = []
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
+        """
+        Constructor for XMLPreprocessor.
+
+        Params:
+        -------
+        - exclude_stopwords: bool, optional
+            Flag indicating whether to exclude stopwords during text preprocessing.
+        - exclude_digits: bool, optional
+            Flag indicating whether to exclude digits during text preprocessing.
+        - tokenizer: str, optional
+            Tokenizer to use during text preprocessing (e.g., "nltk").
+        - lemmer: Lemmatizer, optional
+            Lemmatizer to use during text preprocessing.
+        - stemmer: str, optional
+            Stemmer to use during text preprocessing (e.g., "None").
+        - collection_pattern: regex pattern, optional
+            Regular expression pattern for identifying relevant files in a collection.
+        """
         super().__init__(exclude_stopwords, exclude_digits, tokenizer, lemmer, stemmer)
         self.collection_pattern = collection_pattern
         print("XMLIndexer constructor ...")
         print(f"args: exclude_stopwords={exclude_stopwords}, exclude_digits={exclude_digits}, tokenizer={tokenizer}, lemmer={lemmer}, stemmer={stemmer}")
 
     def _update_xpath(self, xpath:str, tag_name:str, existing_xpath:dict) -> str:
+        """
+        Update XPath for an XML element to avoid conflicts.
+
+        Params:
+        -------
+        - xpath: str
+            Current XPath.
+        - tag_name: str
+            Tag name of the XML element.
+        - existing_xpath: dict
+            Dictionary of existing XPaths.
+
+        Returns:
+        --------
+        str
+            Updated XPath.
+
+        """
         i = 1
         while f'{xpath}/{tag_name}[{i}]' in existing_xpath:
             i += 1
@@ -27,6 +90,20 @@ class XMLPreprocessor(TextPreprocessor):
         return f'{xpath}/{tag_name}[{i}]'
 
     def _fetch_articles(self, dir_collection:str) -> list[tuple[str, minidom.Document]]:
+        """
+        Fetch XML articles from a directory.
+
+        Params:
+        -------
+        - dir_collection: str
+            Directory path containing XML files.
+
+        Returns:
+        --------
+        list[tuple[str, minidom.Document]]
+            List of tuples containing document IDs and corresponding minidom Documents.
+
+        """
         xml_files = [f for f in os.listdir(dir_collection) if f.lower().endswith('.xml')]
         articles = []
         for xml_file in tqdm(xml_files, desc="loading xml files ..."):
@@ -38,16 +115,35 @@ class XMLPreprocessor(TextPreprocessor):
         return articles
 
     def load(self, path) -> list[tuple[str, minidom.Document]]:
+        """
+        Load XML documents from a given directory path.
+
+        Params:
+        -------
+        - path: str
+            Path to the XML documents.
+
+        Returns:
+        --------
+        list[tuple[str, minidom.Document]]
+            List of tuples containing document IDs and corresponding minidom Documents.
+
+        """
         return self._fetch_articles(path)
 
-    def _extract_text(self, node, doc_id):
+    def _extract_text(self, node:minidom.Node, doc_id:str) -> str:
         """
-        Extract recursively the text content of all children tags of a tag.
-        Args:
+        Recursively extract the text content of all children tags of a tag.
+
+        Params:
+        -------
         - node: a minidom.Node object.
 
         Returns:
-        -the extracted text content as a raw string.
+        --------
+        str
+            The extracted text content as a raw string.
+
         """
         text = ""
 
@@ -74,6 +170,24 @@ class XMLPreprocessor(TextPreprocessor):
         return text
 
     def _browse(self, node:minidom.Node, xpath:str, doc_id:str) -> XMLElement:
+        """
+        Recursively browse the XML document to create an indexed structure (XMLElement).
+
+        Params:
+        -------
+        - node: minidom.Node
+            Current XML node.
+        - xpath: str
+            Current XPath.
+        - doc_id: str
+            Document ID.
+
+        Returns:
+        --------
+        XMLElement
+            Indexed structure representing the XML document hierarchy.
+
+        """
         childs:dict('xpath','XMLElement') = {}
         text_content:list[str] = []
 
@@ -113,7 +227,20 @@ class XMLPreprocessor(TextPreprocessor):
 
     def pre_process(self, raw_collection:list[tuple[str, minidom.Document]], use_parallel_computing=False) -> list[XMLDocument]:
         """
-        Preprocess the raw collection and return a list of TextDocument objects.
+        Preprocess the raw XML collection and return a list of XMLDocument objects.
+
+        Params:
+        -------
+        - raw_collection: list[tuple[str, minidom.Document]]
+            List of tuples containing document IDs and corresponding minidom Documents.
+        - use_parallel_computing: bool, optional
+            Flag indicating whether to use parallel computing.
+
+        Returns:
+        --------
+        list[XMLDocument]
+            List of preprocessed XMLDocument objects.
+
         """
         xml_documents = []
         for doc_id, dom in tqdm(raw_collection, desc="preprocessing xml documents ..."):

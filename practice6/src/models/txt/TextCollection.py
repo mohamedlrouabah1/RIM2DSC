@@ -13,10 +13,54 @@ from utilities.config import GRAPH_FOLDER
 
 
 class TextCollection(CollectionOfRessources):
-    """"
-    Store a collection of documents and its related metadata.
     """
+    Represents a collection of documents and its related metadata.
+
+    Attributes:
+        - collection (list[TextDocument]): List of TextDocument objects.
+        - terms_frequency (dict[str, int]): Dictionary storing the frequency of each term.
+        - vocabulary_size (int): Size of the vocabulary.
+        - path (str): Path to the collection.
+        - preprocessor (TextPreprocessor): Text preprocessor object.
+        - indexer (TextIndexer): Text indexer object.
+
+    Methods:
+        __init__(path="", indexer=None, preprocessor=None, use_parallel_computing=False):
+            Initializes the TextCollection object.
+        __str__() -> str: Returns a string representation of the object.
+        get_avdl() -> float: Returns the average document length.
+        get_avtl() -> float: Returns the average term length.
+        get_vocabulary_size() -> int: Returns the size of the vocabulary.
+        get_terms_collection_frequency() -> float: Returns the terms collection frequency.
+        load() -> str: Loads the collection from a file.
+        preprocess(raw_collection) -> None: Preprocesses the collection.
+        index() -> None: Indexes the collection.
+        compute_RSV(query: str) -> dict[str, float]: Computes Relevant Status Value for a query.
+        compute_stats() -> None: Computes collection statistics.
+        plot_stats() -> None: Plots collection statistics.
+        _compute_avdl() -> float: Computes the average document length.
+        _compute_avtl() -> float: Computes the average term length.
+        _compute_terms_collection_frequency() -> list[float]: Computes terms collection frequency.
+        __reduce__() -> tuple: Method to exclude specific methods from pickling.
+        serialize(path: str) -> bool: Serializes the object to a file.
+        deserialize(path: str) -> 'TextCollection': Deserializes the object from a file.
+    """
+
     def __init__(self, path="", indexer=None, preprocessor=None, use_parallel_computing=False):
+        """
+        Initializes the TextCollection object.
+
+        Params:
+        -------
+        path: str, optional
+            Path to the collection.
+        indexer: TextIndexer, optional
+            TextIndexer object.
+        preprocessor: TextPreprocessor, optional
+            TextPreprocessor object.
+        use_parallel_computing: bool, optional
+            Flag indicating whether to use parallel computing.
+        """
         super().__init__(path, {})
         self.collection:list[TextDocument] = []
         self.terms_frequency:dict[str, int] = {}
@@ -63,7 +107,7 @@ class TextCollection(CollectionOfRessources):
         print(f"Collection loaded in {self.Timer.get_time('load_collection')} seconds.", file=stderr)
         return collection_string
 
-    def preprocess(self, raw_collection) -> None:
+    def preprocess(self, raw_collection:str) -> None:
         print("Preprocessing collection...", file=stderr)
         self.Timer.start("preprocessing")
         doc_token_list = self.preprocessor.pre_process(raw_collection, self.use_parallel_computing)

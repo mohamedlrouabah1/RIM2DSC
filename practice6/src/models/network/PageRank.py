@@ -2,6 +2,17 @@ from __future__ import annotations
 from tqdm import tqdm
 
 class PageRank():
+    """
+    Class for calculating PageRank scores for a given graph of links.
+
+    Attributes:
+        - default (float): Default value for PageRank damping factor, typically between 0 and 1. Defaults to 0.1.
+
+    Methods:
+        __init__(list_tag_link: list[tuple[str, str, list[str]]]): Initializes the PageRank object with a list of tag links.
+        pagerank(d=0.85, max_iterations=100, convergence_threshold=1e-6) -> dict[str, float]:
+            Calculates PageRank scores for the given graph.
+    """
 
     default = 0.1
 

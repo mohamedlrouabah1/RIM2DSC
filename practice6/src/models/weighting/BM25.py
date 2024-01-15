@@ -3,11 +3,36 @@ from math import log10
 from models.weighting.WeightingFunction import WeightingFunction
 
 class BM25(WeightingFunction):
+    """
+    BM25 weighting function implementation.
+
+    Attributes:
+        - N (int): Number of documents in the collection.
+        - avdl (float): Average document length.
+        - k1 (float, optional): Parameter controlling term saturation. Defaults to 1.2.
+        - b (float, optional): Parameter controlling length normalization. Defaults to 0.75.
+
+    Methods:
+        __init__(N, avdl, k1=1.2, b=0.75): Initializes the BM25 weighting function with collection parameters.
+        compute_idf_part(df: float) -> float: Computes the IDF part of the BM25 formula.
+        compute_tf_weight_tf_part(tf: float) -> tuple: Computes the numerator and denominator parts related to term frequency in the BM25 formula.
+        compute_tf_weight_dl_part(dl: float) -> float: Computes the part related to document length in the BM25 formula.
+        compute_weight(tf: float, df: float, dl: float) -> float: Computes the BM25 weight for a term in a document.
+        compute_scores(documents, query, indexer) -> dict[str, float]: Computes BM25 scores for each document based on a given query.
+
+    """
 
     def __init__(self, N, avdl, k1=1.2, b=0.75):
         """
-        N: number of documents in the collection
-        avdl: average document length
+        Initializes the BM25 weighting function with collection parameters.
+
+        Params:
+        -------
+        N (int): Number of documents in the collection.
+        avdl (float): Average document length.
+        k1 (float, optional): Parameter controlling term saturation. Defaults to 1.2.
+        b (float, optional): Parameter controlling length normalization. Defaults to 0.75.
+
         """
         super().__init__()
         self.N = N
@@ -24,7 +49,7 @@ class BM25(WeightingFunction):
         self.N_plus_0_5 = self.N + 0.5
 
     @lru_cache(maxsize=1024)
-    def compute_idf_part(self, df):
+    def compute_idf_part(self, df:float) -> float:
         """
         Params:
             df: int, document frequency of the term
@@ -32,21 +57,28 @@ class BM25(WeightingFunction):
         return log10((self.N_plus_0_5 - df ) / (df + 0.5))
 
     @lru_cache(maxsize=1024)
-    def compute_tf_weight_tf_part(self, tf):
+    def compute_tf_weight_tf_part(self, tf: float) -> float:
         return (tf * self.k1_plus_1, self.k1_times_1_minus_b + tf)
 
     @lru_cache(maxsize=1024)
-    def compute_tf_weight_dl_part(self, dl):
+    def compute_tf_weight_dl_part(self, dl:float) -> float:
         return self.k1_times_b_times_inv_avdl * dl
 
     @lru_cache(maxsize=1024)
-    def compute_weight(self, tf, df, dl):
+    def compute_weight(self, tf:float, df:float, dl:int) -> float:
         """
-        tf: term frequency in the document
-        df: document frequency of the term
-        dl: document length
-        Return:
-            tf_weight = (tf * self.k1_plus_1) / (self.k1_times_1_minus_b + self.k1_times_b_times_inv_avdl * dl + tf)
+        Computes the BM25 weight for a term in a document.
+
+        Params:
+        -------
+        tf (float): Term frequency in the document.
+        df (float): Document frequency of the term.
+        dl (float): Document length.
+
+        Returns:
+        --------
+        float: Computed BM25 weight.
+
         """
         idf = self.compute_idf_part(df)
         tf_num, tf_den = self.compute_tf_weight_tf_part(tf)
@@ -59,8 +91,21 @@ class BM25(WeightingFunction):
 
     def compute_scores(self, documents, query, indexer) -> dict[str, float]:
         """
-        Return a dictionary of scores for each document for each query.
-        The keys of the dictionary are the queries ids.
+        Computes BM25 scores for each document based on a given query.
+
+        Params:
+        -------
+        documents: list of TextDocument
+            List of documents to compute scores for.
+        query: list of str
+            Query terms.
+        indexer: TextIndexer
+            Text indexer containing document statistics.
+
+        Returns:
+        --------
+        dict[str, float]: Dictionary of scores for each document, where keys are document ids.
+
         """
         scores = {}
         for doc in documents:

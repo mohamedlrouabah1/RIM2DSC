@@ -5,16 +5,56 @@ from models.xml.XMLElement import XMLElement
 
 class XMLDocument(InformationRessource):
     """
-    granularity set to ["element"] in order to browse all tags
+    Implementation of the XMLDocument class, representing an XML document.
+
+    Class Attributes:
+    -----------------
+    - granularity: list of str
+        Granularity set to ["element"] in order to browse all tags.
+    - granularity_weights: dict
+        Granularity weights for different elements in the document.
+
+    Class Methods:
+    --------------
+    - set_granularity(cls, granularity: str) -> None:
+        Set the granularity of the XMLDocument.
+
+    Methods:
+    --------
+    - __init__(self, doc_id: int, dom: XMLElement) -> None:
+        Initialize an XMLDocument instance with a document ID and an XMLElement.
+    - __len__(self) -> int:
+        Return the length of the XMLDocument.
+    - __str__(self) -> str:
+        Return a string representation of the XMLDocument.
+    - get_text_content(self) -> list[str]:
+        Get the text content of the XMLDocument.
+    - get_xml_element_list(self) -> list[XMLElement]:
+        Get a list of XML elements in the XMLDocument.
+    - compute_avtl(self) -> float:
+        Compute the average token length in the XMLDocument.
+    - del_tokens_list(self) -> None:
+        Delete the tokens list in the content.
+
     """
     granularity = ["element"] # exemple
     granularity_weights = {"element" : 1} # exemple
 
     @classmethod
-    def set_granularity(cls, granularity:str):
+    def set_granularity(cls, granularity:list[str]):
         cls.granularity = granularity
 
     def __init__(self, doc_id:int, dom:XMLElement):
+        """
+        Initialize an XMLDocument instance with a document ID and an XMLElement.
+
+        Params:
+        -------
+        - doc_id: int
+            Document ID.
+        - dom: XMLElement
+            Root XMLElement representing the XML document.
+        """
         super().__init__(doc_id, dom)
 
     def __len__(self) -> int:
@@ -34,5 +74,5 @@ class XMLDocument(InformationRessource):
         num = sum(len(t) for t in tokens)
         return num / len(tokens)
 
-    def del_tokens_list(self):
+    def del_tokens_list(self) -> None:
         self.content._del_tokens_list()

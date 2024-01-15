@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 import copyreg
 import os
@@ -24,8 +23,46 @@ def _pickle_method(method):
 copyreg.pickle(types.MethodType, _pickle_method)
 
 class TextPreprocessor:
+    """
+    Preprocessor for text documents.
+
+    Attributes:
+        - stopwords (set): Set of stopwords to be excluded from processing.
+        - lemmatizer (WordNetLemmatizer): WordNet lemmatizer.
+        - lemmatizing (function): Function for lemmatization.
+        - stemming (function): Function for stemming.
+        - stemmer (PorterStemmer): Porter stemmer.
+        - collection_pattern (re.Pattern): Regular expression pattern for identifying document collections.
+        - exclude_digits (bool): Flag indicating whether to exclude digits from processing.
+        - tokenizer_name (str): Name of the tokenizer used.
+
+    Methods:
+        __init__(exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None): Initializes the TextPreprocessor object.
+        _identity(x): Identity function.
+        _normalize(w: str) -> str: Normalizes a word by applying lemmatization and stemming.
+        _tokenize(w: str): Tokenizes a word using the specified tokenizer.
+        _is_valid_token(w: str) -> bool: Checks if a token is valid based on length, alphabetical characters, and exclusion from stopwords.
+        _text_preprocessing(text: str) -> list[str]: Performs text preprocessing by normalizing and tokenizing.
+        _preprocessing(doc_id, content) -> tuple: Used for parallel computing, performs preprocessing for a document.
+        load_and_lower_text_collection(path) -> str: Reads the document collection from a file and converts it to lowercase.
+        pre_process(raw_collection, use_parallel_computing=False) -> list[tuple]: Performs preprocessing on the entire collection.
+
+    """
 
     def __init__(self, exclude_stopwords=True, exclude_digits=True, tokenizer="nltk", lemmer=None, stemmer="None", collection_pattern=None):
+        """
+        Initializes the TextPreprocessor object.
+
+        Params:
+        -------
+        exclude_stopwords (bool, optional): Flag indicating whether to exclude stopwords. Defaults to True.
+        exclude_digits (bool, optional): Flag indicating whether to exclude digits. Defaults to True.
+        tokenizer (str, optional): Name of the tokenizer. Defaults to "nltk".
+        lemmer: Lemmatizer (WordNetLemmatizer), optional: Lemmatizer to be used. Defaults to None.
+        stemmer (str, optional): Type of stemmer. Defaults to "None".
+        collection_pattern (re.Pattern, optional): Regular expression pattern for identifying document collections. Defaults to None.
+
+        """
         if exclude_stopwords:
             with open(STOPWORDS_DIR, 'r', encoding="utf-8") as f:
                 self.stopwords = set(f.read().splitlines() + list(punctuation))
@@ -79,18 +116,37 @@ class TextPreprocessor:
 
     def load_and_lower_text_collection(self, path) -> str:
         """
-        Read the document collection from a file.
-        Handles both regular and gzipped files.
+        Reads the document collection from a file and converts it to lowercase.
+
+        Params:
+        -------
+        path: str
+            Path to the document collection file.
 
         Returns:
-            str: the document collection as a lowered
-                 string
+        --------
+        str: Lowercased document collection as a string.
+
         """
         with open(path, 'r', encoding="utf-8") as f:
             document_collection_str = f.read().lower()
         return document_collection_str
 
-    def pre_process(self, raw_collection, use_parallel_computing=False):
+    def pre_process(self, raw_collection, use_parallel_computing=False) -> list[tuple[str, list[str]]]:
+        """
+        Performs preprocessing on the entire collection.
+
+        Params:
+        -------
+        raw_collection: str
+            Raw document collection.
+        use_parallel_computing (bool, optional): Flag indicating whether to use parallel computing. Defaults to False.
+
+        Returns:
+        --------
+        list[tuple]: List of tuples containing document identifier and preprocessed content.
+
+        """
         # use_parallel_computing = False # For now bc pbm with pickle instance of this class
         if not use_parallel_computing :
             return [

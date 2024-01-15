@@ -1,20 +1,56 @@
 from functools import lru_cache
 from math import sqrt
+
+from models.concepts.InformationRessource import InformationRessource
+from models.txt.TextIndexer import TextIndexer
 from models.weighting.SMART_ltn import SMART_ltn
 from models.weighting.WeightingFunction import WeightingFunction
 
 class SMART_ltc(WeightingFunction):
+    """
+    Implementation of the SMART_ltc weighting function.
+
+    Methods:
+        compute_scores(documents, query, indexer) -> dict[str, float]:
+        Computes SMART_ltc scores for each document based on a given query and a text indexer.
+
+    """
 
     def __init__(self, N, **kargs):
+        """
+        Initialize the SMART_ltc weighting function.
+
+        Params:
+        -------
+        N: int
+            Number of documents in the collection.
+        kargs: dict
+            Keyword arguments, including 'smart_ltn' for
+            specifying SMART_ltn weighting function instance.
+
+        """
         if  'smart_ltn' in kargs:
             self.smart_ltn = kargs['smart_ltn']
         else:
             self.smart_ltn = SMART_ltn(N)
 
-    def compute_scores(self, documents, query, indexer):
+    def compute_scores(self, documents:list[InformationRessource], query:list[str], indexer:TextIndexer) -> dict[str, float]:
         """
-        Return a dictionary of scores for each document for each query.
-        The keys of the dictionary are the queries ids.
+        Computes SMART_ltc scores for each document based on a given query and a text indexer.
+
+        Params:
+        -------
+        documents: list of InformationRessource
+            List of documents to compute scores for.
+        query: list of str
+            Query terms.
+        indexer: TextIndexer
+            Text indexer containing document statistics.
+
+        Returns:
+        --------
+        dict[str, float]: Dictionary of scores for each document, where keys are document ids.
+
         """
         scores = {}
         # compute the denominator used to normalise ltn weights depending on document
@@ -57,10 +93,21 @@ class SMART_ltc(WeightingFunction):
     @lru_cache(maxsize=1024)
     def _compute_weight(self, ltn_list, tf_list, index):
         """
-        Param:
-            df_list: list of document frequency of each term in the query
-            tf_list: list of term frequency of each term in the query
-            index: list of index of the terms in the query
+        Compute the SMART_ltc weight.
+
+        Params:
+        -------
+        ltn_list: list of float
+            List of SMART_ltn weights for terms in the query.
+        tf_list: list of float
+            List of term frequencies for terms in the query.
+        index: list of int
+            List of indices of terms in the query.
+
+        Returns:
+        --------
+        float: SMART_ltc weight.
+
         """
         den, num = 0, 0
         for i, (ltn, _) in enumerate(zip(tf_list, ltn_list)):

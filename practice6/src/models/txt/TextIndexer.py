@@ -9,6 +9,24 @@ from models.PostingList import PostingList
 from models.PostingListUnit import PostingListUnit
 
 class TextIndexer:
+    """
+    Indexer for creating posting lists based on the input documents.
+
+    Attributes:
+        - posting_lists (dict[PostingList]): Dictionary storing posting lists for each term.
+
+    Methods:
+        __init__(): Initializes the TextIndexer object.
+        __len__() -> int: Returns the number of terms in the vocabulary.
+        __str__() -> str: Returns a string representation of the object.
+        get_vocabulary_size() -> int: Returns the size of the vocabulary.
+        get_vocabulary() -> list[str]: Returns a list of terms in the vocabulary.
+        get_df(term: str) -> int: Returns the document frequency of a term.
+        get_tf(term: str, doc_id: int) -> int: Returns the term frequency in a document.
+        _index_text(doc: InformationRessource, content=None) -> None: Creates posting lists for a document.
+        index(docs: list[TextDocument], use_parallel_computing=False) -> None: Indexes documents.
+
+    """
 
     def __init__(self):
        self.posting_lists: dict[PostingList] = {}
@@ -62,6 +80,16 @@ class TextIndexer:
             self.posting_lists[term].add_posting(unit)
 
     def index(self, docs:list[TextDocument], use_parallel_computing=False) -> None:
+        """
+        Indexes documents.
+
+        Params:
+        -------
+        docs: list[TextDocument]
+            List of TextDocument objects.
+        use_parallel_computing: bool, optional
+            Flag indicating whether to use parallel computing.
+        """
         if not use_parallel_computing:
             for doc in docs: self._index_text(doc)
             return

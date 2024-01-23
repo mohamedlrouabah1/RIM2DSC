@@ -119,12 +119,13 @@ class IRrun:
                     if doc_id in pagerank:
                         tmp.append((xpath, score * pagerank[doc_id]))
                     else:
+                        print(f"Warning: no pagerank score for document {doc_id}")
                         tmp.append((xpath, score * PageRank.default))
                 ranking = tmp
                 collection.Timer.stop()
                 print(f"Scores ponderated with pagerank in {collection.Timer.get_time(f'query{query_id:02d}_pagerank')}\n{self.delimiter}")
-                print()
 
+            print(f"Selected run type: {self.run_type}")
             if self.run_type == 'element':
                 ranking = self._delOverlappingXMLElement(ranking)
                 ranking = self._extractBestScores(ranking)
@@ -301,7 +302,6 @@ class IRrun:
         --------
         list[tuple[str, float]]
             List of tuple (doc_id, score) without intertwined results.
-
         """
         ranking.sort(key=lambda x: x[0])
         return ranking

@@ -1,5 +1,7 @@
 from __future__ import annotations
 from tqdm import tqdm
+import pickle
+import os
 
 class PageRank():
     """
@@ -24,12 +26,23 @@ class PageRank():
         list_tag_link: (list[Tuple[str, str, list[str]]])
             list of tuples (doc_id, reffered_doc_id, anchor_tokens)
         """
+        # Does it already has been compute ?
+        if os.path.isfile("pagerank.pkl"):
+            self.pr = self.load("pagerank.pkl")
+            return
+        self.pr = None
+
         self.graph = {}
         for doc_id, referred_doc_id, _ in tqdm(list_tag_link, "Creating graph of links"):
             referred_doc_id = referred_doc_id.split(':')[0]
             if doc_id not in self.graph:
                 self.graph[doc_id] = []
             self.graph[doc_id].append(referred_doc_id)
+
+        # debug save the graph into a file
+        with open("out_graph.txt", "w", encoding="utf-8") as f:
+            for page, links in self.graph.items():
+                f.write(f"{page}\t{links}\n")
 
     def pagerank(self, d=0.85, max_iterations=5, convergence_threshold=1e-4) -> dict[str, float]:
         """
@@ -47,10 +60,8 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
         Returns:
         - dict: A dictionary containing PageRank scores for each page in the input graph.
         """
-        # debug save the graph into a file
-        with open("out_graph.txt", "w", encoding="utf-8") as f:
-            for page, links in self.graph.items():
-                f.write(f"{page}\t{links}\n")
+        if self.pr is not None:
+            return self.pr
 
         # Initialization of PageRank scores
         pr = {page: 1 / len(self.graph) for page in self.graph}
@@ -82,4 +93,41 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
             for page, score in pr.items():
                 f.write(f"{page}\t{score}\n")
 
+        self.save("pagerank.pkl", pr)
+        self.pr = pr
+
         return pr
+
+    def load(self, path) -> dict[str, float]:
+        """
+        Load PageRank scores from a given file path.
+
+        Params:
+        -------
+        - path: str
+            Path to the PageRank scores.
+
+        Returns:
+        --------
+        dict[str, float]
+            Dictionary of PageRank scores.
+        """
+        with open(path, "rb") as f:
+            pr = pickle.load(f)
+        return pr
+
+    def save(self, path, pr:dict[str, float]):
+        """
+        Save PageRank scores to a given file path.
+
+        Params:
+        -------
+        - path: str
+            Path to the PageRank scores.
+        - pr: dict[str, float]
+            Dictionary of PageRank scores.
+        """
+        with open(path, "wb") as f:
+            pickle.dump(pr, f)
+
+        return True

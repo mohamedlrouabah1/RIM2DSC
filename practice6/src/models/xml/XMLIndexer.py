@@ -72,6 +72,8 @@ class XMLIndexer(TextIndexer):
         for link in tqdm(XMLPreprocessor.anchors, desc="Indexing anchors", file=stderr):
             _, reffered_doc_id, anchor = link
             if anchor:
-                self._index_text(InformationRessource(reffered_doc_id, anchor))
+                id, xpath = reffered_doc_id.split(':')
+                xml_elemnt = XMLElement(id, xpath, {}, anchor, {})
+                self._index_text(xml_elemnt)
 
         #XMLPreprocessor.links_node = None # maybe we will use it elsewhere like in page rank algo or NSA algo

@@ -1,5 +1,5 @@
 DATA_FOLDER="../../data/XML-Coll-withSem"
-STOPWORDS_DIR = "../../stop-words/stop-words-english4.txt"
+STOPWORDS_DIR = "../../stop-words/"#stop-words-english4.txt"
 SAVE_FOLDER="../../saves"
 RENDU_FOLDER="../../rendus"
 COLLECTION_FILES = [

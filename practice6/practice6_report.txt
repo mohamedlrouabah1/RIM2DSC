@@ -1,6 +1,30 @@
 # Rapport RI - TP6
 
 
+# v2
+
+- correcttions de l'extraction du document référé pour la construction du graphe
+  utilisé par le page rank car des liens comme "../289/149289.xml#xpointer(//*[./st=%22Global+alignment%22])"
+  causaient un problème comme on coupe à partir du dernier '/' pour prendre l'id du document référé.
+  Donc maintenant on coupe d'abord avec "#".
+- mise à jour documentation code
+- implémentation de BM25L
+- run (ltn, ltc, lnu, bm25*8, bm25fw*4, bm25fr*4, bm25l*5) avec run :
+   . baseline
+   . avec pagerank
+   . avec ancre
+   . avec pagerank et ancre
+- pas de run éléments pour se concentre sur l'impact du pages ranks et des ancres sur
+  les résultats de ranking (fait dans les 2 derniers rendu et prévu pour le prochain)
+
+
+
+====================================================================================================
+VERSION 1
+====================================================================================================
+
+
+
 ## Correction apportées à la version précédente :
 
 Rappel du processus de tri des résultats du TP5 :

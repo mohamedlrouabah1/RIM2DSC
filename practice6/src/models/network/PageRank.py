@@ -25,13 +25,13 @@ class PageRank():
             list of tuples (doc_id, reffered_doc_id, anchor_tokens)
         """
         self.graph = {}
-        for link in tqdm(list_tag_link, "Creating graph of links"):
-            doc_id, referred_doc_id, _ = link
+        for doc_id, referred_doc_id, _ in tqdm(list_tag_link, "Creating graph of links"):
+            referred_doc_id = referred_doc_id.split(':')[0]
             if doc_id not in self.graph:
                 self.graph[doc_id] = []
             self.graph[doc_id].append(referred_doc_id)
 
-    def pagerank(self, d=0.85, max_iterations=100, convergence_threshold=1e-6) -> dict[str, float]:
+    def pagerank(self, d=0.85, max_iterations=5, convergence_threshold=1e-4) -> dict[str, float]:
         """
         Calculate PageRank scores for a given graph.
 
@@ -47,6 +47,10 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
         Returns:
         - dict: A dictionary containing PageRank scores for each page in the input graph.
         """
+        # debug save the graph into a file
+        with open("out_graph.txt", "w", encoding="utf-8") as f:
+            for page, links in self.graph.items():
+                f.write(f"{page}\t{links}\n")
 
         # Initialization of PageRank scores
         pr = {page: 1 / len(self.graph) for page in self.graph}
@@ -59,7 +63,14 @@ e        - convergence_threshold (float, optional): Convergence threshold for st
 
             # Check for convergence
             if all(abs(pr_new[page] - pr[page]) < convergence_threshold for page in self.graph):
-                break
+                print(f"Converge at iteration {i}")
+                if i > 4:
+                    break
+
+            # debug result
+            with open(f"out_pagerank_iteration_{i}.txt", "w", encoding="utf-8") as f:
+                for page, score in pr_new.items():
+                    f.write(f"{page}\t{score}\n")
 
             pr = pr_new
 

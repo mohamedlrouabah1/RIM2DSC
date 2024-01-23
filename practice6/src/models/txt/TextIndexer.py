@@ -40,8 +40,12 @@ class TextIndexer:
         Number of terms: {self.__len__()}\n
         Posting lists:\n
         """
+        i=0
         for key, value in self.posting_lists.items():
             s += f"posting list {key} : {value.__str__()}\n"
+            i+=1
+            if i > 50:
+                break
         s+= f"{'-'*50}\n"
         return s
 

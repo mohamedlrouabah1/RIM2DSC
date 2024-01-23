@@ -57,12 +57,12 @@ class BM25(WeightingFunction):
         return log10((self.N_plus_0_5 - df ) / (df + 0.5))
 
     @lru_cache(maxsize=1024)
-    def compute_tf_weight_tf_part(self, tf: float) -> float:
+    def compute_tf_weight_tf_part(self, tf: float) -> tuple[float]:
         return (tf * self.k1_plus_1, self.k1_times_1_minus_b + tf)
 
     @lru_cache(maxsize=1024)
-    def compute_tf_weight_dl_part(self, dl:float) -> float:
-        return self.k1_times_b_times_inv_avdl * dl
+    def compute_tf_weight_dl_part(self, dl:int) -> float:
+        return (float)(self.k1_times_b_times_inv_avdl * dl)
 
     @lru_cache(maxsize=1024)
     def compute_weight(self, tf:float, df:float, dl:int) -> float:
@@ -83,10 +83,9 @@ class BM25(WeightingFunction):
         idf = self.compute_idf_part(df)
         tf_num, tf_den = self.compute_tf_weight_tf_part(tf)
         tf_den_dl = tf_den + self.compute_tf_weight_dl_part(dl)
-        try:
-            tf_weight = tf_num / tf_den_dl
-        except ZeroDivisionError:
-            tf_weight = 0
+
+        tf_weight = tf_num / tf_den_dl if tf_den_dl != 0 else 1
+
         return tf_weight * idf
 
     def compute_scores(self, documents, query, indexer) -> dict[str, float]:

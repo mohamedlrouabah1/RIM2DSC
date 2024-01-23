@@ -50,6 +50,7 @@ class TestIRrun(unittest.TestCase):
         params = {"param1": "value1", "param2": "value2"}
 
         ir_run = IRrun(weighting_function_name, stop, stem, params)
+        IRrun.GRANULARITY = "test"
 
         # Ensure that the file path is created correctly
         expected_file_path = f"../results/{IRrun.GROUP_NAME}_{ir_run.id}_{weighting_function_name}_{'_'.join(IRrun.GRANULARITY)}_stop{IRrun.STOPLIST_SIZE}_{stem}_param1_value1_param2_value2.txt"

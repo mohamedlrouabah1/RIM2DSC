@@ -64,8 +64,12 @@ class TextPreprocessor:
 
         """
         if exclude_stopwords:
-            with open(STOPWORDS_DIR, 'r', encoding="utf-8") as f:
-                self.stopwords = set(f.read().splitlines() + list(punctuation))
+            self.stopwords = set()
+            for file_path in os.listdir(STOPWORDS_DIR):
+                with open(f"{STOPWORDS_DIR}/{file_path}", 'r', encoding="utf-8") as f:
+                    self.stopwords = self.stopwords.union(set(f.read().splitlines()))
+
+            self.stopwords = self.stopwords.union(set(punctuation))
             print(f"Stopwords loaded from {STOPWORDS_DIR} with {len(self.stopwords)} words.", file=sys.stderr)
         else:
             print("Error, unnable to load stopwords.", file=sys.stderr)

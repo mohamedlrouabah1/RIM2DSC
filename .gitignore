@@ -26,3 +26,6 @@ out*.txt
 # code coverage tool files
 .coverage
 htmlcov/
+
+**/.venv/
+**/dist/

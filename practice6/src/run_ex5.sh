@@ -10,13 +10,13 @@ queries_file=../queries.csv
 echo "Param b: "
 for b in $(LANG=en_EN seq 0.0 0.1 1.0 )
 do
-    python3 main.py -r bm25 --stopword -b "$b" "${queries_file}"
+    python3 main_legacy.py -r bm25 --stopword -b "$b" "${queries_file}"
 done
 echo "done\n"
 
 echo "Param k1: "
 for k in $(LANG=en_EN seq 0.0 0.1 1.0 )
 do
-    python3 main.py -r bm25 --stopword --k1 "$k" "${queries_file}"
+    python3 main_legacy.py -r bm25 --stopword --k1 "$k" "${queries_file}"
 done
 echo "done\n"

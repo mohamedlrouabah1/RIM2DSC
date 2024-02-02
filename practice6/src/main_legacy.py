@@ -15,6 +15,10 @@ def main() -> None:
     # Process program's arguments
     args = parse_command_line_arguments()
 
+    # Downloading nltk dependencies
+    for dep in  tqdm(["wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
+        nltk.download(dep, quiet=True)
+
     # Create/Load the Collection
     collection = create_or_load_collection(args)
     if args.plot: collection.plot_statistics()
@@ -57,7 +61,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     sys.setrecursionlimit(RECURSION_LIM)
-    # Downloading nltk dependencies
-    for dep in  tqdm(["wordnet", "averaged_perceptron_tagger"], desc="Downloading nltk dependencies...", colour="green"):
-        nltk.download(dep, quiet=True)
     main()

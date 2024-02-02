@@ -25,7 +25,7 @@ do
     do
         for stemmer in "${stemmer[@]}"
         do
-            python3 main.py -r $weighting_function $stopword  -m $stemmer "${queries_file}"
+            python3 main_legacy.py -r $weighting_function $stopword  -m $stemmer "${queries_file}"
         done
     done
 done

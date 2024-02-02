@@ -38,7 +38,7 @@ def main():
         if args.anchors:
             params.append("anchors")
 
-        for granularity in [["title", "bdy", "p"]]:
+        for granularity in [["title", "bdy", "p"], ["title", "bdy", "p", "section"], ["article"]]:
             XMLDocument.granularity = granularity
 
 
@@ -64,16 +64,16 @@ def main():
             collection.information_retriever = ranking_function
             launch_run(collection, queries, index_path, "smart_ltc", params, pr)
 
-            for slope in [0.1, 0.5]:
+            for slope in range(0,5, 0.1):
                 ranking_function = SMART_lnu(N=len(collection), slope=slope)
                 collection.information_retriever = ranking_function
                 launch_run(collection, queries, index_path, "smart_lnu", params + [f"slope{slope}"], pr)
 
             k1, b = 1.2, 0.75
-            for alpha_article in [0.5, 1]:
-                for alpha_title in [2, 5]:
-                    for alpha_bdy in [1.75, 2.86]:
-                        for alpha_p in [2.15, 5]:
+            for alpha_article in range(1, 5, 0.15):
+                for alpha_title in range(1, 6, 0.15):
+                    for alpha_bdy in range(1, 5, 0.15):
+                        for alpha_p in range(1, 5, 0.1()):
 
                             XMLDocument.granularity_weights = {
                                 "article" : alpha_article,
@@ -95,7 +95,7 @@ def main():
                                     )
                                 launch_run(collection, queries, index_path, name, params + [f"k{k1}", f"b{b}"], pr)
 
-            for k3 in [0.5, 1.15, 2.34, 3.2, 6]:
+            for k3 in range(0, 10, 0.4):
                 ranking_function = BM25L(
                     N=len(collection),
                     avdl=collection.get_avdl(),
@@ -105,8 +105,8 @@ def main():
                 launch_run(collection, queries, index_path, "bm25l", params + [f"k{k1}", f"b{b}", f"k3{k3}"], pr)
 
 
-            for k1 in [1.2 , 1.7, 2.2, 3.7]:
-                 for b in [0.25, 0.75]:
+            for k1 in range(0.12, 6, 0.25):
+                 for b in range(0, 1, 0.1):
                     collection.information_retriever = BM25(
                         N=len(collection),
                         avdl=collection.get_avdl(),
